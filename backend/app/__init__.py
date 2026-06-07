@@ -1,0 +1,1 @@
+"""DetectiveLens FastAPI backend."""

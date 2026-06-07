@@ -1,0 +1,16 @@
+:root {
+  --color-primary: #6b4eff;
+  --color-primary-dark: #5538e0;
+  --color-accent-yellow: #ffd54f;
+  --color-accent-orange: #ff9800;
+  --color-diamond: #42a5f5;
+  --color-success: #4caf50;
+  --color-surface: #ffffff;
+  --color-background: #f3f4f6;
+  --color-lavender: #ede7f6;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  /* Child-friendly sizing: larger base for readability & touch */
+  --font-size-base: 1.125rem; /* 18px */
+  --touch-min: 3rem; /* 48px minimum tap target */
+}

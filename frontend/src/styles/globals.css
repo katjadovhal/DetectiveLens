@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+html,
+body,
+#root {
+  min-height: 100%;
+  height: 100%;
+}
+
+html {
+  font-size: 112.5%; /* 18px base — easier to read for kids */
+}
+
+body {
+  font-family: "Nunito", system-ui, sans-serif;
+  background: #ffffff;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.6;
+}
