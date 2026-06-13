@@ -1,0 +1,37 @@
+{
+  "users": [
+    {
+      "id": "demo-user-id",
+      "username": "demo",
+      "email": "demo@detectivelens.local",
+      "createdAt": "2026-06-13T12:49:39.789632",
+      "lastActiveAt": "2026-06-13T12:49:39.789831"
+    }
+  ],
+  "profiles": [
+    {
+      "id": "0184ac8f-d4f2-41ec-9ff4-2bc74e426d61",
+      "userId": "demo-user-id",
+      "avatarId": "detective-default",
+      "displayName": "Alex",
+      "selfReportedLevel": "beginner",
+      "currentLevel": 4,
+      "totalXp": 320,
+      "currentLevelXp": 320,
+      "dailyStreak": 0,
+      "onboardingCompleted": true,
+      "lastChallengeId": null,
+      "lastChallengeProgress": null,
+      "settings": {
+        "notifications": true,
+        "sound": true,
+        "privacy": false
+      }
+    }
+  ],
+  "skill_scores": [],
+  "challenge_attempts": [],
+  "xp_transactions": [],
+  "detective_tips": [],
+  "daily_missions": []
+}

@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 
-interface PlaceholderPageProps {
-  title: string;
-  description: string;
-}
-
-export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
+export function PlaceholderPage({ title, description }) {
   return (
     <div className="mx-auto w-full max-w-2xl py-16 text-center">
       <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">{title}</h1>

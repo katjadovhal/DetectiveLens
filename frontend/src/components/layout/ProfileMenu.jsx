@@ -10,11 +10,11 @@ const MENU_ITEMS = [
 
 export function ProfileMenu() {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef(null);
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+    function handleClickOutside(e) {
+      if (ref.current && !ref.current.contains(e.target)) {
         setOpen(false);
       }
     }

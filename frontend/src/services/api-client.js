@@ -1,14 +1,6 @@
-import type {
-  ChallengeAttemptResult,
-  ChallengeHint,
-  HomeDashboard,
-  PublicChallenge,
-  PublicFakePostContent,
-} from '@detectivelens/shared';
-
 const API_BASE = '/api/v1';
 
-const MOCK_CHALLENGE: PublicChallenge & { hints: ChallengeHint[] } = {
+const MOCK_CHALLENGE = {
   id: 'burger-king-001',
   slug: 'burger-king-001',
   type: 'fake_post',
@@ -66,7 +58,7 @@ const MOCK_CHALLENGE: PublicChallenge & { hints: ChallengeHint[] } = {
   ],
 };
 
-const MOCK_HOME: HomeDashboard = {
+const MOCK_HOME = {
   greeting: { displayName: 'Alex', levelTitle: 'Internet Detective Level 4', avatarId: 'detective-default' },
   progress: { totalXp: 320, currentLevelXp: 320, xpToNextLevel: 880, level: 4 },
   dailyMission: {
@@ -82,7 +74,7 @@ const MOCK_HOME: HomeDashboard = {
   ],
 };
 
-async function request<T>(path: string, options?: RequestInit): Promise<T> {
+async function request(path, options) {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
@@ -91,16 +83,13 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     const err = await res.json().catch(() => ({ message: res.statusText }));
     throw new Error(err.message ?? 'Request failed');
   }
-  return res.json() as Promise<T>;
+  return res.json();
 }
 
-function mockSubmitFakePost(body: {
-  selectedPostId: 'A' | 'B';
-  hintsUsed: number;
-}): ChallengeAttemptResult {
+function mockSubmitFakePost(body) {
   const correctPostId = 'A';
   const isCorrect = body.selectedPostId === correctPostId;
-  const content = MOCK_CHALLENGE.content as PublicFakePostContent;
+  const content = MOCK_CHALLENGE.content;
   return {
     attemptId: 'mock-session',
     isCorrect,
@@ -126,7 +115,7 @@ function mockSubmitFakePost(body: {
 export const api = {
   getWelcome: async () => {
     try {
-      return await request<{ title: string; subtitle: string; keyValue: string }>('/onboarding/welcome');
+      return await request('/onboarding/welcome');
     } catch {
       return {
         title: 'Hey Detective!',
@@ -136,9 +125,9 @@ export const api = {
     }
   },
 
-  completeOnboarding: async (level: string) => {
+  completeOnboarding: async (level) => {
     try {
-      return await request<{ success: boolean; redirectTo: string }>('/onboarding/complete', {
+      return await request('/onboarding/complete', {
         method: 'POST',
         body: JSON.stringify({ level }),
       });
@@ -149,25 +138,23 @@ export const api = {
 
   getHome: async () => {
     try {
-      return await request<HomeDashboard>('/home/demo-user-id');
+      return await request('/home/demo-user-id');
     } catch {
       return MOCK_HOME;
     }
   },
 
-  getChallenge: async (id: string) => {
+  getChallenge: async (id) => {
     try {
-      return await request<{ challenge: PublicChallenge & { hints?: ChallengeHint[] } }>(
-        `/challenges/${id}`,
-      );
+      return await request(`/challenges/${id}`);
     } catch {
       return { challenge: { ...MOCK_CHALLENGE } };
     }
   },
 
-  startChallenge: async (id: string) => {
+  startChallenge: async (id) => {
     try {
-      return await request<{ sessionId: string; challengeId: string }>(`/challenges/${id}/start`, {
+      return await request(`/challenges/${id}/start`, {
         method: 'POST',
       });
     } catch {
@@ -175,12 +162,9 @@ export const api = {
     }
   },
 
-  submitFakePost: async (
-    sessionId: string,
-    body: { selectedPostId: 'A' | 'B'; hintsUsed: number },
-  ) => {
+  submitFakePost: async (sessionId, body) => {
     try {
-      return await request<ChallengeAttemptResult>(`/challenges/sessions/${sessionId}/submit`, {
+      return await request(`/challenges/sessions/${sessionId}/submit`, {
         method: 'POST',
         body: JSON.stringify(body),
       });

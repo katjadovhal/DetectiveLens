@@ -1,14 +1,4 @@
-import type { SelfReportedLevel } from '@detectivelens/shared';
-
-interface SelectionCardProps {
-  level: SelfReportedLevel;
-  label: string;
-  icon: string;
-  selected: boolean;
-  onSelect: (level: SelfReportedLevel) => void;
-}
-
-export function SelectionCard({ level, label, icon, selected, onSelect }: SelectionCardProps) {
+export function SelectionCard({ level, label, icon, selected, onSelect }) {
   return (
     <button
       type="button"

@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import type { HomeDashboard } from '@detectivelens/shared';
 import { api } from '../../services/api-client';
 import { Card } from '../../components/ui/Card';
 import { ProgressBar } from '../../components/ui/ProgressBar';
 import { Button } from '../../components/ui/Button';
 
 export function HomePage() {
-  const [home, setHome] = useState<HomeDashboard | null>(null);
+  const [home, setHome] = useState(null);
 
   useEffect(() => {
     api.getHome().then(setHome).catch(() => {});

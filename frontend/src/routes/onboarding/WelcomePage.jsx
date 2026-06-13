@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { SelfReportedLevel } from '@detectivelens/shared';
 import { api } from '../../services/api-client';
 import { Button } from '../../components/ui/Button';
 import { SelectionCard } from '../../components/ui/SelectionCard';
 
-const LEVELS: Array<{ level: SelfReportedLevel; label: string; icon: string }> = [
+const LEVELS = [
   { level: 'beginner', label: 'Beginner', icon: '⭐' },
   { level: 'somewhat', label: 'Somewhat', icon: '😊' },
   { level: 'pro', label: 'Pro', icon: '🚀' },
@@ -13,7 +12,7 @@ const LEVELS: Array<{ level: SelfReportedLevel; label: string; icon: string }> =
 
 export function WelcomePage() {
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<SelfReportedLevel>('beginner');
+  const [selected, setSelected] = useState('beginner');
   const [loading, setLoading] = useState(false);
   const [welcome, setWelcome] = useState({ title: 'Hey Detective!', subtitle: '' });
 

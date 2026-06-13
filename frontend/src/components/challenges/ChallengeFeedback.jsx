@@ -1,12 +1,3 @@
-interface ChallengeFeedbackProps {
-  isCorrect: boolean;
-  selectedAnswer: string;
-  correctAnswer: string;
-  explanation: string[];
-  showExplanation: boolean;
-  onToggleExplanation: () => void;
-}
-
 export function ChallengeFeedback({
   isCorrect,
   selectedAnswer,
@@ -14,7 +5,7 @@ export function ChallengeFeedback({
   explanation,
   showExplanation,
   onToggleExplanation,
-}: ChallengeFeedbackProps) {
+}) {
   return (
     <div className="py-12 text-center">
       {isCorrect ? (

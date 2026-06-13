@@ -1,10 +1,4 @@
-interface ProgressBarProps {
-  current: number;
-  max: number;
-  showLabel?: boolean;
-}
-
-export function ProgressBar({ current, max, showLabel }: ProgressBarProps) {
+export function ProgressBar({ current, max, showLabel }) {
   const pct = Math.min(100, Math.round((current / max) * 100));
 
   return (

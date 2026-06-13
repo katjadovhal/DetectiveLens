@@ -1,11 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type {
-  ChallengeAttemptResult,
-  ChallengeHint,
-  PublicChallenge,
-  PublicFakePostContent,
-} from '@detectivelens/shared';
 import { api } from '../../services/api-client';
 import { SocialPostCard } from '../../components/challenges/SocialPostCard';
 import { InvestigationPanel } from '../../components/challenges/InvestigationPanel';
@@ -13,20 +7,16 @@ import { ChallengeFeedback } from '../../components/challenges/ChallengeFeedback
 import { DetectiveTipBox } from '../../components/personalization/DetectiveTipBox';
 import { Button } from '../../components/ui/Button';
 
-type Phase = 'playing' | 'feedback';
-
 export function FakePostChallengePage() {
   const { id = 'burger-king-001' } = useParams();
   const navigate = useNavigate();
 
-  const [challenge, setChallenge] = useState<
-    (PublicChallenge & { hints?: ChallengeHint[] }) | null
-  >(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [selected, setSelected] = useState<'A' | 'B' | null>(null);
+  const [challenge, setChallenge] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [hintsUsed, setHintsUsed] = useState(0);
-  const [phase, setPhase] = useState<Phase>('playing');
-  const [result, setResult] = useState<ChallengeAttemptResult | null>(null);
+  const [phase, setPhase] = useState('playing');
+  const [result, setResult] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -42,7 +32,7 @@ export function FakePostChallengePage() {
     load().catch(console.error);
   }, [id]);
 
-  async function handleSubmit(postId: 'A' | 'B') {
+  async function handleSubmit(postId) {
     if (!sessionId || submitting) return;
     setSelected(postId);
     setSubmitting(true);
@@ -64,7 +54,7 @@ export function FakePostChallengePage() {
     return <div className="py-20 text-center text-gray-500">Loading challenge...</div>;
   }
 
-  const content = challenge.content as PublicFakePostContent;
+  const content = challenge.content;
 
   if (phase === 'feedback' && result) {
     return (

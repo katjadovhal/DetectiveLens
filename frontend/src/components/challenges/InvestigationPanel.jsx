@@ -1,14 +1,7 @@
 import { useState } from 'react';
-import type { ChallengeHint } from '@detectivelens/shared';
 import { Button } from '../ui/Button';
 
-interface InvestigationPanelProps {
-  hints: ChallengeHint[];
-  hintsUsed: number;
-  onHintViewed: () => void;
-}
-
-export function InvestigationPanel({ hints, hintsUsed, onHintViewed }: InvestigationPanelProps) {
+export function InvestigationPanel({ hints, hintsUsed, onHintViewed }) {
   const [expanded, setExpanded] = useState(false);
   const [activeHintIndex, setActiveHintIndex] = useState(0);
 

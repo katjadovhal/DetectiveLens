@@ -1,28 +1,67 @@
-from sqlalchemy.orm import Session
-
 from app.constants import DEMO_USER_ID
-from app.models import Profile, SelfReportedLevel, User
+from app.storage import find_one, load_store, new_id, now_iso, save_store
 
 
-def ensure_demo_user(db: Session) -> User:
-    user = db.query(User).filter((User.id == DEMO_USER_ID) | (User.username == "demo")).first()
+def ensure_demo_user(store: dict | None = None) -> dict:
+    if store is None:
+        store = load_store()
+        user = find_one(store["users"], id=DEMO_USER_ID) or find_one(store["users"], username="demo")
+        if user:
+            return user
+
+        user = {
+            "id": DEMO_USER_ID,
+            "username": "demo",
+            "email": "demo@detectivelens.local",
+            "createdAt": now_iso(),
+            "lastActiveAt": now_iso(),
+        }
+        profile = {
+            "id": new_id(),
+            "userId": DEMO_USER_ID,
+            "avatarId": "detective-default",
+            "displayName": "Alex",
+            "selfReportedLevel": "beginner",
+            "currentLevel": 4,
+            "totalXp": 320,
+            "currentLevelXp": 320,
+            "dailyStreak": 0,
+            "onboardingCompleted": True,
+            "lastChallengeId": None,
+            "lastChallengeProgress": None,
+            "settings": {"notifications": True, "sound": True, "privacy": False},
+        }
+        store["users"].append(user)
+        store["profiles"].append(profile)
+        save_store(store)
+        return user
+
+    user = find_one(store["users"], id=DEMO_USER_ID) or find_one(store["users"], username="demo")
     if user:
         return user
 
-    user = User(id=DEMO_USER_ID, username="demo", email="demo@detectivelens.local")
-    db.add(user)
-    db.flush()
-
-    profile = Profile(
-        user_id=user.id,
-        display_name="Alex",
-        self_reported_level=SelfReportedLevel.beginner,
-        current_level=4,
-        total_xp=320,
-        current_level_xp=320,
-        onboarding_completed=True,
-    )
-    db.add(profile)
-    db.commit()
-    db.refresh(user)
+    user = {
+        "id": DEMO_USER_ID,
+        "username": "demo",
+        "email": "demo@detectivelens.local",
+        "createdAt": now_iso(),
+        "lastActiveAt": now_iso(),
+    }
+    profile = {
+        "id": new_id(),
+        "userId": DEMO_USER_ID,
+        "avatarId": "detective-default",
+        "displayName": "Alex",
+        "selfReportedLevel": "beginner",
+        "currentLevel": 4,
+        "totalXp": 320,
+        "currentLevelXp": 320,
+        "dailyStreak": 0,
+        "onboardingCompleted": True,
+        "lastChallengeId": None,
+        "lastChallengeProgress": None,
+        "settings": {"notifications": True, "sound": True, "privacy": False},
+    }
+    store["users"].append(user)
+    store["profiles"].append(profile)
     return user

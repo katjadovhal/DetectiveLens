@@ -1,10 +1,4 @@
-import type { DetectiveTip } from '@detectivelens/shared';
-
-interface DetectiveTipBoxProps {
-  tip: DetectiveTip;
-}
-
-export function DetectiveTipBox({ tip }: DetectiveTipBoxProps) {
+export function DetectiveTipBox({ tip }) {
   return (
     <div className="mt-10 flex items-start gap-5 rounded-2xl border-2 border-[var(--color-primary)]/20 bg-[var(--color-lavender)] p-6">
       <span className="text-6xl" role="img" aria-label="Detective mascot">

@@ -1,13 +1,11 @@
 [project]
 name = "detectivelens-backend"
 version = "0.1.0"
-description = "DetectiveLens API — FastAPI + PostgreSQL"
+description = "DetectiveLens API — FastAPI + JSON storage"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.34.0",
-    "sqlalchemy>=2.0.36",
-    "psycopg2-binary>=2.9.10",
     "pydantic>=2.10.0",
     "pydantic-settings>=2.7.0",
     "python-dotenv>=1.0.1",

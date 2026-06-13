@@ -1,12 +1,4 @@
-import type { ReactNode } from 'react';
-
-interface CardProps {
-  children: ReactNode;
-  className?: string;
-  highlight?: boolean;
-}
-
-export function Card({ children, className = '', highlight = false }: CardProps) {
+export function Card({ children, className = '', highlight = false }) {
   return (
     <div
       className={`rounded-[var(--radius-lg)] p-8 ${

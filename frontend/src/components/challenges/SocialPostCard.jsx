@@ -1,13 +1,4 @@
-import type { SocialPost } from '@detectivelens/shared';
-
-interface SocialPostCardProps {
-  post: SocialPost;
-  selected?: boolean;
-  onSelect?: () => void;
-  disabled?: boolean;
-}
-
-export function SocialPostCard({ post, selected, onSelect, disabled }: SocialPostCardProps) {
+export function SocialPostCard({ post, selected, onSelect, disabled }) {
   return (
     <button
       type="button"

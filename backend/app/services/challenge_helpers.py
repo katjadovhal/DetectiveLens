@@ -1,11 +1,9 @@
 from copy import deepcopy
 
-from app.models import ChallengeType
 
-
-def strip_correct_answer(challenge_type: ChallengeType | str, content: dict) -> dict:
+def strip_correct_answer(challenge_type: str, content: dict) -> dict:
     safe = deepcopy(content)
-    ctype = challenge_type.value if isinstance(challenge_type, ChallengeType) else challenge_type
+    ctype = challenge_type.value if hasattr(challenge_type, "value") else challenge_type
 
     if ctype == "fake_post":
         safe.pop("correctPostId", None)
