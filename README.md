@@ -6,47 +6,43 @@ Gamified misinformation literacy web app for children — LMU PSIS SS2026 course
 
 | Package | Owner | Purpose |
 |---------|-------|---------|
-| `frontend/` | Person A | React UI (JavaScript + HTML), routing, components |
+| `frontend/` | Person A | Static UI (HTML, CSS, JavaScript) |
 | `backend/` | Person D | **Python FastAPI** API + JSON file storage |
 | `challenge-data/` | Person B | JSON challenge content |
 
 ## Tech stack
 
 - **Backend:** Python (FastAPI), JSON files for user progress and app state
-- **Frontend:** JavaScript, HTML, React, Vite, Tailwind CSS — no TypeScript
+- **Frontend:** HTML, CSS, JavaScript only — no React, Vite, or Tailwind
 - **Challenge content:** JSON files in `challenge-data/`
 
 ## Prerequisites
 
-- **Node.js 20+** (includes npm)
-- **Python 3.11+** (backend only)
+- **Python 3.11+**
 
 ## Quick start
 
 ```bash
-# 1. Install frontend dependencies
-npm install
-
-# 2. Python backend dependencies
+# 1. Python backend dependencies
 cd backend
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cd ..
 
-# 3. Configure backend env
+# 2. Configure backend env
 cp .env.example backend/.env
 
-# 4. Seed demo user data (JSON store)
+# 3. Seed demo user data (JSON store)
 npm run data:seed
 
-# 5. Start dev servers (frontend :5173, backend :3001)
+# 4. Start app (serves frontend + API on :3001)
 npm run dev
 ```
 
-Open http://localhost:5173 — onboarding → home → Burger King fake-post challenge.
+Open http://localhost:3001 — onboarding → home → Burger King fake-post challenge.
 
-**Frontend-only mode** (no Python backend): run `npm run dev:frontend` — mock data is used automatically when the API is unavailable.
+The Python backend serves the static frontend files and the API from the same port.
 
 ## Backend (Python)
 
@@ -60,20 +56,34 @@ uvicorn app.main:app --reload --port 3001
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev:backend` | Start FastAPI with hot reload |
+| `npm run dev` | Start FastAPI (frontend + API on port 3001) |
 | `npm run data:seed` | Initialize JSON store with demo user |
 
 User progress and sessions are stored in `backend/data/store.json`. Challenge content is loaded from `challenge-data/*.json`.
 
 API docs (auto-generated): http://localhost:3001/docs
 
+## Frontend structure
+
+```
+frontend/
+  index.html       # App shell
+  css/
+    tokens.css     # Design tokens (colors, spacing)
+    main.css       # All styles
+  js/
+    api.js         # API client + mock fallback
+    router.js      # Client-side routing
+    header.js      # Header component
+    main.js        # Entry point
+    pages/         # Page renderers
+```
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm install` | Install frontend workspace packages |
-| `npm run dev` | Run frontend + Python backend |
-| `npm run build` | Build frontend for production |
+| `npm run dev` | Start app (frontend + backend on :3001) |
 | `npm run data:seed` | Initialize JSON data store |
 
 ## API health check

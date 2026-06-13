@@ -69,14 +69,11 @@ const MOCK_HOME = {
     completed: false,
   },
   continueLearning: { challengeId: 'burger-king-001', title: 'Which post is fake?' },
-  recommendedChallenges: [
-    { id: 'burger-king-001', title: 'Which post is fake?', type: 'fake_post', reason: 'Practice source verification' },
-  ],
 };
 
-async function request(path, options) {
+async function request(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { 'Content-Type': 'application/json', ...options.headers },
     ...options,
   });
   if (!res.ok) {
@@ -89,13 +86,12 @@ async function request(path, options) {
 function mockSubmitFakePost(body) {
   const correctPostId = 'A';
   const isCorrect = body.selectedPostId === correctPostId;
-  const content = MOCK_CHALLENGE.content;
   return {
     attemptId: 'mock-session',
     isCorrect,
     selectedAnswer: body.selectedPostId,
     correctAnswer: correctPostId,
-    explanation: content.explanation.bullets,
+    explanation: MOCK_CHALLENGE.content.explanation.bullets,
     xpEarned: isCorrect ? Math.max(0, 100 - body.hintsUsed * 10) : 0,
     detectiveTip: !isCorrect
       ? {
@@ -108,7 +104,7 @@ function mockSubmitFakePost(body) {
             "Ask whether the post supports the account's goals",
           ],
         }
-      : undefined,
+      : null,
   };
 }
 
@@ -154,9 +150,7 @@ export const api = {
 
   startChallenge: async (id) => {
     try {
-      return await request(`/challenges/${id}/start`, {
-        method: 'POST',
-      });
+      return await request(`/challenges/${id}/start`, { method: 'POST' });
     } catch {
       return { sessionId: 'mock-session', challengeId: id };
     }
@@ -173,3 +167,12 @@ export const api = {
     }
   },
 };
+
+export function escapeHtml(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
