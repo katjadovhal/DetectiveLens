@@ -9,3 +9,5 @@ coverage/
 .vite/
 backend/.venv/
 *.tsbuildinfo
+.idea/
+*.iml
