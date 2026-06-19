@@ -1,4 +1,4 @@
-import { api, escapeHtml } from './api.js';
+import { api, escapeHtml } from '../api.js';
 
 const LEVELS = [
   { level: 'beginner', label: 'Beginner', icon: '⭐' },
