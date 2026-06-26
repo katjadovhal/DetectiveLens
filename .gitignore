@@ -11,3 +11,5 @@ backend/.venv/
 *.tsbuildinfo
 .idea/
 *.iml
+package.json
+
