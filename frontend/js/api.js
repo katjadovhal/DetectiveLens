@@ -1,57 +1,48 @@
 const API_BASE = '/api/v1';
 
 const MOCK_CHALLENGE = {
-  id: 'burger-king-001',
-  slug: 'burger-king-001',
+  id: 'monkey-001',
+  slug: 'monkey-001',
   type: 'fake_post',
-  difficulty: 'medium',
-  title: 'Which post is fake?',
+  difficulty: 'easy',
+  title: 'Which image is AI-generated?',
   instruction: 'Click to choose',
-  skillCategoryIds: ['source_verification', 'content_authenticity'],
+  skillCategoryIds: ['content_authenticity'],
   xpReward: 100,
   isDailyEligible: true,
   content: {
     posts: [
       {
         id: 'A',
-        platform: 'twitter',
-        author: 'Burger King',
-        handle: '@BurgerKing',
-        verified: false,
-        text: "Go to @McDonalds. They're better.",
-        metrics: { retweets: 1200, likes: 8900 },
-        timestamp: '08 Mar 21',
+        imageUrl: '/assets/challenges/monkey/6a.jpg',
       },
       {
         id: 'B',
-        platform: 'twitter',
-        author: 'Burger King',
-        handle: '@BurgerKingUK',
-        verified: true,
-        text: 'Women belong in the kitchen.',
-        metrics: { retweets: 24600, likes: 72400 },
-        timestamp: '11:01 am · 08 Mar 21',
+        imageUrl: '/assets/challenges/monkey/6.png',
       },
     ],
+    correctPostId: 'B',
     explanation: {
       bullets: [
-        "The message in B came from Burger King's official account and matches content the company has posted before.",
-        'The post in A showed signs that it may not be authentic.',
+        'Image B was generated using AI.',
+        'Image A is a real photograph.',
+        'Look closely at the eyes, fur, and lighting. AI images can look cute, but sometimes small details feel too perfect or unnatural.',
       ],
     },
   },
   hints: [
     {
       id: 'hint-1',
-      challengeId: 'burger-king-001',
+      challengeId: 'monkey-001',
       order: 1,
-      question: 'Who is the source?',
-      skillCategoryId: 'source_verification',
+      question: 'Look at the details',
+      skillCategoryId: 'content_authenticity',
       content: {
-        body: "Both posts appear to come from Burger King's official account.",
+        body: 'AI-generated images often have small visual clues, especially in eyes, fur, hands, shadows, or background details.',
         bulletQuestions: [
-          'Does this sound like something a company would proudly post to all of its customers?',
-          'Which post looks more like something Burger King would normally share?',
+          'Do the eyes look too shiny or too perfect?',
+          'Does the fur look natural everywhere?',
+          'Does the background make sense?',
         ],
       },
     },
@@ -59,16 +50,28 @@ const MOCK_CHALLENGE = {
 };
 
 const MOCK_HOME = {
-  greeting: { displayName: 'Alex', levelTitle: 'Internet Detective Level 4', avatarId: 'detective-default' },
-  progress: { totalXp: 320, currentLevelXp: 320, xpToNextLevel: 880, level: 4 },
+  greeting: {
+    displayName: 'Alex',
+    levelTitle: 'Internet Detective Level 4',
+    avatarId: 'detective-default',
+  },
+  progress: {
+    totalXp: 320,
+    currentLevelXp: 320,
+    xpToNextLevel: 880,
+    level: 4,
+  },
   dailyMission: {
-    challengeId: 'burger-king-001',
+    challengeId: 'monkey-001',
     title: 'Daily Mission!',
-    description: 'Spot the fake post',
+    description: 'Spot the AI-generated image',
     xpBonus: 100,
     completed: false,
   },
-  continueLearning: { challengeId: 'burger-king-001', title: 'Which post is fake?' },
+  continueLearning: {
+    challengeId: 'monkey-001',
+    title: 'Which image is AI-generated?',
+  },
 };
 
 async function request(path, options = {}) {
