@@ -1,7 +1,7 @@
 {
   "slug": "library-001",
   "type": "fake_post",
-  "difficulty": "easy",
+  "difficulty": "medium",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
   "skillCategoryIds": ["content_authenticity"],

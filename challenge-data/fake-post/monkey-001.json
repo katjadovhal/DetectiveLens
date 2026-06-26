@@ -5,7 +5,7 @@
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
   "skillCategoryIds": ["content_authenticity"],
-  "xpReward": 100,
+  "xpReward": 50,
 
   "content": {
     "posts": [

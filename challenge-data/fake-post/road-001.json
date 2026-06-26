@@ -1,11 +1,11 @@
 {
   "slug": "road-001",
   "type": "fake_post",
-  "difficulty": "easy",
+  "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
   "skillCategoryIds": ["content_authenticity"],
-  "xpReward": 100,
+  "xpReward": 150,
 
   "content": {
     "posts": [
