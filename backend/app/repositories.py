@@ -113,7 +113,7 @@ def get_home_data() -> dict:
     next_level = next((l for l in LEVELS if l["level"] == current_level + 1), None)
     xp_to_next = max(0, (next_level["xp_required"] - total_xp) if next_level else 880)
 
-    challenge_order = ["monkey-001", "road-001"]
+    challenge_order = ["monkey-001", "road-001", "library-001", "orange-001", "marathon-001"]
     daily_challenge = get_challenge(challenge_order[0])
 
     return {

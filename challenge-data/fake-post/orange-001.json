@@ -1,0 +1,31 @@
+{
+  "slug": "orange-001",
+  "type": "fake_post",
+  "difficulty": "easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["content_authenticity"],
+  "xpReward": 100,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/oranges/9a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/oranges/9.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph."
+      ]
+    }
+  }
+}

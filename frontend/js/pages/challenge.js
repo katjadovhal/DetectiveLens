@@ -126,7 +126,7 @@ function renderPlaying(challenge, state) {
 }
 
 function renderFeedbackView(result, showExplanation, currentChallengeId) {
-  const challengeOrder = ['monkey-001', 'road-001'];
+  const challengeOrder = ['monkey-001', 'road-001', 'library-001', "orange-001", "marathon-001"];
   const currentIndex = challengeOrder.indexOf(currentChallengeId);
   const nextChallengeId = challengeOrder[currentIndex + 1];
 
