@@ -4,22 +4,10 @@ function renderSocialPost(post, selected, disabled) {
   return `
     <button type="button" class="social-post ${selected ? 'selected' : ''}" data-post-id="${post.id}" ${disabled ? 'disabled' : ''}>
       <span class="post-badge">${escapeHtml(post.id)}</span>
-      <div class="post-author-row">
-        <div class="post-avatar">BK</div>
-        <div>
-          <div class="post-author">
-            ${escapeHtml(post.author)}
-            ${post.verified ? '<span class="verified">✓</span>' : ''}
-          </div>
-          <div class="post-handle">${escapeHtml(post.handle)}</div>
-        </div>
-      </div>
-      <p class="post-text">${escapeHtml(post.text)}</p>
-      <div class="post-metrics">
-        ${post.metrics.retweets != null ? `<span>${post.metrics.retweets.toLocaleString()} Retweets</span>` : ''}
-        ${post.metrics.likes != null ? `<span>${post.metrics.likes.toLocaleString()} Likes</span>` : ''}
-      </div>
-      <div class="post-time">${escapeHtml(post.timestamp)}</div>
+
+      ${post.imageUrl ? `<img class="post-image" src="${post.imageUrl}" alt="Image ${escapeHtml(post.id)}">` : ''}
+
+      ${post.text ? `<p class="post-text">${escapeHtml(post.text)}</p>` : ''}
     </button>
   `;
 }
@@ -137,17 +125,25 @@ function renderPlaying(challenge, state) {
   `;
 }
 
-function renderFeedbackView(result, showExplanation) {
+function renderFeedbackView(result, showExplanation, currentChallengeId) {
+  const challengeOrder = ['monkey-001', 'road-001', 'library-001', "orange-001", "marathon-001"];
+  const currentIndex = challengeOrder.indexOf(currentChallengeId);
+  const nextChallengeId = challengeOrder[currentIndex + 1];
+
+  const nextHref = nextChallengeId
+      ? `/challenges/fake-post/${nextChallengeId}`
+      : '/';
+
+  const nextLabel = nextChallengeId ? 'Next Challenge' : 'Finish';
+
   return `
     <div class="container">
       <div id="feedback-area">${renderFeedback(result, showExplanation)}</div>
       ${renderDetectiveTip(result.detectiveTip)}
       <div class="actions-right">
-        <a href="/" data-link>
-          <button type="button" class="btn btn-primary">
-            Next ${result.xpEarned > 0 ? `(+${result.xpEarned} XP)` : ''}
-          </button>
-        </a>
+        <button type="button" class="btn btn-primary" id="next-challenge-btn" data-next-id="${nextChallengeId ?? ''}">
+  ${nextLabel} ${result.xpEarned > 0 ? `(+${result.xpEarned} XP)` : ''}
+</button>
       </div>
     </div>
   `;
@@ -156,7 +152,7 @@ function renderFeedbackView(result, showExplanation) {
 export async function renderChallenge(container, challengeId) {
   container.innerHTML = '<div class="loading">Loading challenge...</div>';
 
-  const id = challengeId || 'burger-king-001';
+  const id = challengeId || 'monkey-001';
   const [{ challenge }, start] = await Promise.all([api.getChallenge(id), api.startChallenge(id)]);
 
   const state = {
@@ -173,7 +169,7 @@ export async function renderChallenge(container, challengeId) {
 
   function paint() {
     if (state.phase === 'feedback' && state.result) {
-      container.innerHTML = renderFeedbackView(state.result, state.showExplanation);
+      container.innerHTML = renderFeedbackView(state.result, state.showExplanation, id);
       bindFeedbackEvents();
       return;
     }
@@ -207,11 +203,16 @@ export async function renderChallenge(container, challengeId) {
   }
 
   function bindFeedbackEvents() {
-    const whyBtn = container.querySelector('#why-btn');
-    if (whyBtn) {
-      whyBtn.addEventListener('click', () => {
-        state.showExplanation = !state.showExplanation;
-        paint();
+    const nextBtn = container.querySelector('#next-challenge-btn');
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const nextId = nextBtn.dataset.nextId;
+
+        if (nextId) {
+          window.location.href = `/challenges/fake-post/${nextId}`;
+        } else {
+          window.location.href = '/';
+        }
       });
     }
   }

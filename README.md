@@ -40,7 +40,7 @@ npm run data:seed
 npm run dev
 ```
 
-Open http://localhost:3001 — onboarding → home → Burger King fake-post challenge.
+Open http://localhost:3001 — onboarding → home → Monkey AI-image challenge.
 
 The Python backend serves the static frontend files and the API from the same port.
 
