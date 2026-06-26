@@ -1,0 +1,31 @@
+{
+  "slug": "road-001",
+  "type": "fake_post",
+  "difficulty": "easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["content_authenticity"],
+  "xpReward": 100,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/road/7.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/road/7a.jpg"
+      }
+    ],
+
+    "correctPostId": "A",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph."
+      ]
+    }
+  }
+}
