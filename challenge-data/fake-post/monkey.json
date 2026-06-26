@@ -1,0 +1,70 @@
+{
+  "slug": "monkey",
+  "type": "fake_post",
+  "difficulty": "medium",
+  "title": "Which monkey picture is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["anatomy", "waxy_perfect", "color", "shiny_texture"],
+  "xpReward": 100,
+  "content": {
+    "posts": [
+      {
+        "id": "This Monkey",
+        "imageUrl": "../frontend/assets/challenges/monkey_fake.png"
+      },
+      {
+        "id": "That Monkey",
+        "imageUrl": "../frontend/assets/challenges/monkey_true.png"
+      }
+    ],
+    "correctPostId": "That Monkey",
+    "explanation": {
+      "bullets": [
+        "The image 'This Monkey' is AI-generated, the monkey has unproportionally big eyes and ears, small nose. Its skin is smooth and shiny. It looks a little too perfect to be true. The colors and lightning are oversaturated.",
+        "The image 'That Monkey' is real. The monkey has a more natural look, with realistic proportions and textures. The colors and lighting are more subdued and true to life."
+      ]
+    }
+  },
+  "hints": [
+    "TODO: discuss with Abitha",
+    {
+      "id": "hint-burger-king-source",
+      "order": 1,
+      "question": "Who is the source?",
+      "skillCategoryId": "source_verification",
+      "content": {
+        "body": "Both posts appear to come from Burger King's official account.",
+        "bulletQuestions": [
+          "Does this sound like something a company would proudly post to all of its customers?",
+          "Which post looks more like something Burger King would normally share?"
+        ]
+      }
+    },
+    {
+      "id": "hint-burger-king-behavior",
+      "order": 2,
+      "question": "Does this match the source's usual behavior?",
+      "skillCategoryId": "content_authenticity",
+      "content": {
+        "body": "Think about what you know about how brands communicate on social media.",
+        "bulletQuestions": [
+          "Would a fast-food brand tell customers to visit a competitor?",
+          "Which message fits Burger King's usual marketing style?"
+        ]
+      }
+    },
+    {
+      "id": "hint-burger-king-evidence",
+      "order": 3,
+      "question": "Is there evidence?",
+      "skillCategoryId": "evidence_evaluation",
+      "content": {
+        "body": "Look for clues beyond the verified badge.",
+        "bulletQuestions": [
+          "Does the handle match the official account you expect?",
+          "Are engagement numbers unusually high for one post?"
+        ]
+      }
+    }
+  ]
+}
