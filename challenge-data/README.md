@@ -4,7 +4,7 @@ JSON challenge definitions consumed by `backend/prisma/seed.ts`.
 
 ## Authoring a fake-post challenge
 
-See `fake-post/burger-king-001.json` for the reference format.
+See `fake-post/monkey-001.json` for the reference format.
 
 Required fields: `slug`, `type`, `difficulty`, `title`, `instruction`, `skillCategoryIds`, `xpReward`, `content`, `hints`.
 
