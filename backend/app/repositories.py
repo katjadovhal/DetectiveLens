@@ -113,7 +113,8 @@ def get_home_data() -> dict:
     next_level = next((l for l in LEVELS if l["level"] == current_level + 1), None)
     xp_to_next = max(0, (next_level["xp_required"] - total_xp) if next_level else 880)
 
-    daily_challenge = get_challenge("burger-king-001")
+    challenge_order = ["monkey-001", "road-001"]
+    daily_challenge = get_challenge(challenge_order[0])
 
     return {
         "greeting": {
@@ -128,7 +129,7 @@ def get_home_data() -> dict:
             "level": current_level,
         },
         "dailyMission": {
-            "challengeId": daily_challenge["id"] if daily_challenge else "burger-king-001",
+            "challengeId": daily_challenge["id"] if daily_challenge else "monkey-001",
             "title": "Daily Mission!",
             "description": "Spot the fake post",
             "xpBonus": 100,
@@ -137,11 +138,11 @@ def get_home_data() -> dict:
         "continueLearning": {
             "challengeId": (profile["lastChallengeId"] if profile else None)
             or (daily_challenge["id"] if daily_challenge else None),
-            "title": daily_challenge["title"] if daily_challenge else "Which post is fake?",
+            "title": daily_challenge["title"] if daily_challenge else "Which image is AI-generated?",
         },
         "recommendedChallenges": [
             {
-                "id": daily_challenge["id"] if daily_challenge else "burger-king-001",
+                "id": daily_challenge["id"] if daily_challenge else "monkey-001",
                 "title": "Which post is fake?",
                 "type": "fake_post",
                 "reason": "Practice source verification",
@@ -380,12 +381,12 @@ def get_weak_areas_data() -> dict:
 
 
 def get_recommendations() -> dict:
-    challenge = get_challenge("burger-king-001")
+    challenge = get_challenge("monkey-001")
     return {
         "recommendations": [
             {
-                "id": challenge["id"] if challenge else "burger-king-001",
-                "title": "Which post is fake?",
+                "id": challenge["id"] if challenge else "monkey-001",
+                "title": "Which image is AI-generated?",
                 "type": "fake_post",
                 "reason": "Targets your weak area: Source Verification",
             }
