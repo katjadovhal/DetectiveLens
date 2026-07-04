@@ -68,13 +68,30 @@ function handleLinkClick(event) {
   navigate(href);
 }
 
-export function initRouter() {
+export async function initRouter() {
   document.addEventListener('click', handleLinkClick);
   window.addEventListener('popstate', (event) => {
     const path = event.state?.path ?? window.location.pathname;
     navigate(path, false);
   });
 
-  const initialPath = window.location.pathname || '/onboarding/welcome';
-  navigate(initialPath, false);
+  let initialPath = window.location.pathname;
+
+  // If user is on root path, check if onboarding is completed
+  if (initialPath === '/' || !initialPath) {
+    try {
+      const response = await fetch('/api/v1/onboarding/status');
+      if (response.ok) {
+        const data = await response.json();
+        if (!data.completed) {
+          initialPath = '/onboarding/welcome';
+        }
+      }
+    } catch {
+      // If API check fails, still allow navigation to home
+      initialPath = initialPath || '/';
+    }
+  }
+
+  navigate(initialPath || '/onboarding/welcome', false);
 }

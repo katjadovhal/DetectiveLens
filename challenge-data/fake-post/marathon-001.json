@@ -4,7 +4,7 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["content_authenticity"],
+  "skillCategoryIds": ["waxy_perfect", "shiny_texture", "blurred_background"],
   "xpReward": 150,
 
   "content": {
@@ -23,8 +23,8 @@
 
     "explanation": {
       "bullets": [
-        "Image B was generated using AI.",
-        "Image A is a real photograph."
+        "Image A was generated using AI.",
+        "Image B is a real photograph."
       ]
     }
   }

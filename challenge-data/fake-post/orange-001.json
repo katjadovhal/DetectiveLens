@@ -4,7 +4,7 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["content_authenticity"],
+  "skillCategoryIds": ["shiny_texture", "blurred_textures", "color"],
   "xpReward": 150,
 
   "content": {
