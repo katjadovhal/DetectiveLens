@@ -19,6 +19,10 @@ def _default_store() -> dict:
         "xp_transactions": [],
         "detective_tips": [],
         "daily_missions": [],
+        "daily_challenge_cache": {
+            "date": None,
+            "challengeId": None,
+        },
     }
 
 

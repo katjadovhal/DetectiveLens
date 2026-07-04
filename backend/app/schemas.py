@@ -12,9 +12,18 @@ class SubmitFakePostAnswer(BaseModel):
 class UpdateProfile(BaseModel):
     displayName: str | None = Field(default=None, min_length=1, max_length=50)
     avatarId: str | None = None
-    selfReportedLevel: Literal["beginner", "somewhat", "pro"] | None = None
     settings: dict | None = None
 
 
 class OnboardingComplete(BaseModel):
-    level: Literal["beginner", "somewhat", "pro"]
+    username: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., ge=1)
+    colorBlindness: bool = False
+    avatarId: str
+
+
+class CreateUser(BaseModel):
+    username: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., ge=1)
+    colorBlindness: bool = False
+    avatarId: str

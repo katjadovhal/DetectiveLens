@@ -52,25 +52,21 @@ const MOCK_CHALLENGE = {
 const MOCK_HOME = {
   greeting: {
     displayName: 'Alex',
-    levelTitle: 'Internet Detective Level 4',
-    avatarId: 'detective-default',
+    levelTitle: 'Internet Detective Level 1',
+    avatarId: 'avatar-detective-1',
   },
   progress: {
-    totalXp: 320,
-    currentLevelXp: 320,
-    xpToNextLevel: 880,
-    level: 4,
+    totalXp: 0,
+    currentLevelXp: 0,
+    xpToNextLevel: 300,
+    level: 1,
   },
   dailyMission: {
     challengeId: 'monkey-001',
     title: 'Daily Mission!',
-    description: 'Spot the AI-generated image',
+    description: 'Spot the fake post',
     xpBonus: 100,
     completed: false,
-  },
-  continueLearning: {
-    challengeId: 'monkey-001',
-    title: 'Which image is AI-generated?',
   },
 };
 
@@ -117,29 +113,54 @@ export const api = {
       return await request('/onboarding/welcome');
     } catch {
       return {
-        title: 'Hey Detective!',
-        subtitle: "The Internet is full of tricks. Let's learn how to spot them.",
+        title: 'Welcome to DetectiveLens!',
+        subtitle: 'Some pictures lie. Learn to spot the cues and catch them all.',
         keyValue: '',
       };
     }
   },
 
-  completeOnboarding: async (level) => {
+  createUser: async (userData) => {
     try {
-      return await request('/onboarding/complete', {
+      return await request('/onboarding/create-user', {
         method: 'POST',
-        body: JSON.stringify({ level }),
+        body: JSON.stringify(userData),
       });
-    } catch {
-      return { success: true, redirectTo: '/' };
+    } catch (err) {
+      throw err;
     }
   },
 
-  getHome: async () => {
+  getUsers: async () => {
     try {
-      return await request('/home/demo-user-id');
+      return await request('/users');
+    } catch {
+      return { users: [] };
+    }
+  },
+
+  getHome: async (userId) => {
+    try {
+      return await request(`/home/${userId}`);
     } catch {
       return MOCK_HOME;
+    }
+  },
+
+  getProfile: async (userId) => {
+    try {
+      return await request(`/profiles/${userId}`);
+    } catch {
+      return {
+        profile: {
+          displayName: 'Detective',
+          avatarId: 'avatar-detective-1',
+          currentLevel: 1,
+          totalXp: 0,
+          onboardingCompleted: false,
+          colorBlindness: false,
+        },
+      };
     }
   },
 
@@ -151,9 +172,25 @@ export const api = {
     }
   },
 
-  startChallenge: async (id) => {
+  getDailyChallenge: async (userId) => {
     try {
-      return await request(`/challenges/${id}/start`, { method: 'POST' });
+      return await request(`/challenges/users/${userId}/daily`);
+    } catch {
+      return { challenge: { ...MOCK_CHALLENGE }, completed: false };
+    }
+  },
+
+  getNextPracticeChallenge: async (userId) => {
+    try {
+      return await request(`/challenges/users/${userId}/next-practice`);
+    } catch {
+      return { challenge: { ...MOCK_CHALLENGE }, message: 'Error loading challenge' };
+    }
+  },
+
+  startChallenge: async (id, userId) => {
+    try {
+      return await request(`/challenges/${id}/start/${userId}`, { method: 'POST' });
     } catch {
       return { sessionId: 'mock-session', challengeId: id };
     }

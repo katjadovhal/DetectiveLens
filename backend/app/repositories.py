@@ -1,11 +1,18 @@
 import json
+import random
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
 
-from app.constants import DEMO_USER_ID, LEVELS, SKILL_CATEGORIES, XP_RULES
+from app.constants import (
+    DIFFICULTY_MAP,
+    LEVELS,
+    SKILL_CATEGORIES,
+    WEIGHT_WEAKNESS,
+    WEIGHT_DIFFICULTY_FIT,
+    XP_RULES,
+)
 from app.services.challenge_helpers import strip_correct_answer
-from app.services.demo_user import ensure_demo_user
 from app.services.personalization import get_detective_tip
 from app.storage import (
     find_by_id_or_slug,
@@ -91,77 +98,67 @@ def serialize_challenge(challenge: dict, include_hints: bool = False) -> dict:
     return data
 
 
-def get_demo_user(store: dict | None = None) -> dict | None:
+def get_user(user_id: str, store: dict | None = None) -> dict | None:
     s = store if store is not None else load_store()
-    return find_one(s["users"], id=DEMO_USER_ID) or find_one(s["users"], username="demo")
+    return find_one(s["users"], id=user_id)
 
 
-def get_demo_profile(store: dict | None = None) -> dict | None:
+def get_profile(user_id: str, store: dict | None = None) -> dict | None:
     s = store if store is not None else load_store()
-    user = get_demo_user(s)
-    if not user:
-        return None
-    return find_one(s["profiles"], userId=user["id"])
+    return find_one(s["profiles"], userId=user_id)
 
 
-def get_home_data() -> dict:
-    profile = get_demo_profile()
-    current_level = profile["currentLevel"] if profile else 4
-    total_xp = profile["totalXp"] if profile else 320
+def get_all_users(store: dict | None = None) -> list[dict]:
+    s = store if store is not None else load_store()
+    return s.get("users", [])
 
-    level_info = next((l for l in LEVELS if l["level"] == current_level), LEVELS[3])
+
+def get_home_data(user_id: str, store: dict | None = None) -> dict:
+    s = store if store is not None else load_store()
+    profile = get_profile(user_id, s)
+    current_level = profile["currentLevel"] if profile else 1
+    total_xp = profile["totalXp"] if profile else 0
+
+    level_info = next((l for l in LEVELS if l["level"] == current_level), LEVELS[0])
     next_level = next((l for l in LEVELS if l["level"] == current_level + 1), None)
-    xp_to_next = max(0, (next_level["xp_required"] - total_xp) if next_level else 880)
+    xp_to_next = max(0, (next_level["xp_required"] - total_xp) if next_level else 0)
 
-    challenge_order = ["monkey-001", "road-001", "library-001", "orange-001", "marathon-001"]
-    daily_challenge = get_challenge(challenge_order[0])
+    daily_challenge = get_daily_challenge(s)
 
     return {
         "greeting": {
-            "displayName": profile["displayName"] if profile else "Alex",
+            "displayName": profile["displayName"] if profile else "Detektiv",
             "levelTitle": level_info["title"],
-            "avatarId": profile["avatarId"] if profile else "detective-default",
+            "avatarId": profile["avatarId"] if profile else "avatar-detective-1",
         },
         "progress": {
             "totalXp": total_xp,
-            "currentLevelXp": profile["currentLevelXp"] if profile else 320,
+            "currentLevelXp": profile["currentLevelXp"] if profile else 0,
             "xpToNextLevel": xp_to_next,
             "level": current_level,
         },
         "dailyMission": {
-            "challengeId": daily_challenge["id"] if daily_challenge else "monkey-001",
+            "challengeId": daily_challenge["id"] if daily_challenge else None,
             "title": "Daily Mission!",
-            "description": "Spot the fake post",
+            "description": daily_challenge["title"] if daily_challenge else "Spot the fake post",
             "xpBonus": 100,
             "completed": False,
         },
-        "continueLearning": {
-            "challengeId": (profile["lastChallengeId"] if profile else None)
-            or (daily_challenge["id"] if daily_challenge else None),
-            "title": daily_challenge["title"] if daily_challenge else "Which image is AI-generated?",
-        },
-        "recommendedChallenges": [
-            {
-                "id": daily_challenge["id"] if daily_challenge else "monkey-001",
-                "title": "Which post is fake?",
-                "type": "fake_post",
-                "reason": "Practice source verification",
-            }
-        ],
     }
 
 
-def get_profile_data() -> dict:
-    profile = get_demo_profile()
+def get_profile_data(user_id: str, store: dict | None = None) -> dict:
+    s = store if store is not None else load_store()
+    profile = get_profile(user_id, s)
     if not profile:
         return {
             "profile": {
-                "displayName": "Alex",
-                "avatarId": "detective-default",
-                "selfReportedLevel": "beginner",
-                "currentLevel": 4,
-                "totalXp": 320,
+                "displayName": "Detektiv",
+                "avatarId": "avatar-detective-1",
+                "currentLevel": 1,
+                "totalXp": 0,
                 "onboardingCompleted": False,
+                "colorBlindness": False,
             }
         }
 
@@ -171,20 +168,20 @@ def get_profile_data() -> dict:
             "userId": profile["userId"],
             "avatarId": profile["avatarId"],
             "displayName": profile["displayName"],
-            "selfReportedLevel": profile["selfReportedLevel"],
             "currentLevel": profile["currentLevel"],
             "totalXp": profile["totalXp"],
             "currentLevelXp": profile["currentLevelXp"],
             "dailyStreak": profile["dailyStreak"],
             "onboardingCompleted": profile["onboardingCompleted"],
+            "colorBlindness": profile.get("colorBlindness", False),
             "settings": profile["settings"],
         }
     }
 
 
 @with_store
-def update_profile(store: dict, body: dict) -> dict:
-    profile = get_demo_profile(store)
+def update_profile(store: dict, user_id: str, body: dict) -> dict:
+    profile = get_profile(user_id, store)
     if not profile:
         raise ValueError("Profile not found")
 
@@ -192,8 +189,6 @@ def update_profile(store: dict, body: dict) -> dict:
         profile["displayName"] = body["displayName"]
     if body.get("avatarId") is not None:
         profile["avatarId"] = body["avatarId"]
-    if body.get("selfReportedLevel") is not None:
-        profile["selfReportedLevel"] = body["selfReportedLevel"]
     if body.get("settings") is not None:
         profile["settings"] = {**profile["settings"], **body["settings"]}
 
@@ -202,61 +197,73 @@ def update_profile(store: dict, body: dict) -> dict:
             "id": profile["id"],
             "displayName": profile["displayName"],
             "avatarId": profile["avatarId"],
-            "selfReportedLevel": profile["selfReportedLevel"],
             "settings": profile["settings"],
         }
     }
 
 
 @with_store
-def complete_onboarding(store: dict, level: str) -> dict:
-    user = get_demo_user(store)
-    if not user:
-        user = {
-            "id": DEMO_USER_ID,
-            "username": "demo",
-            "email": "demo@detectivelens.local",
-            "createdAt": now_iso(),
-            "lastActiveAt": now_iso(),
-        }
-        store["users"].append(user)
+def create_user(store: dict, body: dict) -> dict:
+    """Create a new user during onboarding"""
+    # Check if username already exists
+    existing = find_one(store["users"], username=body["username"])
+    if existing:
+        raise ValueError("Username already exists")
 
-    profile = get_demo_profile(store)
-    if profile:
-        profile["selfReportedLevel"] = level
-        profile["onboardingCompleted"] = True
-    else:
-        store["profiles"].append(
-            {
-                "id": new_id(),
-                "userId": DEMO_USER_ID,
-                "avatarId": "detective-default",
-                "displayName": "Alex",
-                "selfReportedLevel": level,
-                "currentLevel": 1,
-                "totalXp": 0,
-                "currentLevelXp": 0,
-                "dailyStreak": 0,
-                "onboardingCompleted": True,
-                "lastChallengeId": None,
-                "lastChallengeProgress": None,
-                "settings": {"notifications": True, "sound": True, "privacy": False},
-            }
-        )
+    user_id = new_id()
+    user = {
+        "id": user_id,
+        "username": body["username"],
+        "email": None,
+        "createdAt": now_iso(),
+        "lastActiveAt": now_iso(),
+    }
+    store["users"].append(user)
 
-    return {"success": True, "redirectTo": "/"}
+    profile = {
+        "id": new_id(),
+        "userId": user_id,
+        "avatarId": body["avatarId"],
+        "displayName": body["username"],
+        "currentLevel": 1,
+        "totalXp": 0,
+        "currentLevelXp": 0,
+        "dailyStreak": 0,
+        "onboardingCompleted": True,
+        "colorBlindness": body.get("colorBlindness", False),
+        "lastChallengeId": None,
+        "lastChallengeProgress": None,
+        "settings": {"notifications": True, "sound": True, "privacy": False},
+    }
+    store["profiles"].append(profile)
+
+    # Initialize skill scores for the user
+    for skill in SKILL_CATEGORIES:
+        store["skill_scores"].append({
+            "id": new_id(),
+            "userId": user_id,
+            "categoryId": skill["id"],
+            "score": 0,
+            "attempts": 0,
+            "correct": 0,
+        })
+
+    return {
+        "success": True,
+        "userId": user_id,
+        "redirectTo": f"/challenge-staging?userId={user_id}",
+    }
 
 
 @with_store
-def start_challenge(store: dict, challenge_id: str) -> dict:
+def start_challenge(store: dict, user_id: str, challenge_id: str) -> dict:
     challenge = get_challenge(challenge_id)
     if not challenge:
         raise ValueError("Challenge not found")
 
-    ensure_demo_user(store)
     attempt = {
         "id": new_id(),
-        "userId": DEMO_USER_ID,
+        "userId": user_id,
         "challengeId": challenge["id"],
         "startedAt": now_iso(),
         "completedAt": None,
@@ -295,11 +302,15 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     attempt["xpEarned"] = xp_earned
     attempt["completedAt"] = now_iso()
 
-    profile = get_demo_profile(store)
-    if xp_earned > 0 and profile:
+    profile = get_profile(attempt["userId"], store)
+    if profile:
         profile["totalXp"] += xp_earned
         profile["currentLevelXp"] += xp_earned
         profile["lastChallengeId"] = attempt["challengeId"]
+
+        # Update skill scores based on challenge result
+        update_skill_profile(store, attempt["userId"], challenge, is_correct)
+
         store["xp_transactions"].append(
             {
                 "id": new_id(),
@@ -333,15 +344,15 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     }
 
 
-def get_skill_profile() -> dict:
-    store = load_store()
-    scores = [s for s in store["skill_scores"] if s.get("userId") == DEMO_USER_ID]
+def get_skill_profile(user_id: str, store: dict | None = None) -> dict:
+    s = store if store is not None else load_store()
+    scores = [sc for sc in s["skill_scores"] if sc.get("userId") == user_id]
 
     if not scores:
         return {
             "skillProfile": [
-                {"categoryId": "source_verification", "score": 45, "attempts": 0, "correct": 0},
-                {"categoryId": "content_authenticity", "score": 50, "attempts": 0, "correct": 0},
+                {"categoryId": "source_verification", "score": 0, "attempts": 0, "correct": 0},
+                {"categoryId": "content_authenticity", "score": 0, "attempts": 0, "correct": 0},
             ]
         }
 
@@ -360,35 +371,183 @@ def get_skill_profile() -> dict:
     }
 
 
-def get_weak_areas_data() -> dict:
+def get_weak_areas_data(user_id: str, store: dict | None = None) -> dict:
     from app.services.personalization import get_weak_areas
 
-    store = load_store()
-    scores = [s for s in store["skill_scores"] if s.get("userId") == DEMO_USER_ID]
+    s = store if store is not None else load_store()
+    scores = [sc for sc in s["skill_scores"] if sc.get("userId") == user_id]
     mapped = [
         {
-            "categoryId": s["categoryId"],
-            "score": s["score"],
-            "attempts": s["attempts"],
-            "correct": s["correct"],
+            "categoryId": sc["categoryId"],
+            "score": sc["score"],
+            "attempts": sc["attempts"],
+            "correct": sc["correct"],
         }
-        for s in scores
+        for sc in scores
     ]
     weak = get_weak_areas(mapped) if mapped else [
-        {"categoryId": "source_verification", "score": 45, "attempts": 0, "correct": 0}
+        {"categoryId": "source_verification", "score": 0, "attempts": 0, "correct": 0}
     ]
     return {"weakAreas": weak}
 
 
-def get_recommendations() -> dict:
-    challenge = get_challenge("monkey-001")
+def get_recommendations(user_id: str, store: dict | None = None) -> dict:
+    s = store if store is not None else load_store()
+    challenges = get_challenges()
+    if not challenges:
+        return {"recommendations": []}
+
+    # Get a random challenge
+    challenge = random.choice(challenges)
     return {
         "recommendations": [
             {
-                "id": challenge["id"] if challenge else "monkey-001",
-                "title": "Which image is AI-generated?",
+                "id": challenge["id"],
+                "title": challenge["title"],
                 "type": "fake_post",
-                "reason": "Targets your weak area: Source Verification",
+                "reason": "Practice source verification",
             }
         ]
     }
+
+
+def clamp(x: float, lo: float, hi: float) -> float:
+    """Clamp value between lo and hi"""
+    return max(lo, min(x, hi))
+
+
+def update_skill_profile(store: dict, user_id: str, challenge: dict, correct: bool) -> None:
+    """Update user skill profile after a challenge"""
+    skill_categories = challenge.get("skillCategoryIds", [])
+    if not skill_categories:
+        return
+
+    n = len(skill_categories)
+    delta = (1 / n) if correct else -(1 / n)
+
+    for skill_id in skill_categories:
+        score_entry = find_one(store["skill_scores"], userId=user_id, categoryId=skill_id)
+        if score_entry:
+            score_entry["score"] = clamp(score_entry["score"] + delta, -1, 1)
+            score_entry["attempts"] = score_entry.get("attempts", 0) + 1
+            if correct:
+                score_entry["correct"] = score_entry.get("correct", 0) + 1
+
+
+def weakness_signal(user_id: str, challenge: dict, store: dict) -> float:
+    """Calculate weakness signal for challenge recommendation"""
+    skill_categories = challenge.get("skillCategoryIds", [])
+    if not skill_categories:
+        return 0
+
+    scores = []
+    for skill_id in skill_categories:
+        score_entry = find_one(store["skill_scores"], userId=user_id, categoryId=skill_id)
+        skill_score = score_entry["score"] if score_entry else 0
+        scores.append(-skill_score)  # negative to find weakest
+
+    raw = max(scores) if scores else 0
+    return clamp(raw, 0, 1)
+
+
+def user_ability(user_id: str, challenge: dict, store: dict) -> float:
+    """Get user ability for skills touched by this challenge"""
+    skill_categories = challenge.get("skillCategoryIds", [])
+    if not skill_categories:
+        return 0
+
+    relevant = []
+    for skill_id in skill_categories:
+        score_entry = find_one(store["skill_scores"], userId=user_id, categoryId=skill_id)
+        skill_score = score_entry["score"] if score_entry else 0
+        relevant.append(skill_score)
+
+    return sum(relevant) / len(relevant) if relevant else 0
+
+
+def difficulty_fit_signal(user_id: str, challenge: dict, store: dict) -> float:
+    """Calculate difficulty fit signal"""
+    challenge_level = DIFFICULTY_MAP.get(challenge.get("difficulty", "medium"), 0)
+    ability = user_ability(user_id, challenge, store)
+    ability_scaled = ability / 2
+
+    distance = abs(challenge_level - ability_scaled)
+    return 1 - clamp(distance, 0, 1)
+
+
+def calculate_challenge_score(user_id: str, challenge: dict, store: dict) -> float:
+    """Calculate recommendation score for a challenge"""
+    weakness = weakness_signal(user_id, challenge, store)
+    difficulty_fit = difficulty_fit_signal(user_id, challenge, store)
+
+    return (
+        WEIGHT_WEAKNESS * weakness +
+        WEIGHT_DIFFICULTY_FIT * difficulty_fit
+    )
+
+
+def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict | None:
+    """Get next challenge for practice mode using skill-based recommendation"""
+    s = store if store is not None else load_store()
+    all_challenges = get_challenges()
+    # Consider any challenge that has been shown to the user as "seen" (whether answered correctly or not)
+    seen_attempts = [a for a in s.get("challenge_attempts", []) if a.get("userId") == user_id]
+    seen_ids = set(a.get("challengeId") for a in seen_attempts if a.get("challengeId"))
+
+    # Get available challenges (exclude seen challenges so they are never shown twice in practice)
+    available = [c for c in all_challenges if c["id"] not in seen_ids]
+
+    if not available:
+        return None  # All challenges completed
+
+    # If user hasn't seen any challenges yet, pick random
+    if not seen_ids:
+        return random.choice(available)
+
+    # Score each available challenge
+    scored = [(calculate_challenge_score(user_id, c, s), c) for c in available]
+    scored.sort(reverse=True, key=lambda x: x[0])
+
+    return scored[0][1] if scored else None
+
+
+def get_daily_challenge(store: dict | None = None) -> dict | None:
+    """Get the daily challenge, picking a new one once per day"""
+    s = store if store is not None else load_store()
+
+    today_str = str(date.today())
+    cache = s.get("daily_challenge_cache", {})
+
+    # Check if we have a cached challenge for today
+    if cache.get("date") == today_str and cache.get("challengeId"):
+        return get_challenge(cache["challengeId"])
+
+    # Pick a new random challenge from eligible ones
+    all_challenges = get_challenges()
+    eligible = [c for c in all_challenges if c.get("isDailyEligible", True)]
+
+    if not eligible:
+        return None
+
+    daily_challenge = random.choice(eligible)
+
+    # Cache it
+    s["daily_challenge_cache"] = {
+        "date": today_str,
+        "challengeId": daily_challenge["id"],
+    }
+    save_store(s)
+
+    return daily_challenge
+
+
+def has_completed_challenge(user_id: str, challenge_id: str, store: dict | None = None) -> bool:
+    """Check if user has completed a specific challenge"""
+    s = store if store is not None else load_store()
+    attempt = find_one(
+        s["challenge_attempts"],
+        userId=user_id,
+        challengeId=challenge_id,
+        isCorrect=True,
+    )
+    return attempt is not None

@@ -1,6 +1,8 @@
 import { renderHeader } from './header.js';
-import { renderWelcome } from './pages/welcome.js';
-import { renderHome } from './pages/home.js';
+import { renderStart } from './pages/start.js';
+import { renderOnboarding } from './pages/onboarding.js';
+import { renderSelectUser } from './pages/select-user.js';
+import { renderChallengeStaging } from './pages/challenge-staging.js';
 import { renderChallenge } from './pages/challenge.js';
 import { renderPlaceholder } from './pages/placeholder.js';
 
@@ -27,28 +29,49 @@ const PLACEHOLDERS = {
   },
 };
 
+function getQueryParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
 function matchRoute(path) {
-  if (path === '/onboarding/welcome') return { name: 'welcome' };
-  if (path === '/') return { name: 'home' };
+  if (path === '/' || path === '') return { name: 'start' };
+  if (path === '/onboarding') return { name: 'onboarding' };
+  if (path === '/select-user') return { name: 'select-user' };
+  if (path === '/challenge-staging') return { name: 'challenge-staging' };
   const challengeMatch = path.match(/^\/challenges\/fake-post\/(.+)$/);
   if (challengeMatch) return { name: 'challenge', params: { id: challengeMatch[1] } };
   if (PLACEHOLDERS[path]) return { name: 'placeholder', params: PLACEHOLDERS[path] };
-  return { name: 'welcome' };
+  return { name: 'start' };
 }
 
 async function navigate(path, push = true) {
   const route = matchRoute(path);
   const main = document.getElementById('app-main');
 
-  if (route.name === 'welcome') {
+  if (route.name === 'start') {
     await renderHeader(false);
-    await renderWelcome(main);
+    await renderStart(main);
+  } else if (route.name === 'onboarding') {
+    await renderHeader(false);
+    await renderOnboarding(main);
+  } else if (route.name === 'select-user') {
+    await renderHeader(false);
+    await renderSelectUser(main);
+  } else if (route.name === 'challenge-staging') {
+    const userId = getQueryParam('userId');
+    if (!userId) {
+      window.location.href = '/';
+      return;
+    }
+    await renderHeader(true);
+    await renderChallengeStaging(main, userId);
   } else {
     await renderHeader(true);
-    if (route.name === 'home') {
-      await renderHome(main);
-    } else if (route.name === 'challenge') {
-      await renderChallenge(main, route.params.id);
+    if (route.name === 'challenge') {
+      const userId = getQueryParam('userId');
+      const mode = getQueryParam('mode');
+      await renderChallenge(main, route.params.id, userId, mode);
     } else if (route.name === 'placeholder') {
       renderPlaceholder(main, route.params.title, route.params.description);
     }
@@ -77,21 +100,6 @@ export async function initRouter() {
 
   let initialPath = window.location.pathname;
 
-  // If user is on root path, check if onboarding is completed
-  if (initialPath === '/' || !initialPath) {
-    try {
-      const response = await fetch('/api/v1/onboarding/status');
-      if (response.ok) {
-        const data = await response.json();
-        if (!data.completed) {
-          initialPath = '/onboarding/welcome';
-        }
-      }
-    } catch {
-      // If API check fails, still allow navigation to home
-      initialPath = initialPath || '/';
-    }
-  }
-
-  navigate(initialPath || '/onboarding/welcome', false);
+  // Default to start page
+  navigate(initialPath || '/', false);
 }

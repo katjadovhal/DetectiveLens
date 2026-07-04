@@ -4,8 +4,7 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["functional", "color"]
-],
+  "skillCategoryIds": ["functional", "color"],
   "xpReward": 150,
 
   "content": {

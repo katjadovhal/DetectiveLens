@@ -25,4 +25,18 @@ XP_RULES = {
     "HINT_PENALTY": 10,
 }
 
-DEMO_USER_ID = "demo-user-id"
+DIFFICULTY_MAP = {
+    "easy": -0.5,
+    "medium": 0,
+    "hard": 0.5,
+}
+
+WEIGHT_WEAKNESS = 0.7
+WEIGHT_DIFFICULTY_FIT = 0.3
+
+AVATARS = [
+    "avatar-detective-1",
+    "avatar-detective-2",
+    "avatar-detective-3",
+    "avatar-detective-4",
+]

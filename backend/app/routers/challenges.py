@@ -38,10 +38,52 @@ def get_challenge(challenge_id: str):
     return {"challenge": repo.serialize_challenge(challenge, include_hints=True)}
 
 
-@router.post("/{challenge_id}/start")
-def start_challenge(challenge_id: str):
+@router.get("/users/{user_id}/next-practice")
+def get_next_practice_challenge(user_id: str):
+    """Get the next practice challenge for the user"""
     try:
-        return repo.start_challenge(challenge_id)
+        challenge = repo.get_next_practice_challenge(user_id)
+        if not challenge:
+            return {
+                "challenge": None,
+                "message": "All challenges completed! Great job!",
+            }
+        return {"challenge": repo.serialize_challenge(challenge)}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "SERVER_ERROR", "message": str(e), "statusCode": 500},
+        )
+
+
+@router.get("/users/{user_id}/daily")
+def get_daily_challenge(user_id: str):
+    """Get today's daily challenge"""
+    try:
+        challenge = repo.get_daily_challenge()
+        if not challenge:
+            raise HTTPException(
+                status_code=404,
+                detail={"error": "NOT_FOUND", "message": "No daily challenge available", "statusCode": 404},
+            )
+
+        completed = repo.has_completed_challenge(user_id, challenge["id"])
+        return {
+            "challenge": repo.serialize_challenge(challenge),
+            "completed": completed,
+            "shareUrl": f"https://detectivelens.app/challenge/{challenge['id']}?shared=true",
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "SERVER_ERROR", "message": str(e), "statusCode": 500},
+        )
+
+
+@router.post("/{challenge_id}/start/{user_id}")
+def start_challenge(challenge_id: str, user_id: str):
+    try:
+        return repo.start_challenge(user_id, challenge_id)
     except ValueError:
         raise HTTPException(
             status_code=404,
