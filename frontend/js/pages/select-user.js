@@ -29,9 +29,6 @@ export async function renderSelectUser(container) {
           `
           ).join('')}
         </div>
-        <button type="button" class="btn btn-outline btn-full btn-mt-lg" id="create-new-btn">
-          Create New User
-        </button>
       </div>
     `;
 
@@ -40,10 +37,6 @@ export async function renderSelectUser(container) {
         const userId = btn.dataset.userId;
         window.location.href = `/challenge-staging?userId=${userId}`;
       });
-    });
-
-    container.querySelector('#create-new-btn').addEventListener('click', () => {
-      window.location.href = '/onboarding';
     });
   } catch (err) {
     console.error('Error loading users:', err);

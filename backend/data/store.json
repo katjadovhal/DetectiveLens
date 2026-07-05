@@ -20,6 +20,13 @@
       "email": null,
       "createdAt": "2026-07-04T14:10:46.109509",
       "lastActiveAt": "2026-07-04T14:10:46.109509"
+    },
+    {
+      "id": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "username": "test2",
+      "email": null,
+      "createdAt": "2026-07-05T17:42:36.224665",
+      "lastActiveAt": "2026-07-05T17:42:36.224665"
     }
   ],
   "profiles": [
@@ -73,6 +80,25 @@
       "onboardingCompleted": true,
       "colorBlindness": false,
       "lastChallengeId": "road-001",
+      "lastChallengeProgress": null,
+      "settings": {
+        "notifications": true,
+        "sound": true,
+        "privacy": false
+      }
+    },
+    {
+      "id": "40a18f52-202c-4296-9764-ede1e5f5fe3f",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "avatarId": "avatar-detective-2",
+      "displayName": "test2",
+      "currentLevel": 1,
+      "totalXp": 200,
+      "currentLevelXp": 200,
+      "dailyStreak": 0,
+      "onboardingCompleted": true,
+      "colorBlindness": false,
+      "lastChallengeId": "marathon-001",
       "lastChallengeProgress": null,
       "settings": {
         "notifications": true,
@@ -205,6 +231,70 @@
     {
       "id": "936d3430-24c4-4607-8d4d-aa5305f11770",
       "userId": "c5df1852-988f-4288-8f77-9aa9749ba424",
+      "categoryId": "lighting_shadows",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "188805ef-e82e-486c-86ec-b060e385a07b",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "source_verification",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "8bc6e868-bed8-411a-ad63-84cfad339731",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "content_authenticity",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "e444f495-9950-40f4-832e-cb80087c5f3b",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "evidence_evaluation",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "f731718b-dc08-44a1-8363-88197905689f",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "faces",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "8b297ffc-aae7-4293-8e12-7ad820256318",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "hands",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "86115399-247e-4e4a-b84c-87ac40669869",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "backgrounds",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "ea5e546b-5736-462c-b9f1-8a7fac07cc1d",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "categoryId": "text",
+      "score": 0,
+      "attempts": 0,
+      "correct": 0
+    },
+    {
+      "id": "5636186c-68ae-41be-b003-83973359b29b",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
       "categoryId": "lighting_shadows",
       "score": 0,
       "attempts": 0,
@@ -617,6 +707,48 @@
       "timeSpentMs": null,
       "xpEarned": 150,
       "scoreBreakdown": null
+    },
+    {
+      "id": "23784ce2-c812-48cf-af5c-694b52f4fc90",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "challengeId": "monkey-001",
+      "startedAt": "2026-07-05T17:42:39.682847",
+      "completedAt": "2026-07-05T17:42:45.592064",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 50,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "2275395b-8c25-4527-803c-40f0d57c303a",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "challengeId": "library-001",
+      "startedAt": "2026-07-05T17:42:56.943252",
+      "completedAt": "2026-07-05T17:43:00.215836",
+      "selectedAnswer": "A",
+      "isCorrect": false,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 0,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "efcc3bc7-0c19-497e-98e1-1d3c7d91077c",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "challengeId": "marathon-001",
+      "startedAt": "2026-07-05T17:43:06.375432",
+      "completedAt": "2026-07-05T17:43:10.184127",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 150,
+      "scoreBreakdown": null
     }
   ],
   "xp_transactions": [
@@ -763,12 +895,36 @@
       "source": "challenge",
       "referenceId": "65e51852-6f67-41a0-bf4d-9253db487b8d",
       "createdAt": "2026-07-04T14:23:13.619562"
+    },
+    {
+      "id": "2410c7f3-ffbe-4559-a7c0-67af15b8c437",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "amount": 50,
+      "source": "challenge",
+      "referenceId": "23784ce2-c812-48cf-af5c-694b52f4fc90",
+      "createdAt": "2026-07-05T17:42:45.592064"
+    },
+    {
+      "id": "616f8de5-69f4-49fc-985a-139151e4eeea",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "amount": 0,
+      "source": "challenge",
+      "referenceId": "2275395b-8c25-4527-803c-40f0d57c303a",
+      "createdAt": "2026-07-05T17:43:00.215836"
+    },
+    {
+      "id": "c5d8b520-e920-4452-b0cd-9f13d5b91980",
+      "userId": "6f017545-b68e-4e30-aa8c-fa0bf771dadc",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "efcc3bc7-0c19-497e-98e1-1d3c7d91077c",
+      "createdAt": "2026-07-05T17:43:10.184127"
     }
   ],
   "detective_tips": [],
   "daily_missions": [],
   "daily_challenge_cache": {
-    "date": "2026-07-04",
+    "date": "2026-07-05",
     "challengeId": "monkey-001"
   }
 }
