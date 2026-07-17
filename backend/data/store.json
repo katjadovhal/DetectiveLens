@@ -94,7 +94,7 @@
       "displayName": "test2",
       "currentLevel": 1,
       "totalXp": 200,
-      "currentLevelXp": 200,
+      "currentLevelXp": 0,
       "dailyStreak": 0,
       "onboardingCompleted": true,
       "colorBlindness": false,
