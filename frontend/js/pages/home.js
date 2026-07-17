@@ -4,8 +4,9 @@ export async function renderHome(container) {
   container.innerHTML = '<div class="loading">Loading dashboard...</div>';
 
   const home = await api.getHome();
-  const xpMax = home.progress.totalXp + home.progress.xpToNextLevel;
-  const pct = Math.min(100, Math.round((home.progress.totalXp / xpMax) * 100));
+  const { currentLevelXp, levelXpRequired, xpToNextLevel } = home.progress;
+  const xpMax = levelXpRequired ?? currentLevelXp + xpToNextLevel;
+  const pct = xpMax > 0 ? Math.min(100, Math.round((currentLevelXp / xpMax) * 100)) : 0;
 
   container.innerHTML = `
     <div class="container-wide stack-lg">
@@ -22,7 +23,7 @@ export async function renderHome(container) {
       <div class="progress-wrap">
         <div class="progress-label">
           <span>Progress</span>
-          <span>${home.progress.totalXp}/${xpMax} Points</span>
+          <span>${currentLevelXp}/${xpMax} Points</span>
         </div>
         <div class="progress-track">
           <div class="progress-fill" style="width: ${pct}%"></div>

@@ -12,8 +12,9 @@ export async function renderChallengeStaging(container, userId) {
 
     const greeting = homeData.greeting || {};
     const progress = homeData.progress || {};
-    const xpMax = progress.totalXp + progress.xpToNextLevel;
-    const pct = xpMax > 0 ? Math.min(100, Math.round((progress.totalXp / xpMax) * 100)) : 0;
+    const { currentLevelXp, levelXpRequired, xpToNextLevel } = progress;
+    const xpMax = levelXpRequired ?? currentLevelXp + xpToNextLevel;
+    const pct = xpMax > 0 ? Math.min(100, Math.round((currentLevelXp / xpMax) * 100)) : 0;
     const dailyCompleted = dailyData.completed || false;
 
     container.innerHTML = `
@@ -31,7 +32,7 @@ export async function renderChallengeStaging(container, userId) {
         <div class="progress-wrap">
           <div class="progress-label">
             <span>Progress</span>
-            <span>${progress.totalXp}/${xpMax} Points</span>
+            <span>${currentLevelXp}/${xpMax} Points</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill" style="width: ${pct}%"></div>

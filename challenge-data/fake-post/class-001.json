@@ -1,0 +1,31 @@
+{
+  "slug": "class-001",
+  "type": "fake_post",
+  "difficulty": "hard",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "shiny_texture"],
+  "xpReward": 150,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/class/11a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/class/11.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph."
+      ]
+    }
+  }
+}

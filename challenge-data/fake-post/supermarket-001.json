@@ -1,0 +1,31 @@
+{
+  "slug": "supermarket-001",
+  "type": "fake_post",
+  "difficulty": "hard",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["shiny_texture", "color"],
+  "xpReward": 150,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/supermarket/12.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/supermarket/12a.jpg"
+      }
+    ],
+
+    "correctPostId": "A",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph."
+      ]
+    }
+  }
+}
