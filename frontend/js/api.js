@@ -56,9 +56,10 @@ const MOCK_HOME = {
     avatarId: 'avatar-detective-1',
   },
   progress: {
-    totalXp: 0,
-    currentLevelXp: 0,
-    xpToNextLevel: 300,
+    totalXp: 320,
+    currentLevelXp: 320,
+    xpToNextLevel: 180,
+    levelXpRequired: 500,
     level: 1,
   },
   dailyMission: {
