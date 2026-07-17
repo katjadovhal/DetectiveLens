@@ -10,11 +10,11 @@ SKILL_CATEGORIES = [
 ]
 
 LEVELS = [
-    {"level": 1, "title": "Internet Detective Level 1", "xp_required": 0},
-    {"level": 2, "title": "Internet Detective Level 2", "xp_required": 300},
-    {"level": 3, "title": "Internet Detective Level 3", "xp_required": 700},
-    {"level": 4, "title": "Internet Detective Level 4", "xp_required": 1200},
-    {"level": 5, "title": "Internet Detective Level 5", "xp_required": 2000},
+    {"level": 1, "title": "Internet Detective Level 1", "xp_to_advance": 500},
+    {"level": 2, "title": "Internet Detective Level 2", "xp_to_advance": 400},
+    {"level": 3, "title": "Internet Detective Level 3", "xp_to_advance": 500},
+    {"level": 4, "title": "Internet Detective Level 4", "xp_to_advance": 800},
+    {"level": 5, "title": "Internet Detective Level 5", "xp_to_advance": None},
 ]
 
 XP_RULES = {

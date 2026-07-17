@@ -113,15 +113,36 @@ def get_all_users(store: dict | None = None) -> list[dict]:
     return s.get("users", [])
 
 
+def get_level_info(level: int) -> dict:
+    return next((l for l in LEVELS if l["level"] == level), LEVELS[0])
+
+
+def apply_level_up(profile: dict) -> bool:
+    leveled_up = False
+    while True:
+        xp_needed = get_level_info(profile["currentLevel"]).get("xp_to_advance")
+        if xp_needed is None or profile["currentLevelXp"] < xp_needed:
+            break
+        profile["currentLevelXp"] = 0
+        profile["currentLevel"] += 1
+        leveled_up = True
+    return leveled_up
+
+
 def get_home_data(user_id: str, store: dict | None = None) -> dict:
     s = store if store is not None else load_store()
     profile = get_profile(user_id, s)
     current_level = profile["currentLevel"] if profile else 1
     total_xp = profile["totalXp"] if profile else 0
+    current_level_xp = profile["currentLevelXp"] if profile else 0
 
-    level_info = next((l for l in LEVELS if l["level"] == current_level), LEVELS[0])
-    next_level = next((l for l in LEVELS if l["level"] == current_level + 1), None)
-    xp_to_next = max(0, (next_level["xp_required"] - total_xp) if next_level else 0)
+    level_info = get_level_info(current_level)
+    level_xp_required = level_info.get("xp_to_advance")
+    if level_xp_required is not None:
+        xp_to_next = max(0, level_xp_required - current_level_xp)
+    else:
+        level_xp_required = max(current_level_xp, 1)
+        xp_to_next = 0
 
     daily_challenge = get_daily_challenge(s)
 
@@ -133,8 +154,9 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
         },
         "progress": {
             "totalXp": total_xp,
-            "currentLevelXp": profile["currentLevelXp"] if profile else 0,
+            "currentLevelXp": current_level_xp,
             "xpToNextLevel": xp_to_next,
+            "levelXpRequired": level_xp_required,
             "level": current_level,
         },
         "dailyMission": {
@@ -306,6 +328,7 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     if profile:
         profile["totalXp"] += xp_earned
         profile["currentLevelXp"] += xp_earned
+        apply_level_up(profile)
         profile["lastChallengeId"] = attempt["challengeId"]
 
         # Update skill scores based on challenge result
@@ -498,7 +521,10 @@ def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict
     available = [c for c in all_challenges if c["id"] not in seen_ids]
 
     if not available:
-        return None  # All challenges completed
+        # If the user has seen all challenges, allow repetition by returning a random
+        # challenge instead of signaling "all completed". This lets users keep
+        # practicing even after they've exhausted the pool once.
+        return random.choice(all_challenges) if all_challenges else None
 
     # If user hasn't seen any challenges yet, pick random
     if not seen_ids:
