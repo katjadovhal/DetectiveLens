@@ -1,0 +1,31 @@
+{
+  "slug": "sandcastle-001",
+  "type": "fake_post",
+  "difficulty": "easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "shiny_texture", "waxy_perfect"],
+  "xpReward": 50,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/sandcastle/12.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/sandcastle/11a.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph."
+      ]
+    }
+  }
+}
