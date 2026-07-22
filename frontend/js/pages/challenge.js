@@ -1,4 +1,5 @@
 import { api, escapeHtml } from '../api.js';
+import { setLastUserId } from '../session.js';
 
 function renderSocialPost(post, selected, disabled) {
   return `
@@ -166,6 +167,8 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
     container.innerHTML = '<div class="error">Error: No user ID provided</div>';
     return;
   }
+
+  setLastUserId(userId);
 
   const id = challengeId || 'monkey-001';
   try {

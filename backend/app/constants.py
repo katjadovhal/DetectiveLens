@@ -34,9 +34,23 @@ DIFFICULTY_MAP = {
 WEIGHT_WEAKNESS = 0.7
 WEIGHT_DIFFICULTY_FIT = 0.3
 
+DEFAULT_AVATAR_ID = "avatar-detective-1"
+
 AVATARS = [
     "avatar-detective-1",
     "avatar-detective-2",
     "avatar-detective-3",
     "avatar-detective-4",
 ]
+
+# Legacy IDs mapped to current catalog (read/write normalization only).
+AVATAR_ALIASES = {
+    "detective-default": DEFAULT_AVATAR_ID,
+}
+
+
+def normalize_avatar_id(avatar_id: str | None) -> str:
+    if not avatar_id:
+        return DEFAULT_AVATAR_ID
+    aliased = AVATAR_ALIASES.get(avatar_id, avatar_id)
+    return aliased if aliased in AVATARS else DEFAULT_AVATAR_ID

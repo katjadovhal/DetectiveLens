@@ -1,9 +1,10 @@
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
 from app.routers import challenges, health, home, onboarding, personalization, profiles, users
@@ -12,6 +13,19 @@ FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
 
 app = FastAPI(title="DetectiveLens API", version="0.1.0")
 
+
+class NoCacheStaticMiddleware(BaseHTTPMiddleware):
+    """Avoid stale ES-module caches during local development."""
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        path = request.url.path
+        if path.startswith("/js/") or path.startswith("/css/") or path == "/" or path.endswith(".html"):
+            response.headers["Cache-Control"] = "no-store, max-age=0"
+        return response
+
+
+app.add_middleware(NoCacheStaticMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:3001"],

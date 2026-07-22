@@ -11,6 +11,7 @@ from app.constants import (
     WEIGHT_WEAKNESS,
     WEIGHT_DIFFICULTY_FIT,
     XP_RULES,
+    normalize_avatar_id,
 )
 from app.services.challenge_helpers import strip_correct_answer
 from app.services.personalization import get_detective_tip
@@ -150,7 +151,7 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
         "greeting": {
             "displayName": profile["displayName"] if profile else "Detektiv",
             "levelTitle": level_info["title"],
-            "avatarId": profile["avatarId"] if profile else "avatar-detective-1",
+            "avatarId": normalize_avatar_id(profile["avatarId"] if profile else None),
         },
         "progress": {
             "totalXp": total_xp,
@@ -169,6 +170,17 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
     }
 
 
+def _completed_challenge_count(user_id: str, store: dict) -> int:
+    completed_ids = {
+        attempt["challengeId"]
+        for attempt in store.get("challenge_attempts", [])
+        if attempt.get("userId") == user_id
+        and attempt.get("completedAt")
+        and attempt.get("isCorrect") is True
+    }
+    return len(completed_ids)
+
+
 def get_profile_data(user_id: str, store: dict | None = None) -> dict:
     s = store if store is not None else load_store()
     profile = get_profile(user_id, s)
@@ -176,9 +188,11 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
         return {
             "profile": {
                 "displayName": "Detektiv",
-                "avatarId": "avatar-detective-1",
+                "avatarId": normalize_avatar_id(None),
                 "currentLevel": 1,
                 "totalXp": 0,
+                "currentLevelXp": 0,
+                "completedChallengeCount": 0,
                 "onboardingCompleted": False,
                 "colorBlindness": False,
             }
@@ -188,12 +202,13 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
         "profile": {
             "id": profile["id"],
             "userId": profile["userId"],
-            "avatarId": profile["avatarId"],
+            "avatarId": normalize_avatar_id(profile.get("avatarId")),
             "displayName": profile["displayName"],
             "currentLevel": profile["currentLevel"],
             "totalXp": profile["totalXp"],
             "currentLevelXp": profile["currentLevelXp"],
             "dailyStreak": profile["dailyStreak"],
+            "completedChallengeCount": _completed_challenge_count(user_id, s),
             "onboardingCompleted": profile["onboardingCompleted"],
             "colorBlindness": profile.get("colorBlindness", False),
             "settings": profile["settings"],
@@ -210,7 +225,8 @@ def update_profile(store: dict, user_id: str, body: dict) -> dict:
     if body.get("displayName") is not None:
         profile["displayName"] = body["displayName"]
     if body.get("avatarId") is not None:
-        profile["avatarId"] = body["avatarId"]
+        # Coerce legacy/unknown IDs; do not mutate unrelated fields.
+        profile["avatarId"] = normalize_avatar_id(body["avatarId"])
     if body.get("settings") is not None:
         profile["settings"] = {**profile["settings"], **body["settings"]}
 
@@ -218,7 +234,7 @@ def update_profile(store: dict, user_id: str, body: dict) -> dict:
         "profile": {
             "id": profile["id"],
             "displayName": profile["displayName"],
-            "avatarId": profile["avatarId"],
+            "avatarId": normalize_avatar_id(profile.get("avatarId")),
             "settings": profile["settings"],
         }
     }
@@ -245,7 +261,7 @@ def create_user(store: dict, body: dict) -> dict:
     profile = {
         "id": new_id(),
         "userId": user_id,
-        "avatarId": body["avatarId"],
+        "avatarId": normalize_avatar_id(body.get("avatarId")),
         "displayName": body["username"],
         "currentLevel": 1,
         "totalXp": 0,

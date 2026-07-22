@@ -1,27 +1,22 @@
-import { renderHeader } from './header.js';
-import { renderStart } from './pages/start.js';
-import { renderOnboarding } from './pages/onboarding.js';
-import { renderSelectUser } from './pages/select-user.js';
-import { renderChallengeStaging } from './pages/challenge-staging.js';
-import { renderChallenge } from './pages/challenge.js';
-import { renderPlaceholder } from './pages/placeholder.js';
+import { renderHeader } from './header.js?v=settings-6';
+import { renderStart } from './pages/start.js?v=settings-6';
+import { renderOnboarding } from './pages/onboarding.js?v=settings-6';
+import { renderSelectUser } from './pages/select-user.js?v=settings-6';
+import { renderChallengeStaging } from './pages/challenge-staging.js?v=settings-6';
+import { renderChallenge } from './pages/challenge.js?v=settings-6';
+import { renderProfile } from './pages/profile.js?v=settings-6';
+import { renderSettings } from './pages/settings.js?v=settings-6';
+import { renderPlaceholder } from './pages/placeholder.js?v=settings-6';
+import { resolveActiveUserId, setLastUserId, withUserId } from './session.js?v=settings-6';
 
 const PLACEHOLDERS = {
   '/progress/xp': {
     title: 'XP & Levels',
     description: 'Track your detective rank and points. Coming in Sprint 3.',
   },
-  '/profile': {
-    title: 'Profile',
-    description: 'Customize your avatar and display name. Coming in Sprint 3.',
-  },
   '/profile/statistics': {
     title: 'Statistics',
     description: 'View your total XP, challenges played, and accuracy. Coming in Sprint 3.',
-  },
-  '/profile/settings': {
-    title: 'Settings',
-    description: 'Notifications, sound, and privacy controls. Coming in Sprint 3.',
   },
   '/profile/help': {
     title: 'Help & Support',
@@ -39,6 +34,8 @@ function matchRoute(path) {
   if (path === '/onboarding') return { name: 'onboarding' };
   if (path === '/select-user') return { name: 'select-user' };
   if (path === '/challenge-staging') return { name: 'challenge-staging' };
+  if (path === '/profile') return { name: 'profile' };
+  if (path === '/profile/settings') return { name: 'settings' };
   const challengeMatch = path.match(/^\/challenges\/fake-post\/(.+)$/);
   if (challengeMatch) return { name: 'challenge', params: { id: challengeMatch[1] } };
   if (PLACEHOLDERS[path]) return { name: 'placeholder', params: PLACEHOLDERS[path] };
@@ -46,8 +43,11 @@ function matchRoute(path) {
 }
 
 async function navigate(path, push = true) {
-  const route = matchRoute(path);
+  const rawPath = path.startsWith('/') ? path : `/${path}`;
+  const pathname = rawPath.split('?')[0];
+  const route = matchRoute(pathname);
   const main = document.getElementById('app-main');
+  const userId = resolveActiveUserId(rawPath);
 
   if (route.name === 'start') {
     await renderHeader(false);
@@ -59,18 +59,34 @@ async function navigate(path, push = true) {
     await renderHeader(false);
     await renderSelectUser(main);
   } else if (route.name === 'challenge-staging') {
-    const userId = getQueryParam('userId');
     if (!userId) {
       window.location.href = '/';
       return;
     }
+    setLastUserId(userId);
     await renderHeader(true);
     await renderChallengeStaging(main, userId);
+  } else if (route.name === 'profile') {
+    if (!userId) {
+      window.location.href = '/';
+      return;
+    }
+    setLastUserId(userId);
+    await renderHeader(true);
+    await renderProfile(main);
+  } else if (route.name === 'settings') {
+    if (!userId) {
+      window.location.href = '/';
+      return;
+    }
+    setLastUserId(userId);
+    await renderHeader(true);
+    await renderSettings(main);
   } else {
     await renderHeader(true);
     if (route.name === 'challenge') {
-      const userId = getQueryParam('userId');
-      const mode = getQueryParam('mode');
+      const mode = new URL(rawPath, window.location.origin).searchParams.get('mode') || getQueryParam('mode');
+      if (userId) setLastUserId(userId);
       await renderChallenge(main, route.params.id, userId, mode);
     } else if (route.name === 'placeholder') {
       renderPlaceholder(main, route.params.title, route.params.description);
@@ -78,7 +94,14 @@ async function navigate(path, push = true) {
   }
 
   if (push) {
-    history.pushState({ path }, '', path);
+    let urlPath = rawPath;
+    if (
+      userId &&
+      (route.name === 'profile' || route.name === 'challenge-staging' || route.name === 'settings')
+    ) {
+      urlPath = withUserId(pathname, userId);
+    }
+    history.pushState({ path: urlPath }, '', urlPath);
   }
 }
 
@@ -93,13 +116,12 @@ function handleLinkClick(event) {
 
 export async function initRouter() {
   document.addEventListener('click', handleLinkClick);
-  window.addEventListener('popstate', (event) => {
-    const path = event.state?.path ?? window.location.pathname;
-    navigate(path, false);
+  window.addEventListener('popstate', () => {
+    navigate(window.location.pathname + window.location.search, false);
   });
 
-  let initialPath = window.location.pathname;
+  const initialPath = window.location.pathname;
+  const search = window.location.search || '';
 
-  // Default to start page
-  navigate(initialPath || '/', false);
+  navigate((initialPath + search) || '/', false);
 }

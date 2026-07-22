@@ -1,11 +1,16 @@
 import { api, escapeHtml } from './api.js';
+import { getAvatarEmoji } from './avatars.js';
+import { resolveActiveUserId, withUserId, clearLastUserId, getLastUserId } from './session.js';
+import { getProgressSummary } from './xp.js';
 
-const MENU_ITEMS = [
-  { label: 'Profile', to: '/profile' },
-  { label: 'Statistics', to: '/profile/statistics' },
-  { label: 'Settings', to: '/profile/settings' },
-  { label: 'Help & Support', to: '/profile/help' },
-];
+function menuItems(userId) {
+  return [
+    { label: 'Profile', to: withUserId('/profile', userId) },
+    { label: 'Statistics', to: withUserId('/profile/statistics', userId) },
+    { label: 'Settings', to: withUserId('/profile/settings', userId) },
+    { label: 'Help & Support', to: withUserId('/profile/help', userId) },
+  ];
+}
 
 export async function renderHeader(show = true) {
   const header = document.getElementById('app-header');
@@ -15,42 +20,60 @@ export async function renderHeader(show = true) {
   }
 
   header.classList.remove('hidden');
-  let xp = 320;
-  try {
-    const home = await api.getHome();
-    xp = home.progress.totalXp;
-  } catch {
-    /* use default */
+  const userId = resolveActiveUserId();
+  let xp = 0;
+  let avatarEmoji = '🕵️';
+
+  if (userId) {
+    try {
+      const [{ profile }, home] = await Promise.all([
+        api.getProfile(userId),
+        api.getHome(userId),
+      ]);
+      if (!profile?.userId && !profile?.id) {
+        if (getLastUserId() === userId) clearLastUserId();
+      } else {
+        const progress = getProgressSummary({ profile, home });
+        xp = progress.totalXp;
+        avatarEmoji = getAvatarEmoji(profile.avatarId || home.greeting?.avatarId);
+      }
+    } catch {
+      /* keep defaults */
+    }
   }
 
   header.innerHTML = `
-    <a href="/" class="header-brand" data-link>
-      <span class="header-brand-icon">🕵️</span>
-      DetectiveLens
-      <span style="color: var(--color-diamond)">🔍</span>
-    </a>
-    <div class="header-actions">
-      <a href="/progress/xp" class="xp-link" data-link title="View your XP and level">
-        <span style="font-size: 1.5rem">💎</span>
-        <span id="header-xp">${xp}</span>
+    <div class="header-inner">
+      <a href="${userId ? withUserId('/challenge-staging', userId) : '/'}" class="header-brand" data-link>
+        <span class="header-brand-icon" aria-hidden="true">🕵️</span>
+        DetectiveLens
       </a>
-      <div class="dropdown" id="notification-dropdown">
-        <button type="button" class="icon-btn" aria-label="Notifications" aria-expanded="false">🔔</button>
-        <div class="dropdown-menu dropdown-menu-wide hidden" id="notification-menu">
-          <p class="dropdown-title">Notifications</p>
-          <p class="dropdown-item">You're all caught up! No new alerts.</p>
+      <div class="header-actions">
+        <a href="${withUserId('/progress/xp', userId)}" class="xp-link" data-link title="View your XP and level">
+          <span aria-hidden="true">💎</span>
+          <span id="header-xp">${xp}</span>
+          <span class="xp-link-label">XP</span>
+        </a>
+        <div class="dropdown" id="notification-dropdown">
+          <button type="button" class="icon-btn" aria-label="Notifications" aria-expanded="false">🔔</button>
+          <div class="dropdown-menu dropdown-menu-wide hidden" id="notification-menu">
+            <p class="dropdown-title">Notifications</p>
+            <p class="dropdown-item">You're all caught up! No new alerts.</p>
+          </div>
         </div>
-      </div>
-      <div class="dropdown" id="profile-dropdown">
-        <button type="button" class="profile-btn" aria-label="Profile menu" aria-expanded="false">
-          <span class="profile-avatar">🕵️</span>
-          <span style="color: var(--color-gray-500)">▾</span>
-        </button>
-        <div class="dropdown-menu hidden" id="profile-menu">
-          ${MENU_ITEMS.map(
-            (item) =>
-              `<a href="${item.to}" class="dropdown-item" data-link>${escapeHtml(item.label)}</a>`,
-          ).join('')}
+        <div class="dropdown" id="profile-dropdown">
+          <button type="button" class="profile-btn" aria-label="Profile menu" aria-expanded="false">
+            <span class="profile-avatar" aria-hidden="true">${avatarEmoji}</span>
+            <span aria-hidden="true">▾</span>
+          </button>
+          <div class="dropdown-menu hidden" id="profile-menu">
+            ${menuItems(userId)
+              .map(
+                (item) =>
+                  `<a href="${item.to}" class="dropdown-item" data-link>${escapeHtml(item.label)}</a>`,
+              )
+              .join('')}
+          </div>
         </div>
       </div>
     </div>

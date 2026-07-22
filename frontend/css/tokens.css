@@ -1,22 +1,56 @@
 :root {
-  --color-primary: #6b4eff;
-  --color-primary-dark: #5538e0;
+  /* DetectiveLens design system */
+  --color-primary: #6948ff;
+  --color-primary-hover: #5636e8;
+  --color-primary-dark: #5636e8;
+  --color-primary-soft: #eee9ff;
+  --color-background: #f8f6ff;
+  --color-surface: #ffffff;
+  --color-text: #121a2b;
+  --color-text-muted: #626b7d;
+  --color-border: #e4e6ed;
+  --color-success: #23845c;
+  --color-error: #c63f4a;
+  --color-diamond: #42a5f5;
   --color-accent-yellow: #ffd54f;
   --color-accent-orange: #ff9800;
-  --color-diamond: #42a5f5;
-  --color-success: #4caf50;
-  --color-surface: #ffffff;
-  --color-background: #f3f4f6;
-  --color-lavender: #ede7f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --color-gray-500: #6b7280;
-  --color-gray-600: #4b5563;
-  --color-gray-700: #374151;
-  --color-gray-800: #1f2937;
-  --color-gray-900: #111827;
-  --radius-lg: 1.25rem;
-  --radius-xl: 1.75rem;
+  --color-lavender: #eee9ff;
+
+  /* Compatibility aliases for existing challenge CSS */
+  --color-gray-200: var(--color-border);
+  --color-gray-400: #9aa3b5;
+  --color-gray-500: var(--color-text-muted);
+  --color-gray-600: var(--color-text-muted);
+  --color-gray-700: #3d4659;
+  --color-gray-800: var(--color-text);
+  --color-gray-900: #0b1020;
+
+  --radius-small: 12px;
+  --radius-medium: 18px;
+  --radius-large: 26px;
+  --radius-lg: var(--radius-medium);
+  --radius-xl: var(--radius-large);
+
+  --shadow-soft: 0 10px 30px rgba(18, 26, 43, 0.06);
+  --shadow-card: 0 8px 24px rgba(105, 72, 255, 0.08);
+
   --font-size-base: 1.125rem;
-  --touch-min: 3rem;
+  --touch-min: 44px;
+  --page-max: 1120px;
+  --page-gutter: 1.25rem;
+  --frame-radius: var(--radius-large);
+  --frame-border: 1px solid var(--color-border);
+  --frame-shadow: var(--shadow-soft);
+}
+
+@media (min-width: 640px) {
+  :root {
+    --page-gutter: 1.75rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --page-gutter: 2rem;
+  }
 }

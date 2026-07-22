@@ -78,7 +78,14 @@ async function request(path, options = {}) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(err.message ?? 'Request failed');
+    const detail = err.detail;
+    const message =
+      (typeof detail === 'string' && detail) ||
+      detail?.message ||
+      err.message ||
+      res.statusText ||
+      'Request failed';
+    throw new Error(message);
   }
   return res.json();
 }
@@ -158,11 +165,20 @@ export const api = {
           avatarId: 'avatar-detective-1',
           currentLevel: 1,
           totalXp: 0,
+          currentLevelXp: 0,
+          completedChallengeCount: 0,
           onboardingCompleted: false,
           colorBlindness: false,
         },
       };
     }
+  },
+
+  updateProfile: async (userId, body) => {
+    return request(`/profiles/${userId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    });
   },
 
   getChallenge: async (id) => {

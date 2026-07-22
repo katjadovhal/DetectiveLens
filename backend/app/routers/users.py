@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
+from app.constants import normalize_avatar_id
 from app import repositories as repo
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -43,7 +44,7 @@ def get_user(user_id: str):
                 "username": user["username"],
             },
             "profile": {
-                "avatarId": profile["avatarId"] if profile else None,
+                "avatarId": normalize_avatar_id(profile["avatarId"]) if profile else None,
                 "displayName": profile["displayName"] if profile else user["username"],
                 "onboardingCompleted": profile["onboardingCompleted"] if profile else False,
             } if profile else None,

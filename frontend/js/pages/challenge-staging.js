@@ -1,7 +1,11 @@
 import { api, escapeHtml } from '../api.js';
+import { getAvatarEmoji } from '../avatars.js';
+import { setLastUserId } from '../session.js';
+import { getProgressSummary, renderXpBarHtml } from '../xp.js';
 
 export async function renderChallengeStaging(container, userId) {
   container.innerHTML = '<div class="loading">Loading...</div>';
+  setLastUserId(userId);
 
   try {
     const [homeData, profileData, dailyData] = await Promise.all([
@@ -11,39 +15,31 @@ export async function renderChallengeStaging(container, userId) {
     ]);
 
     const greeting = homeData.greeting || {};
-    const progress = homeData.progress || {};
-    const { currentLevelXp, levelXpRequired, xpToNextLevel } = progress;
-    const xpMax = levelXpRequired ?? currentLevelXp + xpToNextLevel;
-    const pct = xpMax > 0 ? Math.min(100, Math.round((currentLevelXp / xpMax) * 100)) : 0;
+    const progress = getProgressSummary({
+      profile: profileData.profile,
+      home: homeData,
+    });
     const dailyCompleted = dailyData.completed || false;
 
     container.innerHTML = `
-      <div class="container-wide stack-lg">
+      <div class="page-shell stack-lg">
         <div class="card card-greeting">
-          <div class="avatar-large">${greeting.avatarId ? getAvatarEmoji(greeting.avatarId) : '🕵️'}</div>
+          <div class="avatar-large" aria-hidden="true">${getAvatarEmoji(greeting.avatarId || profileData.profile?.avatarId)}</div>
           <div>
             <h1 class="page-title">Hi, ${escapeHtml(greeting.displayName)}!</h1>
             <p class="text-primary" style="margin-top: 0.5rem; font-size: 1.5rem; font-weight: 700;">
-              ${escapeHtml(greeting.levelTitle)}
+              ${escapeHtml(progress.levelTitle)}
             </p>
           </div>
         </div>
 
-        <div class="progress-wrap">
-          <div class="progress-label">
-            <span>Progress</span>
-            <span>${currentLevelXp}/${xpMax} Points</span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" style="width: ${pct}%"></div>
-          </div>
-        </div>
+        ${renderXpBarHtml({ ...progress, label: 'Progress' })}
 
         <div class="grid-2">
           <div class="card ${dailyCompleted ? 'card-completed' : 'card-highlight'}">
             <h2 class="section-title">Daily Challenge</h2>
             ${dailyCompleted ? `
-              <p style="margin-top: 0.75rem; font-size: 1.125rem; color: var(--color-gray-800);">
+              <p style="margin-top: 0.75rem; font-size: 1.125rem; color: var(--color-text);">
                 ✓ Challenge completed today!
               </p>
               <p class="text-muted" style="margin-top: 0.5rem">Come back tomorrow for a new challenge.</p>
@@ -51,11 +47,11 @@ export async function renderChallengeStaging(container, userId) {
                 Share Challenge
               </button>
             ` : `
-              <p style="margin-top: 0.75rem; font-size: 1.25rem; color: var(--color-gray-800);">
+              <p style="margin-top: 0.75rem; font-size: 1.25rem; color: var(--color-text);">
                 Spot the fake post
               </p>
-              <p class="text-muted" style="margin-top: 0.5rem">+100 Points</p>
-              <button type="button" class="btn btn-secondary btn-mt-lg" id="daily-btn">
+              <p class="text-muted" style="margin-top: 0.5rem">+100 XP</p>
+              <button type="button" class="btn btn-primary btn-mt-lg" id="daily-btn">
                 Daily Challenge
               </button>
             `}
@@ -65,7 +61,7 @@ export async function renderChallengeStaging(container, userId) {
             <p class="text-muted" style="margin-top: 0.75rem; font-size: 1.125rem;">
               Improve your detective skills
             </p>
-            <button type="button" class="btn btn-outline btn-mt-md" id="practice-btn">
+            <button type="button" class="btn btn-secondary btn-mt-md" id="practice-btn">
               Start Practice
             </button>
           </div>
@@ -121,15 +117,5 @@ export async function renderChallengeStaging(container, userId) {
       </div>
     `;
   }
-}
-
-function getAvatarEmoji(avatarId) {
-  const map = {
-    'avatar-detective-1': '🕵️‍♂️',
-    'avatar-detective-2': '🕵️‍♀️',
-    'avatar-detective-3': '👨‍🔬',
-    'avatar-detective-4': '👩‍🔬',
-  };
-  return map[avatarId] || '🕵️';
 }
 
