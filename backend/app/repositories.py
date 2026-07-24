@@ -16,6 +16,7 @@ from app.constants import (
     canonicalize_skill_id,
     canonicalize_skill_ids,
     normalize_avatar_id,
+    require_unlocked_avatar,
 )
 from app.services.challenge_helpers import strip_correct_answer
 from app.services.personalization import get_detective_tip
@@ -233,8 +234,11 @@ def update_profile(store: dict, user_id: str, body: dict) -> dict:
     if body.get("displayName") is not None:
         profile["displayName"] = body["displayName"]
     if body.get("avatarId") is not None:
-        # Coerce legacy/unknown IDs; do not mutate unrelated fields.
-        profile["avatarId"] = normalize_avatar_id(body["avatarId"])
+        # Enforce XP unlock gates server-side.
+        profile["avatarId"] = require_unlocked_avatar(
+            body["avatarId"],
+            profile.get("totalXp", 0),
+        )
     if body.get("settings") is not None:
         profile["settings"] = {**profile["settings"], **body["settings"]}
 
@@ -257,6 +261,8 @@ def create_user(store: dict, body: dict) -> dict:
         raise ValueError("Username already exists")
 
     user_id = new_id()
+    # New profiles start at 0 XP — only free avatars are allowed.
+    avatar_id = require_unlocked_avatar(body.get("avatarId"), 0)
     user = {
         "id": user_id,
         "username": body["username"],
@@ -269,7 +275,7 @@ def create_user(store: dict, body: dict) -> dict:
     profile = {
         "id": new_id(),
         "userId": user_id,
-        "avatarId": normalize_avatar_id(body.get("avatarId")),
+        "avatarId": avatar_id,
         "displayName": body["username"],
         "currentLevel": 1,
         "totalXp": 0,

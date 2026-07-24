@@ -225,6 +225,17 @@ ul {
   border-radius: 9999px;
   background: var(--color-lavender);
   font-size: 1.25rem;
+  overflow: hidden;
+  padding: 0;
+}
+
+.profile-avatar .avatar-img,
+.avatar-img--header {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9999px;
+  display: block;
 }
 
 /* Buttons */
@@ -335,6 +346,16 @@ ul {
   border-radius: 9999px;
   background: var(--color-lavender);
   font-size: 3.75rem;
+  overflow: hidden;
+}
+
+.avatar-large .avatar-img,
+.avatar-img--large {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9999px;
+  display: block;
 }
 
 /* Typography */
@@ -1033,6 +1054,16 @@ ul {
   background: linear-gradient(180deg, var(--color-primary-soft), #e4dcff);
   box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.8);
   font-size: 1.85rem;
+  overflow: hidden;
+}
+
+.continue-avatar .avatar-img,
+.avatar-img--continue {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  display: block;
 }
 
 .continue-copy {
@@ -1167,6 +1198,16 @@ button.profile-pick-card,
   background: linear-gradient(180deg, var(--color-primary-soft), #e4dcff);
   box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.75);
   font-size: 2.35rem;
+  overflow: hidden;
+}
+
+.pick-avatar .avatar-img,
+.avatar-img--pick {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  display: block;
 }
 
 .profile-pick-card .progress-wrap {
@@ -1410,10 +1451,12 @@ button.profile-pick-card,
   color: var(--color-text);
 }
 
-.avatar-card-circle .avatar-emoji {
+.avatar-card-circle .avatar-emoji,
+.avatar-card-circle .avatar-face {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   width: 4.25rem;
   height: 4.25rem;
   border-radius: 999px;
@@ -1421,23 +1464,63 @@ button.profile-pick-card,
   background: linear-gradient(180deg, #f7f5ff, #efe9ff);
   font-size: 2rem;
   line-height: 1;
+  overflow: hidden;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.avatar-card-circle:hover .avatar-emoji {
+.avatar-card-circle .avatar-face .avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-card-circle .avatar-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(30, 27, 46, 0.45);
+  font-size: 1.35rem;
+}
+
+.avatar-card-circle.avatar-card--locked {
+  cursor: not-allowed;
+  opacity: 0.92;
+}
+
+.avatar-card-circle.avatar-card--locked .avatar-face {
+  filter: grayscale(0.35);
+}
+
+.avatar-card-circle .avatar-unlock-hint {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.avatar-card-circle:hover .avatar-emoji,
+.avatar-card-circle:hover .avatar-face {
   border-color: var(--color-primary);
+}
+
+.avatar-card-circle.avatar-card--locked:hover .avatar-face {
+  border-color: var(--color-border);
 }
 
 .avatar-card-circle:focus-visible {
   outline: none;
 }
 
-.avatar-card-circle:focus-visible .avatar-emoji {
+.avatar-card-circle:focus-visible .avatar-emoji,
+.avatar-card-circle:focus-visible .avatar-face {
   outline: 3px solid rgba(105, 72, 255, 0.45);
   outline-offset: 3px;
 }
 
-.avatar-card-circle.selected .avatar-emoji {
+.avatar-card-circle.selected .avatar-emoji,
+.avatar-card-circle.selected .avatar-face {
   border-color: var(--color-primary);
   border-width: 4px;
   box-shadow: 0 0 0 4px rgba(105, 72, 255, 0.18);
@@ -1656,6 +1739,16 @@ button.profile-pick-card,
   border-radius: 999px;
   background: linear-gradient(180deg, var(--color-primary-soft), #e4dcff);
   font-size: 2.25rem;
+  overflow: hidden;
+}
+
+.settings-current-avatar .avatar-img,
+.avatar-img--settings {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  display: block;
 }
 
 .settings-current-kicker {

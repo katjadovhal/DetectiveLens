@@ -21,7 +21,13 @@ def get_profile(user_id: str):
 def update_profile(body: UpdateProfile, user_id: str):
     try:
         return repo.update_profile(user_id, body.model_dump(exclude_none=True))
-    except ValueError:
+    except ValueError as e:
+        message = str(e)
+        if "unlocks at" in message.lower():
+            raise HTTPException(
+                status_code=400,
+                detail={"error": "VALIDATION_ERROR", "message": message, "statusCode": 400},
+            )
         raise HTTPException(
             status_code=404,
             detail={"error": "NOT_FOUND", "message": "Profile not found", "statusCode": 404},

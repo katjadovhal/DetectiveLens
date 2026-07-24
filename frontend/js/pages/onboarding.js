@@ -151,7 +151,8 @@ export async function renderOnboarding(container) {
 
             <div class="create-avatar-col">
               <h2 class="section-title">Choose Your Avatar</h2>
-              ${renderAvatarGridHtml(state.avatarId, { escapeHtml })}
+              <p class="field-hint">Dog and Cat unlock later with XP — you can change this in Profile.</p>
+              ${renderAvatarGridHtml(state.avatarId, { escapeHtml, totalXp: 0 })}
             </div>
           </div>
 
@@ -210,6 +211,7 @@ export async function renderOnboarding(container) {
       (id) => {
         state.avatarId = normalizeAvatarId(id);
       },
+      { totalXp: 0 },
     );
 
     completeBtn.addEventListener('click', submit);

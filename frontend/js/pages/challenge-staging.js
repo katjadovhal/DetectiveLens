@@ -1,5 +1,5 @@
 import { api, escapeHtml } from '../api.js';
-import { getAvatarEmoji } from '../avatars.js';
+import { getAvatarMarkup } from '../avatars.js';
 import { setLastUserId } from '../session.js';
 import { getProgressSummary, renderXpBarHtml } from '../xp.js';
 
@@ -24,7 +24,7 @@ export async function renderChallengeStaging(container, userId) {
     container.innerHTML = `
       <div class="page-shell stack-lg">
         <div class="card card-greeting">
-          <div class="avatar-large" aria-hidden="true">${getAvatarEmoji(greeting.avatarId || profileData.profile?.avatarId)}</div>
+          <div class="avatar-large" aria-hidden="true">${getAvatarMarkup(greeting.avatarId || profileData.profile?.avatarId, { className: 'avatar-img avatar-img--large' })}</div>
           <div>
             <h1 class="page-title">Hi, ${escapeHtml(greeting.displayName)}!</h1>
             <p class="text-primary" style="margin-top: 0.5rem; font-size: 1.5rem; font-weight: 700;">

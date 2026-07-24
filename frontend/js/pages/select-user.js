@@ -1,5 +1,5 @@
 import { api, escapeHtml } from '../api.js';
-import { getAvatarEmoji } from '../avatars.js';
+import { getAvatarMarkup } from '../avatars.js';
 import { setLastUserId, clearLastUserId, getLastUserId } from '../session.js';
 import { getProgressSummary } from '../xp.js';
 
@@ -77,7 +77,7 @@ export async function renderSelectUser(container) {
                 aria-label="${escapeHtml(p.name)}, ${escapeHtml(p.progress.levelTitle)}${selected ? ', last used' : ''}"
               >
                 ${selected ? '<span class="pick-check" aria-hidden="true">✓</span><span class="visually-hidden">Last used</span>' : ''}
-                <span class="pick-avatar" aria-hidden="true">${getAvatarEmoji(p.avatarId)}</span>
+                <span class="pick-avatar" aria-hidden="true">${getAvatarMarkup(p.avatarId, { className: 'avatar-img avatar-img--pick' })}</span>
                 <span class="pick-name">${escapeHtml(p.name)}</span>
                 <span class="pick-level">${escapeHtml(p.progress.levelTitle)}</span>
                 ${renderCardXp(p.progress)}

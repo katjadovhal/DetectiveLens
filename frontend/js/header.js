@@ -1,5 +1,5 @@
 import { api, escapeHtml } from './api.js';
-import { getAvatarEmoji } from './avatars.js';
+import { getAvatarMarkup } from './avatars.js';
 import { resolveActiveUserId, withUserId, clearLastUserId, getLastUserId } from './session.js';
 import { getProgressSummary } from './xp.js';
 
@@ -22,7 +22,7 @@ export async function renderHeader(show = true) {
   header.classList.remove('hidden');
   const userId = resolveActiveUserId();
   let xp = 0;
-  let avatarEmoji = '🕵️';
+  let avatarHtml = getAvatarMarkup(null, { className: 'avatar-img avatar-img--header' });
 
   if (userId) {
     try {
@@ -35,7 +35,9 @@ export async function renderHeader(show = true) {
       } else {
         const progress = getProgressSummary({ profile, home });
         xp = progress.totalXp;
-        avatarEmoji = getAvatarEmoji(profile.avatarId || home.greeting?.avatarId);
+        avatarHtml = getAvatarMarkup(profile.avatarId || home.greeting?.avatarId, {
+          className: 'avatar-img avatar-img--header',
+        });
       }
     } catch {
       /* keep defaults */
@@ -63,7 +65,7 @@ export async function renderHeader(show = true) {
         </div>
         <div class="dropdown" id="profile-dropdown">
           <button type="button" class="profile-btn" aria-label="Profile menu" aria-expanded="false">
-            <span class="profile-avatar" aria-hidden="true">${avatarEmoji}</span>
+            <span class="profile-avatar" aria-hidden="true">${avatarHtml}</span>
             <span aria-hidden="true">▾</span>
           </button>
           <div class="dropdown-menu hidden" id="profile-menu">

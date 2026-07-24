@@ -1,5 +1,5 @@
 import { api, escapeHtml } from '../api.js';
-import { getAvatarEmoji } from '../avatars.js';
+import { getAvatarMarkup } from '../avatars.js';
 import { getLastUserId, setLastUserId, loadValidUser, withUserId } from '../session.js';
 import { getProgressSummary } from '../xp.js';
 
@@ -37,7 +37,7 @@ export async function renderStart(container) {
         continueHtml = `
           <div class="hero-divider" role="separator"><span>or</span></div>
           <button type="button" class="continue-card" id="continue-as-btn">
-            <span class="continue-avatar" aria-hidden="true">${getAvatarEmoji(profile.avatarId)}</span>
+            <span class="continue-avatar" aria-hidden="true">${getAvatarMarkup(profile.avatarId, { className: 'avatar-img avatar-img--continue' })}</span>
             <span class="continue-copy">
               <span class="continue-kicker">Continue as</span>
               <span class="continue-name">${escapeHtml(name)}</span>

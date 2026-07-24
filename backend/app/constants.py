@@ -99,6 +99,14 @@ AVATARS = [
     "avatar-detective-4",
 ]
 
+# XP required to select each avatar (0 = always available).
+AVATAR_UNLOCK_XP = {
+    "avatar-detective-1": 0,
+    "avatar-detective-2": 0,
+    "avatar-detective-3": 400,  # Dog
+    "avatar-detective-4": 600,  # Cat
+}
+
 # Legacy IDs mapped to current catalog (read/write normalization only).
 AVATAR_ALIASES = {
     "detective-default": DEFAULT_AVATAR_ID,
@@ -110,6 +118,21 @@ def normalize_avatar_id(avatar_id: str | None) -> str:
         return DEFAULT_AVATAR_ID
     aliased = AVATAR_ALIASES.get(avatar_id, avatar_id)
     return aliased if aliased in AVATARS else DEFAULT_AVATAR_ID
+
+
+def is_avatar_unlocked(avatar_id: str | None, total_xp: int | float | None) -> bool:
+    normalized = normalize_avatar_id(avatar_id)
+    required = AVATAR_UNLOCK_XP.get(normalized, 0)
+    return int(total_xp or 0) >= required
+
+
+def require_unlocked_avatar(avatar_id: str | None, total_xp: int | float | None) -> str:
+    """Return a normalized avatar id or raise ValueError if still locked."""
+    normalized = normalize_avatar_id(avatar_id)
+    if not is_avatar_unlocked(normalized, total_xp):
+        needed = AVATAR_UNLOCK_XP.get(normalized, 0)
+        raise ValueError(f"Avatar unlocks at {needed} XP")
+    return normalized
 
 
 DEMO_USER_ID = "demo-user-id"

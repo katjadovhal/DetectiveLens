@@ -1,10 +1,11 @@
 import { api, escapeHtml } from '../api.js';
 import {
-  getAvatarEmoji,
+  getAvatarMarkup,
   getAvatarLabel,
   normalizeAvatarId,
   renderAvatarGridHtml,
   bindAvatarGrid,
+  isAvatarUnlocked,
 } from '../avatars.js';
 import {
   resolveActiveUserId,
@@ -36,10 +37,16 @@ export async function renderProfile(container) {
   const progress = getProgressSummary({ profile, home });
   const colorBlindness = Boolean(profile.colorBlindness);
   const backHref = withUserId('/challenge-staging', userId);
+  const totalXp = progress.totalXp;
+
+  let initialAvatar = normalizeAvatarId(profile.avatarId);
+  if (!isAvatarUnlocked(initialAvatar, totalXp)) {
+    initialAvatar = normalizeAvatarId(null);
+  }
 
   const state = {
     displayName: profile.displayName || '',
-    avatarId: normalizeAvatarId(profile.avatarId),
+    avatarId: initialAvatar,
     saving: false,
     message: '',
     error: '',
@@ -47,7 +54,6 @@ export async function renderProfile(container) {
   };
 
   function paint() {
-    const emoji = getAvatarEmoji(state.avatarId);
     container.innerHTML = `
       <div class="page-shell profile-page${colorBlindness ? ' profile-colorblind' : ''}">
         <div class="profile-top-actions">
@@ -56,7 +62,9 @@ export async function renderProfile(container) {
 
         <div class="profile-layout">
           <section class="panel-card profile-overview" aria-labelledby="profile-heading">
-            <div class="avatar-large profile-hero-avatar" aria-hidden="true">${emoji}</div>
+            <div class="avatar-large profile-hero-avatar" aria-hidden="true">
+              ${getAvatarMarkup(state.avatarId, { className: 'avatar-img avatar-img--large' })}
+            </div>
             <h1 id="profile-heading" class="page-title profile-display-name">${escapeHtml(state.displayName)}</h1>
             <p class="profile-level-badge">
               <span aria-hidden="true">🛡️</span>
@@ -106,8 +114,8 @@ export async function renderProfile(container) {
             </div>
 
             <h3 class="profile-avatar-heading">Choose your avatar</h3>
-            <p class="field-hint">Current: ${escapeHtml(getAvatarLabel(state.avatarId))}</p>
-            ${renderAvatarGridHtml(state.avatarId, { escapeHtml })}
+            <p class="field-hint">Current: ${escapeHtml(getAvatarLabel(state.avatarId))} · Dog unlocks at 400 XP, Cat at 600 XP</p>
+            ${renderAvatarGridHtml(state.avatarId, { escapeHtml, totalXp })}
 
             ${state.error ? `<p class="profile-feedback profile-feedback-error" role="alert">${escapeHtml(state.error)}</p>` : ''}
             ${state.message ? `<p class="profile-feedback profile-feedback-success" role="status">${escapeHtml(state.message)}</p>` : ''}
@@ -142,10 +150,17 @@ export async function renderProfile(container) {
       (id) => {
         state.avatarId = normalizeAvatarId(id);
         const hero = container.querySelector('.profile-hero-avatar');
-        if (hero) hero.textContent = getAvatarEmoji(state.avatarId);
+        if (hero) {
+          hero.innerHTML = getAvatarMarkup(state.avatarId, {
+            className: 'avatar-img avatar-img--large',
+          });
+        }
         const hint = container.querySelector('.field-hint');
-        if (hint) hint.textContent = `Current: ${getAvatarLabel(state.avatarId)}`;
+        if (hint) {
+          hint.textContent = `Current: ${getAvatarLabel(state.avatarId)} · Dog unlocks at 400 XP, Cat at 600 XP`;
+        }
       },
+      { totalXp },
     );
 
     container.querySelector('#profile-save-btn').addEventListener('click', async () => {

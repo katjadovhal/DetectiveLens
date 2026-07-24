@@ -1,5 +1,5 @@
 import { api, escapeHtml } from '../api.js';
-import { getAvatarEmoji } from '../avatars.js';
+import { getAvatarMarkup } from '../avatars.js';
 import {
   resolveActiveUserId,
   setLastUserId,
@@ -44,7 +44,7 @@ export async function renderSettings(container) {
       </header>
 
       <section class="panel-card settings-current" aria-label="Current account">
-        <div class="settings-current-avatar" aria-hidden="true">${getAvatarEmoji(profile.avatarId)}</div>
+        <div class="settings-current-avatar" aria-hidden="true">${getAvatarMarkup(profile.avatarId, { className: 'avatar-img avatar-img--settings' })}</div>
         <div class="settings-current-copy">
           <p class="settings-current-kicker">Signed in as</p>
           <h2 class="settings-current-name">${escapeHtml(name)}</h2>
