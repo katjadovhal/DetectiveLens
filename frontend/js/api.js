@@ -100,6 +100,8 @@ function mockSubmitFakePost(body) {
     correctAnswer: correctPostId,
     explanation: MOCK_CHALLENGE.content.explanation.bullets,
     xpEarned: isCorrect ? Math.max(0, 100 - body.hintsUsed * 10) : 0,
+    leveledUp: false,
+    currentLevel: 1,
     detectiveTip: !isCorrect
       ? {
           id: 'general_visual_check',

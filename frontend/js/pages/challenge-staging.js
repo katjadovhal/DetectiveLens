@@ -2,6 +2,7 @@ import { api, escapeHtml } from '../api.js';
 import { getAvatarMarkup } from '../avatars.js';
 import { setLastUserId } from '../session.js';
 import { getProgressSummary, renderXpBarHtml } from '../xp.js';
+import { triggerLevelUpAnimation } from '../animations.js';
 
 export async function renderChallengeStaging(container, userId) {
   container.innerHTML = '<div class="loading">Loading...</div>';
@@ -20,6 +21,18 @@ export async function renderChallengeStaging(container, userId) {
       home: homeData,
     });
     const dailyCompleted = dailyData.completed || false;
+
+    const url = new URL(window.location.href);
+    const shouldCelebrateFromQuery = url.searchParams.get('levelUp') === '1';
+    const levelStorageKey = `level-last-seen:${userId}`;
+    const lastSeenLevelRaw = window.sessionStorage.getItem(levelStorageKey);
+    const lastSeenLevel = Number(lastSeenLevelRaw);
+    const shouldCelebrateFromLevelDelta = Number.isFinite(lastSeenLevel)
+      ? progress.level > lastSeenLevel
+      : false;
+    const shouldCelebrateLevelUp = shouldCelebrateFromQuery || shouldCelebrateFromLevelDelta;
+
+    window.sessionStorage.setItem(levelStorageKey, String(progress.level));
 
     container.innerHTML = `
       <div class="page-shell stack-lg">
@@ -68,6 +81,16 @@ export async function renderChallengeStaging(container, userId) {
         </div>
       </div>
     `;
+
+    // Trigger level-up animation once when redirected from a successful level-up.
+    if (shouldCelebrateLevelUp) {
+      setTimeout(() => {
+        triggerLevelUpAnimation();
+      }, 300);
+
+      url.searchParams.delete('levelUp');
+      window.history.replaceState({}, '', `${url.pathname}${url.search}`);
+    }
 
     const dailyBtn = container.querySelector('#daily-btn');
     const shareBtn = container.querySelector('#share-btn');
