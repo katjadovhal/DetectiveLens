@@ -133,10 +133,10 @@ export async function renderProfile(container) {
             <p class="profile-empty-state">No badges yet. Keep playing challenges to earn your first badge!</p>
           </div>
         </section>
-      </div>
-    `;
+       </div>
+     `;
 
-    const nameInput = container.querySelector('#profile-display-name');
+     const nameInput = container.querySelector('#profile-display-name');
     nameInput.addEventListener('input', (e) => {
       state.displayName = e.target.value;
       state.nameError = '';

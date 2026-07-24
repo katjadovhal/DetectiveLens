@@ -366,10 +366,13 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     attempt["completedAt"] = now_iso()
 
     profile = get_profile(attempt["userId"], store)
+    leveled_up = False
+    updated_level = None
     if profile:
         profile["totalXp"] += xp_earned
         profile["currentLevelXp"] += xp_earned
-        apply_level_up(profile)
+        leveled_up = apply_level_up(profile)
+        updated_level = profile["currentLevel"]
         profile["lastChallengeId"] = attempt["challengeId"]
 
         # Update skill scores based on challenge result
@@ -406,6 +409,8 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
         "xpEarned": xp_earned,
         "detectiveTip": tip.to_dict() if tip else None,
         "updatedXp": updated_xp,
+        "leveledUp": leveled_up,
+        "currentLevel": updated_level,
     }
 
 

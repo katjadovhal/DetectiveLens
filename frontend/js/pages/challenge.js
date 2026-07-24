@@ -385,9 +385,15 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
       }
 
       if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
+        nextBtn.addEventListener('click', async () => {
           const nextUserId = nextBtn.dataset.userId;
-          window.location.href = `/challenge-staging?userId=${nextUserId}`;
+          const params = new URLSearchParams({ userId: nextUserId });
+          if (state.result?.leveledUp) {
+            params.set('levelUp', '1');
+          }
+
+          // Redirect to challenge staging
+          window.location.href = `/challenge-staging?${params.toString()}`;
         });
       }
     }
