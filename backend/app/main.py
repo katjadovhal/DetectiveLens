@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config import settings
-from app.routers import challenges, health, home, onboarding, personalization, profiles, users
+from app.routers import challenges, health, hints, home, onboarding, personalization, profiles, users
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
 
@@ -42,6 +42,7 @@ app.include_router(onboarding.router, prefix=API_PREFIX)
 app.include_router(profiles.router, prefix=API_PREFIX)
 app.include_router(users.router, prefix=API_PREFIX)
 app.include_router(challenges.router, prefix=API_PREFIX)
+app.include_router(hints.router, prefix=API_PREFIX)
 app.include_router(personalization.router, prefix=API_PREFIX)
 
 # Mount static files BEFORE catch-all routes

@@ -23,32 +23,19 @@ def get_detective_tip(
     correct_answer: str,
     challenge_type: str,
 ) -> DetectiveTipResult | None:
+    """Legacy submit-path tip. Neutral copy only — no personal claims about the learner."""
     if is_correct or challenge_type != "fake_post":
         return None
 
-    if selected_answer == "B" and correct_answer == "A":
-        return DetectiveTipResult(
-            id="trusts_familiar_brands",
-            message=(
-                "You often trust posts from familiar brands without checking whether "
-                "the content matches what they normally share."
-            ),
-            checklist=[
-                "Check if the message fits the source",
-                "Look for unusual or surprising claims",
-                "Ask whether the post supports the account's goals",
-            ],
-        )
-
     return DetectiveTipResult(
-        id="general_source_check",
+        id="general_visual_check",
         message=(
-            "Remember: even verified accounts can share surprising content. "
-            "Always check if it fits the source."
+            "A useful check for this kind of challenge is whether small details "
+            "stay consistent across the whole picture."
         ),
         checklist=[
-            "Who posted this?",
-            "Does the tone match the account?",
-            "Would you expect this message from them?",
+            "Compare texture and edges in both posts",
+            "Look for details that feel too perfect or inconsistent",
+            "Ask whether the whole scene could work in real life",
         ],
     )

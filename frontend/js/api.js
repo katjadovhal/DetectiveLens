@@ -102,13 +102,13 @@ function mockSubmitFakePost(body) {
     xpEarned: isCorrect ? Math.max(0, 100 - body.hintsUsed * 10) : 0,
     detectiveTip: !isCorrect
       ? {
-          id: 'trusts_familiar_brands',
+          id: 'general_visual_check',
           message:
-            'You often trust posts from familiar brands without checking whether the content matches what they normally share.',
+            'A useful check for this kind of challenge is whether small details stay consistent across the whole picture.',
           checklist: [
-            'Check if the message fits the source',
-            'Look for unusual or surprising claims',
-            "Ask whether the post supports the account's goals",
+            'Compare texture and edges in both posts',
+            'Look for details that feel too perfect or inconsistent',
+            'Ask whether the whole scene could work in real life',
           ],
         }
       : null,
@@ -222,6 +222,13 @@ export const api = {
     } catch {
       return mockSubmitFakePost(body);
     }
+  },
+
+  requestHint: async (challengeId, body) => {
+    return request(`/challenges/${challengeId}/hint`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
   },
 };
 

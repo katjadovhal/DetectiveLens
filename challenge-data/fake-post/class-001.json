@@ -4,9 +4,11 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["blurred_background", "shiny_texture"],
+  "skillCategoryIds": [
+    "backgrounds",
+    "content_authenticity"
+  ],
   "xpReward": 150,
-
   "content": {
     "posts": [
       {
@@ -18,14 +20,18 @@
         "imageUrl": "/public/assets/challenges/class/11.jpg"
       }
     ],
-
     "correctPostId": "B",
-
     "explanation": {
       "bullets": [
         "Image B was generated using AI.",
         "Image A is a real photograph."
       ]
     }
+  },
+  "grounding": {
+    "pre_answer_hint": "Compare how sharp or soft the background looks behind the people in each post.",
+    "stronger_hint": "Check whether skin, fabric, or classroom surfaces look unusually smooth or shiny in one image.",
+    "answer_explanation": "Image B was generated using AI. Image A is a real photograph. Soft background blur and overly smooth textures are common AI cues here.",
+    "detective_tip": "When a scene looks tidy, compare background edges and surface texture across the whole image."
   }
 }

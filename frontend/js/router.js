@@ -1,13 +1,13 @@
-import { renderHeader } from './header.js?v=settings-6';
-import { renderStart } from './pages/start.js?v=settings-6';
-import { renderOnboarding } from './pages/onboarding.js?v=settings-6';
-import { renderSelectUser } from './pages/select-user.js?v=settings-6';
-import { renderChallengeStaging } from './pages/challenge-staging.js?v=settings-6';
-import { renderChallenge } from './pages/challenge.js?v=settings-6';
-import { renderProfile } from './pages/profile.js?v=settings-6';
-import { renderSettings } from './pages/settings.js?v=settings-6';
-import { renderPlaceholder } from './pages/placeholder.js?v=settings-6';
-import { resolveActiveUserId, setLastUserId, withUserId } from './session.js?v=settings-6';
+import { renderHeader } from './header.js?v=hints-3';
+import { renderStart } from './pages/start.js?v=hints-3';
+import { renderOnboarding } from './pages/onboarding.js?v=hints-3';
+import { renderSelectUser } from './pages/select-user.js?v=hints-3';
+import { renderChallengeStaging } from './pages/challenge-staging.js?v=hints-3';
+import { renderChallenge } from './pages/challenge.js?v=hints-3';
+import { renderProfile } from './pages/profile.js?v=hints-3';
+import { renderSettings } from './pages/settings.js?v=hints-3';
+import { renderPlaceholder } from './pages/placeholder.js?v=hints-3';
+import { resolveActiveUserId, setLastUserId, withUserId } from './session.js?v=hints-3';
 
 const PLACEHOLDERS = {
   '/progress/xp': {

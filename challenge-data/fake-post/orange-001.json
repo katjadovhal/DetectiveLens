@@ -4,9 +4,11 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["shiny_texture", "blurred_textures", "color"],
+  "skillCategoryIds": [
+    "content_authenticity",
+    "backgrounds"
+  ],
   "xpReward": 150,
-
   "content": {
     "posts": [
       {
@@ -18,14 +20,18 @@
         "imageUrl": "/public/assets/challenges/oranges/9.jpg"
       }
     ],
-
     "correctPostId": "B",
-
     "explanation": {
       "bullets": [
         "Image B was generated using AI.",
         "Image A is a real photograph."
       ]
     }
+  },
+  "grounding": {
+    "pre_answer_hint": "Compare the fruit surface and the background textures in both posts.",
+    "stronger_hint": "Look for unusually shiny skin on the orange and for background areas that look softly blurred or uneven.",
+    "answer_explanation": "Image B was generated using AI. Image A is a real photograph. Shiny surfaces and inconsistent background texture are useful cues.",
+    "detective_tip": "On close-up objects, compare surface shine with nearby background detail for consistency."
   }
 }

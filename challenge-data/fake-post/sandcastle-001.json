@@ -4,9 +4,11 @@
   "difficulty": "easy",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["blurred_background", "shiny_texture", "waxy_perfect"],
+  "skillCategoryIds": [
+    "backgrounds",
+    "content_authenticity"
+  ],
   "xpReward": 50,
-
   "content": {
     "posts": [
       {
@@ -18,14 +20,18 @@
         "imageUrl": "/public/assets/challenges/sandcastle/13a.jpg"
       }
     ],
-
     "correctPostId": "A",
-
     "explanation": {
       "bullets": [
-        "Image B was generated using AI.",
-        "Image A is a real photograph."
+        "Image A was generated using AI.",
+        "Image B is a real photograph."
       ]
     }
+  },
+  "grounding": {
+    "pre_answer_hint": "Compare sand texture, edges of the castle, and how soft the background looks.",
+    "stronger_hint": "Look for overly smooth or shiny sand and for background blur that does not match a normal photo.",
+    "answer_explanation": "Image A was generated using AI. Image B is a real photograph. Soft backgrounds and overly smooth textures are key cues.",
+    "detective_tip": "On outdoor objects, compare fine surface texture with how the background falls out of focus."
   }
 }

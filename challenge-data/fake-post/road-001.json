@@ -4,9 +4,11 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["functional", "color"],
+  "skillCategoryIds": [
+    "evidence_evaluation",
+    "content_authenticity"
+  ],
   "xpReward": 150,
-
   "content": {
     "posts": [
       {
@@ -18,14 +20,18 @@
         "imageUrl": "/public/assets/challenges/road/7a.jpg"
       }
     ],
-
     "correctPostId": "A",
-
     "explanation": {
       "bullets": [
         "Image A was generated using AI, it features unrealistic road layout and impossible highway connections, as well as oversaturated colors.",
         "Image B is a real photograph."
       ]
     }
+  },
+  "grounding": {
+    "pre_answer_hint": "Trace how the roads connect and whether the layout could work in real life.",
+    "stronger_hint": "Check for impossible highway connections and colors that look too saturated or unnatural.",
+    "answer_explanation": "Image A was generated using AI. It shows an unrealistic road layout and oversaturated colors. Image B is a real photograph.",
+    "detective_tip": "For maps and roads, ask whether the layout could function, not only whether it looks dramatic."
   }
 }
