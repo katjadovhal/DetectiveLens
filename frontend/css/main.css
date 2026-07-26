@@ -753,59 +753,6 @@ ul {
   text-align: left;
 }
 
-.investigation-title {
-  margin: 0 0 1.25rem;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-gray-700);
-}
-
-.hint-card {
-  margin-bottom: 1rem;
-  padding: 1rem 1.25rem;
-  border: 2px solid var(--color-gray-200);
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.hint-card--active {
-  border-color: var(--color-primary);
-  background: white;
-}
-
-.hint-card-label {
-  margin: 0 0 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.hint-card-body {
-  margin: 0;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: var(--color-gray-700);
-}
-
-.hint-stronger-btn {
-  width: 100%;
-  margin-top: 0.5rem;
-}
-
-.hint-status,
-.hint-error,
-.explanation-loading,
-.tip-loading {
-  margin: 0.75rem 0 0;
-  font-size: 1rem;
-  color: var(--color-gray-600);
-}
-
-.hint-error {
-  color: #b42318;
-}
-
 .hint-btn {
   width: 100%;
   min-height: var(--touch-min);
@@ -822,34 +769,6 @@ ul {
   border-color: var(--color-primary);
   background: white;
   font-weight: 700;
-}
-
-.challenge-live {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.feedback-why {
-  margin-top: 2rem;
-}
-
-.explanation-prose {
-  max-width: 42rem;
-  margin: 1.5rem auto 0;
-  padding: 1.25rem 1.5rem;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.75);
-  text-align: left;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  color: var(--color-gray-700);
 }
 
 .mascot-row {
@@ -929,33 +848,8 @@ ul {
   background: var(--color-lavender);
 }
 
-.tip-box--loading {
-  opacity: 0.85;
-}
-
 .tip-icon {
   font-size: 3.75rem;
-}
-
-.tip-heading {
-  margin: 0 0 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--color-gray-800);
-}
-
-.tip-mode {
-  margin: 0 0 0.75rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--color-gray-600);
-}
-
-.tip-message {
-  margin: 0;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: var(--color-gray-700);
 }
 
 .tip-checklist {
@@ -974,17 +868,6 @@ ul {
 .check-icon {
   color: var(--color-success);
   font-size: 1.5rem;
-}
-
-.daily-completion-message {
-  margin: 1.5rem 0;
-  text-align: center;
-  color: var(--color-gray-700);
-}
-
-.daily-completion-message p {
-  margin: 0.5rem 0;
-  font-size: 1.125rem;
 }
 
 /* Placeholder */

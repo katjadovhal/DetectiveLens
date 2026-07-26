@@ -59,18 +59,6 @@ Where a citation from course slides is not verified in the repository, a **Refer
 - Selected states always include border + checkmark + accessible text, not color alone.
 - `prefers-reduced-motion` disables non-essential transitions.
 
-## Hint engine (Phase 1–2)
-
-- Persist `ageBand` only on profiles (derived once from onboarding age; exact age is not stored).
-- Hint stages are server-authorized: pre-answer stages work without an attempt; `answer_explanation` and `detective_tip` require a completed stored attempt and validate optional client claims against that attempt.
-- Pilot challenge `skillCategoryIds` use canonical `SKILL_CATEGORIES` ids; legacy labels map via `SKILL_ID_ALIASES`.
-- Pre-answer hints never use `explanation.bullets`; legacy challenges fall back to answer-neutral curated copy.
-- Locale is accepted in the API schema but MVP responses are English-only (`en` fallback).
-- Deterministic curated/grounded hints work with `HINT_ENGINE_ENABLED=false` and without Ollama installed.
-- Phase 2 optional local Ollama path (`httpx` → `/api/chat`): structured JSON, validate + repair-once, timeout → curated fallback, in-memory cache key includes personalization mode.
-- Backend chooses `neutral` vs `skill_practice`; the model only age-adapts grounded content under a fixed intro stem.
-- Phase 3 challenge UI: progressive `pre_answer_hint` → `stronger_hint`, Show why / Why via `answer_explanation`, Detective Tip via `detective_tip`, `aria-live` status updates, and attempt-based tip stems on canonical skill counts (≥3 → skill_practice).
-
 ## Out of scope (explicitly deferred)
 
 - Badge earning rules and persistence

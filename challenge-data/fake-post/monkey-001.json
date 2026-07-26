@@ -4,12 +4,9 @@
   "difficulty": "easy",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": [
-    "content_authenticity",
-    "faces",
-    "evidence_evaluation"
-  ],
+  "skillCategoryIds": ["color", "emotions", "waxy_perfect", "sociocultural", "proportions"],
   "xpReward": 50,
+
   "content": {
     "posts": [
       {
@@ -21,18 +18,14 @@
         "imageUrl": "/public/assets/challenges/monkey/6.png"
       }
     ],
+
     "correctPostId": "B",
+
     "explanation": {
       "bullets": [
         "Image B was generated using AI, it features a pitiful human-like face expression, over-edited perfect features, smooth fur and skin, anthropomorphic clothing, and unnatural face proportions.",
         "Image A is a real photograph."
       ]
     }
-  },
-  "grounding": {
-    "pre_answer_hint": "Compare the face expression, fur texture, and body proportions in both posts.",
-    "stronger_hint": "Check whether the face looks too human-like or too perfect, and whether clothing or proportions feel unnatural.",
-    "answer_explanation": "Image B was generated using AI. It shows an overly human-like expression, smoothed features, and unnatural proportions. Image A is a real photograph.",
-    "detective_tip": "For animal images, compare facial expression, fur texture, and whether clothing or posture looks believable."
   }
 }

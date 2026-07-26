@@ -41,7 +41,7 @@
       "currentLevelXp": 0,
       "dailyStreak": 0,
       "onboardingCompleted": true,
-      "lastChallengeId": "library-001",
+      "lastChallengeId": "road-001",
       "lastChallengeProgress": null,
       "settings": {
         "notifications": true,
@@ -749,51 +749,6 @@
       "timeSpentMs": null,
       "xpEarned": 150,
       "scoreBreakdown": null
-    },
-    {
-      "id": "018ffd2c-b658-4654-8877-11b9f391875a",
-      "userId": "demo-user-id",
-      "challengeId": "supermarket-001",
-      "attemptNumber": 1,
-      "startedAt": "2026-07-24T13:46:20.320219",
-      "completedAt": "2026-07-24T13:46:38.052715",
-      "selectedAnswer": "B",
-      "isCorrect": false,
-      "hintsUsed": 2,
-      "hintsViewed": [],
-      "timeSpentMs": null,
-      "xpEarned": 0,
-      "scoreBreakdown": null
-    },
-    {
-      "id": "17d0a8e4-432e-4d6e-9426-d149c18ff284",
-      "userId": "demo-user-id",
-      "challengeId": "library-001",
-      "attemptNumber": 1,
-      "startedAt": "2026-07-24T13:46:56.916487",
-      "completedAt": "2026-07-24T13:46:59.445137",
-      "selectedAnswer": "A",
-      "isCorrect": false,
-      "hintsUsed": 0,
-      "hintsViewed": [],
-      "timeSpentMs": null,
-      "xpEarned": 0,
-      "scoreBreakdown": null
-    },
-    {
-      "id": "be1a7de4-086a-4d56-8baa-5a07a860d418",
-      "userId": "demo-user-id",
-      "challengeId": "class-001",
-      "attemptNumber": 1,
-      "startedAt": "2026-07-24T13:47:07.503672",
-      "completedAt": null,
-      "selectedAnswer": null,
-      "isCorrect": null,
-      "hintsUsed": 0,
-      "hintsViewed": [],
-      "timeSpentMs": null,
-      "xpEarned": 0,
-      "scoreBreakdown": null
     }
   ],
   "xp_transactions": [
@@ -964,28 +919,12 @@
       "source": "challenge",
       "referenceId": "efcc3bc7-0c19-497e-98e1-1d3c7d91077c",
       "createdAt": "2026-07-05T17:43:10.184127"
-    },
-    {
-      "id": "b654b067-39d6-4733-8f08-0dc642481aaa",
-      "userId": "demo-user-id",
-      "amount": 0,
-      "source": "challenge",
-      "referenceId": "018ffd2c-b658-4654-8877-11b9f391875a",
-      "createdAt": "2026-07-24T13:46:38.052871"
-    },
-    {
-      "id": "833b3565-2429-4154-adb6-7e5ccf3d0b39",
-      "userId": "demo-user-id",
-      "amount": 0,
-      "source": "challenge",
-      "referenceId": "17d0a8e4-432e-4d6e-9426-d149c18ff284",
-      "createdAt": "2026-07-24T13:46:59.445342"
     }
   ],
   "detective_tips": [],
   "daily_missions": [],
   "daily_challenge_cache": {
-    "date": "2026-07-24",
-    "challengeId": "marathon-001"
+    "date": "2026-07-05",
+    "challengeId": "monkey-001"
   }
 }

@@ -104,13 +104,13 @@ function mockSubmitFakePost(body) {
     currentLevel: 1,
     detectiveTip: !isCorrect
       ? {
-          id: 'general_visual_check',
+          id: 'trusts_familiar_brands',
           message:
-            'A useful check for this kind of challenge is whether small details stay consistent across the whole picture.',
+            'You often trust posts from familiar brands without checking whether the content matches what they normally share.',
           checklist: [
-            'Compare texture and edges in both posts',
-            'Look for details that feel too perfect or inconsistent',
-            'Ask whether the whole scene could work in real life',
+            'Check if the message fits the source',
+            'Look for unusual or surprising claims',
+            "Ask whether the post supports the account's goals",
           ],
         }
       : null,
@@ -224,13 +224,6 @@ export const api = {
     } catch {
       return mockSubmitFakePost(body);
     }
-  },
-
-  requestHint: async (challengeId, body) => {
-    return request(`/challenges/${challengeId}/hint`, {
-      method: 'POST',
-      body: JSON.stringify(body),
-    });
   },
 };
 

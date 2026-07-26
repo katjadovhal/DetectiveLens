@@ -4,11 +4,9 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": [
-    "content_authenticity",
-    "backgrounds"
-  ],
+  "skillCategoryIds": ["waxy_perfect", "shiny_texture", "blurred_background"],
   "xpReward": 150,
+
   "content": {
     "posts": [
       {
@@ -20,18 +18,14 @@
         "imageUrl": "/public/assets/challenges/marathon/10a.jpg"
       }
     ],
+
     "correctPostId": "A",
+
     "explanation": {
       "bullets": [
         "Image A was generated using AI.",
         "Image B is a real photograph."
       ]
     }
-  },
-  "grounding": {
-    "pre_answer_hint": "Compare faces, clothing texture, and the crowd or background behind the runners.",
-    "stronger_hint": "Look for overly smooth skin or clothing and for background areas that feel soft or inconsistent.",
-    "answer_explanation": "Image A was generated using AI. Image B is a real photograph. Waxy skin, shiny fabric, and softened backgrounds are key cues.",
-    "detective_tip": "In crowd photos, check whether faces and fabric details stay consistent across near and far subjects."
   }
 }

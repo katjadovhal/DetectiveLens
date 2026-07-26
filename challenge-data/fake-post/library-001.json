@@ -4,11 +4,9 @@
   "difficulty": "medium",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": [
-    "backgrounds",
-    "content_authenticity"
-  ],
+  "skillCategoryIds": ["blurred_background", "shiny_texture", "color", "waxy_perfect"],
   "xpReward": 100,
+
   "content": {
     "posts": [
       {
@@ -20,18 +18,14 @@
         "imageUrl": "/public/assets/challenges/library/8.jpg"
       }
     ],
+
     "correctPostId": "B",
+
     "explanation": {
       "bullets": [
         "Image B was generated using AI.",
         "Image A is a real photograph."
       ]
     }
-  },
-  "grounding": {
-    "pre_answer_hint": "Look past the people and compare shelves, books, and background detail in both posts.",
-    "stronger_hint": "Notice whether surfaces look waxy or too evenly lit, and whether the background stays consistent.",
-    "answer_explanation": "Image B was generated using AI. Image A is a real photograph. Soft backgrounds and overly polished textures are useful clues.",
-    "detective_tip": "In indoor scenes, check whether background objects stay sharp and believable from edge to edge."
   }
 }

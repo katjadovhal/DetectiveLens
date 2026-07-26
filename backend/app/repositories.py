@@ -5,16 +5,12 @@ from datetime import datetime, date
 from pathlib import Path
 
 from app.constants import (
-    DEFAULT_AGE_BAND,
     DIFFICULTY_MAP,
     LEVELS,
     SKILL_CATEGORIES,
     WEIGHT_WEAKNESS,
     WEIGHT_DIFFICULTY_FIT,
     XP_RULES,
-    age_to_age_band,
-    canonicalize_skill_id,
-    canonicalize_skill_ids,
     normalize_avatar_id,
     require_unlocked_avatar,
 )
@@ -66,13 +62,11 @@ def _load_challenges_from_files() -> list[dict]:
                 "title": data["title"],
                 "instruction": data["instruction"],
                 "content": data["content"],
-                "skillCategoryIds": canonicalize_skill_ids(data.get("skillCategoryIds")),
+                "skillCategoryIds": data["skillCategoryIds"],
                 "xpReward": data["xpReward"],
                 "isDailyEligible": data.get("isDailyEligible", True),
                 "active": data.get("active", True),
                 "hints": hints,
-                "grounding": data.get("grounding"),
-                "hintFallbacks": data.get("hintFallbacks"),
             }
         )
 
@@ -202,7 +196,6 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
                 "completedChallengeCount": 0,
                 "onboardingCompleted": False,
                 "colorBlindness": False,
-                "ageBand": DEFAULT_AGE_BAND,
             }
         }
 
@@ -219,7 +212,6 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
             "completedChallengeCount": _completed_challenge_count(user_id, s),
             "onboardingCompleted": profile["onboardingCompleted"],
             "colorBlindness": profile.get("colorBlindness", False),
-            "ageBand": profile.get("ageBand", DEFAULT_AGE_BAND),
             "settings": profile["settings"],
         }
     }
@@ -283,7 +275,6 @@ def create_user(store: dict, body: dict) -> dict:
         "dailyStreak": 0,
         "onboardingCompleted": True,
         "colorBlindness": body.get("colorBlindness", False),
-        "ageBand": age_to_age_band(int(body["age"])),
         "lastChallengeId": None,
         "lastChallengeProgress": None,
         "settings": {"notifications": True, "sound": True, "privacy": False},
@@ -314,16 +305,10 @@ def start_challenge(store: dict, user_id: str, challenge_id: str) -> dict:
     if not challenge:
         raise ValueError("Challenge not found")
 
-    prior_attempts = [
-        a
-        for a in store.get("challenge_attempts", [])
-        if a.get("userId") == user_id and a.get("challengeId") == challenge["id"]
-    ]
     attempt = {
         "id": new_id(),
         "userId": user_id,
         "challengeId": challenge["id"],
-        "attemptNumber": len(prior_attempts) + 1,
         "startedAt": now_iso(),
         "completedAt": None,
         "selectedAnswer": None,
@@ -335,11 +320,7 @@ def start_challenge(store: dict, user_id: str, challenge_id: str) -> dict:
         "scoreBreakdown": None,
     }
     store["challenge_attempts"].append(attempt)
-    return {
-        "sessionId": attempt["id"],
-        "challengeId": challenge["id"],
-        "attemptNumber": attempt["attemptNumber"],
-    }
+    return {"sessionId": attempt["id"], "challengeId": challenge["id"]}
 
 
 @with_store
@@ -401,7 +382,6 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
 
     return {
         "attemptId": attempt["id"],
-        "attemptNumber": attempt.get("attemptNumber"),
         "isCorrect": is_correct,
         "selectedAnswer": body["selectedPostId"],
         "correctAnswer": correct_post_id,
@@ -487,8 +467,8 @@ def clamp(x: float, lo: float, hi: float) -> float:
 
 
 def update_skill_profile(store: dict, user_id: str, challenge: dict, correct: bool) -> None:
-    """Update user skill profile after a challenge using canonical skill ids only."""
-    skill_categories = canonicalize_skill_ids(challenge.get("skillCategoryIds", []))
+    """Update user skill profile after a challenge"""
+    skill_categories = challenge.get("skillCategoryIds", [])
     if not skill_categories:
         return
 
@@ -496,10 +476,7 @@ def update_skill_profile(store: dict, user_id: str, challenge: dict, correct: bo
     delta = (1 / n) if correct else -(1 / n)
 
     for skill_id in skill_categories:
-        canonical = canonicalize_skill_id(skill_id)
-        if not canonical:
-            continue
-        score_entry = find_one(store["skill_scores"], userId=user_id, categoryId=canonical)
+        score_entry = find_one(store["skill_scores"], userId=user_id, categoryId=skill_id)
         if score_entry:
             score_entry["score"] = clamp(score_entry["score"] + delta, -1, 1)
             score_entry["attempts"] = score_entry.get("attempts", 0) + 1
@@ -509,7 +486,7 @@ def update_skill_profile(store: dict, user_id: str, challenge: dict, correct: bo
 
 def weakness_signal(user_id: str, challenge: dict, store: dict) -> float:
     """Calculate weakness signal for challenge recommendation"""
-    skill_categories = canonicalize_skill_ids(challenge.get("skillCategoryIds", []))
+    skill_categories = challenge.get("skillCategoryIds", [])
     if not skill_categories:
         return 0
 
@@ -525,7 +502,7 @@ def weakness_signal(user_id: str, challenge: dict, store: dict) -> float:
 
 def user_ability(user_id: str, challenge: dict, store: dict) -> float:
     """Get user ability for skills touched by this challenge"""
-    skill_categories = canonicalize_skill_ids(challenge.get("skillCategoryIds", []))
+    skill_categories = challenge.get("skillCategoryIds", [])
     if not skill_categories:
         return 0
 

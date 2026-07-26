@@ -4,10 +4,9 @@
   "difficulty": "hard",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": [
-    "content_authenticity"
-  ],
+  "skillCategoryIds": ["shiny_texture", "color"],
   "xpReward": 150,
+
   "content": {
     "posts": [
       {
@@ -19,18 +18,14 @@
         "imageUrl": "/public/assets/challenges/supermarket/12a.jpg"
       }
     ],
+
     "correctPostId": "A",
+
     "explanation": {
       "bullets": [
-        "Image A was generated using AI.",
-        "Image B is a real photograph."
+        "Image B was generated using AI.",
+        "Image A is a real photograph."
       ]
     }
-  },
-  "grounding": {
-    "pre_answer_hint": "Compare packaging shine, product edges, and color consistency across both posts.",
-    "stronger_hint": "Look for surfaces that look too glossy or colors that feel oddly even across products.",
-    "answer_explanation": "Image A was generated using AI. Image B is a real photograph. Overly shiny or evenly polished product surfaces are useful cues.",
-    "detective_tip": "In store photos, compare packaging shine and edge detail across nearby products."
   }
 }
