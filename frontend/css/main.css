@@ -2166,6 +2166,70 @@ button.profile-pick-card,
   outline-offset: 2px;
 }
 
+/* Share modal */
+.share-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(18, 26, 43, 0.45);
+}
+
+.share-modal {
+  width: min(100%, 34rem);
+  border-radius: 0.6rem;
+  border: 1px solid #d1d5db;
+  background: var(--color-surface);
+  box-shadow: 0 14px 32px rgba(18, 26, 43, 0.3);
+}
+
+.share-modal:focus {
+  outline: none;
+}
+
+.share-modal:focus-visible {
+  outline: 3px solid rgba(105, 72, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.share-modal-title {
+  margin: 0;
+  padding: 1rem 1.35rem 0.75rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-gray-700);
+}
+
+.share-modal-link {
+  width: calc(100% - 2.7rem);
+  margin: 0 1.35rem 1rem;
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  color: var(--color-gray-600);
+}
+
+.share-modal-link:focus-visible {
+  outline: 2px solid rgba(105, 72, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.share-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.75rem 1.35rem 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.share-modal-actions .btn {
+  min-height: 2.75rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 1rem;
+}
+
 @media (max-width: 480px) {
   .header-nav-link {
     font-size: 0.85rem;
