@@ -1,4 +1,4 @@
-import { renderHeader } from './header.js?v=hq-2';
+import { renderHeader } from './header.js?v=hq-5';
 import { renderStart } from './pages/start.js?v=hq-1';
 import { renderOnboarding } from './pages/onboarding.js?v=hq-1';
 import { renderSelectUser } from './pages/select-user.js?v=hq-1';
@@ -7,23 +7,7 @@ import { renderChallenge } from './pages/challenge.js?v=hq-4';
 import { renderProfile } from './pages/profile.js?v=hq-2';
 import { renderSettings } from './pages/settings.js?v=hq-1';
 import { renderDetectiveHQ } from './pages/detective-hq.js?v=hq-1';
-import { renderPlaceholder } from './pages/placeholder.js?v=hq-1';
 import { resolveActiveUserId, setLastUserId, withUserId } from './session.js?v=hq-1';
-
-const PLACEHOLDERS = {
-  '/progress/xp': {
-    title: 'XP & Levels',
-    description: 'Track your detective rank and points. Coming in Sprint 3.',
-  },
-  '/profile/statistics': {
-    title: 'Statistics',
-    description: 'View your total XP, challenges played, and accuracy. Coming in Sprint 3.',
-  },
-  '/profile/help': {
-    title: 'Help & Support',
-    description: 'FAQ, contact, and feedback. Coming in Sprint 3.',
-  },
-};
 
 function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
@@ -40,7 +24,6 @@ function matchRoute(path) {
   if (path === '/profile/settings') return { name: 'settings' };
   const challengeMatch = path.match(/^\/challenges\/fake-post\/(.+)$/);
   if (challengeMatch) return { name: 'challenge', params: { id: challengeMatch[1] } };
-  if (PLACEHOLDERS[path]) return { name: 'placeholder', params: PLACEHOLDERS[path] };
   return { name: 'start' };
 }
 
@@ -92,15 +75,11 @@ async function navigate(path, push = true) {
     setLastUserId(userId);
     await renderHeader(true);
     await renderSettings(main);
-  } else {
+  } else if (route.name === 'challenge') {
     await renderHeader(true);
-    if (route.name === 'challenge') {
-      const mode = new URL(rawPath, window.location.origin).searchParams.get('mode') || getQueryParam('mode');
-      if (userId) setLastUserId(userId);
-      await renderChallenge(main, route.params.id, userId, mode);
-    } else if (route.name === 'placeholder') {
-      renderPlaceholder(main, route.params.title, route.params.description);
-    }
+    const mode = new URL(rawPath, window.location.origin).searchParams.get('mode') || getQueryParam('mode');
+    if (userId) setLastUserId(userId);
+    await renderChallenge(main, route.params.id, userId, mode);
   }
 
   if (push) {

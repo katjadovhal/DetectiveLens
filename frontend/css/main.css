@@ -134,11 +134,7 @@ ul {
   font-size: 1.25rem;
   font-weight: 700;
   color: var(--color-diamond);
-  transition: background 0.15s;
-}
-
-.xp-link:hover {
-  background: #eff6ff;
+  cursor: default;
 }
 
 .icon-btn {

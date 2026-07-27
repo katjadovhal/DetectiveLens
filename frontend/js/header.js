@@ -6,9 +6,7 @@ import { getProgressSummary } from './xp.js';
 function menuItems(userId) {
   return [
     { label: 'Profile', to: withUserId('/profile', userId) },
-    { label: 'Statistics', to: withUserId('/profile/statistics', userId) },
     { label: 'Settings', to: withUserId('/profile/settings', userId) },
-    { label: 'Help & Support', to: withUserId('/profile/help', userId) },
   ];
 }
 
@@ -73,11 +71,11 @@ function paintHeaderShell({ userId, xp, avatarHtml, notifications, unreadCount }
             ? `<a href="${withUserId('/detective-hq', userId)}" class="header-nav-link" data-link>Detective HQ</a>`
             : ''
         }
-        <a href="${withUserId('/progress/xp', userId)}" class="xp-link" data-link title="View your XP and level">
+        <span class="xp-link" title="Your XP" aria-label="${xp} XP">
           <span aria-hidden="true">💎</span>
           <span id="header-xp">${xp}</span>
           <span class="xp-link-label">XP</span>
-        </a>
+        </span>
         <div class="dropdown" id="notification-dropdown">
           <button
             type="button"
