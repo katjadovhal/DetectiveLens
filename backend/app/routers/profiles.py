@@ -17,6 +17,17 @@ def get_profile(user_id: str):
         )
 
 
+@router.get("/{user_id}/learning-insights")
+def learning_insights(user_id: str):
+    try:
+        return repo.get_learning_insights_data(user_id)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "SERVER_ERROR", "message": str(e), "statusCode": 500},
+        )
+
+
 @router.patch("/{user_id}")
 def update_profile(body: UpdateProfile, user_id: str):
     try:

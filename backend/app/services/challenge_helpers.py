@@ -7,6 +7,9 @@ def strip_correct_answer(challenge_type: str, content: dict) -> dict:
 
     if ctype == "fake_post":
         safe.pop("correctPostId", None)
+        explanation = safe.pop("explanation", None)
+        if explanation is not None:
+            safe["explanation"] = {"bullets": []}
     elif ctype == "is_it_real":
         safe.pop("correctAnswer", None)
     elif ctype == "find_clues":

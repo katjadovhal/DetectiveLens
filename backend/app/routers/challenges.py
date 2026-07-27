@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException
 
 from app import repositories as repo
 from app.schemas import SubmitFakePostAnswer
+from app.schemas import HintRequest
+from app.services.hint_engine.service import generate_hint
 
 router = APIRouter(prefix="/challenges", tags=["challenges"])
 
@@ -88,6 +90,48 @@ def start_challenge(challenge_id: str, user_id: str):
         raise HTTPException(
             status_code=404,
             detail={"error": "NOT_FOUND", "message": "Challenge not found", "statusCode": 404},
+        )
+
+
+@router.post("/{challenge_id}/hint")
+async def request_hint(challenge_id: str, body: HintRequest):
+    challenge = repo.get_challenge(challenge_id)
+    if not challenge:
+        raise HTTPException(
+            status_code=404,
+            detail={"error": "NOT_FOUND", "message": "Challenge not found", "statusCode": 404},
+        )
+
+    profile = repo.get_profile(body.userId)
+
+    def record_view(session_id: str, hint_id: str) -> None:
+        repo.record_hint_view(session_id, hint_id)
+
+    try:
+        response = await generate_hint(
+            challenge,
+            user_id=body.userId,
+            stage=body.stage,
+            session_id=body.sessionId,
+            locale=body.locale,
+            challenges=repo.get_challenges(),
+            profile=profile,
+            record_hint_view_fn=record_view,
+        )
+        return response.model_dump()
+    except ValueError as exc:
+        message = str(exc)
+        status = 400
+        if message == "Completed attempt required":
+            status = 403
+        raise HTTPException(
+            status_code=status,
+            detail={"error": "VALIDATION_ERROR", "message": message, "statusCode": status},
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "SERVER_ERROR", "message": str(exc), "statusCode": 500},
         )
 
 
