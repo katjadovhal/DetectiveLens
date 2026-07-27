@@ -1811,3 +1811,275 @@ button.profile-pick-card,
   font-weight: 700;
   color: var(--color-primary);
 }
+
+/* —— Detective HQ —— */
+.detective-hq-page {
+  max-width: none;
+  width: auto;
+  margin: -1.75rem calc(-1 * var(--page-gutter)) -2.5rem;
+  padding: 1.75rem var(--page-gutter) 2.5rem;
+  background: #ffffff;
+  min-height: calc(100vh - 4.25rem);
+}
+
+.detective-hq-title {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 800;
+  color: var(--color-gray-800);
+}
+
+.detective-hq-room {
+  position: relative;
+  width: min(100%, 56rem);
+  margin: 0 auto;
+}
+
+.detective-hq-room-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: min(70vh, 40rem);
+  object-fit: contain;
+  object-position: center;
+}
+
+.detective-hq-shop-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.detective-hq-shop-btn:hover {
+  transform: scale(1.05);
+}
+
+.detective-hq-shop-btn:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.detective-hq-shop-btn-img {
+  display: block;
+  width: clamp(3.5rem, 12vw, 5.5rem);
+  height: auto;
+  filter: drop-shadow(0 2px 6px rgba(18, 26, 43, 0.25));
+}
+
+.header-nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-gray-800);
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.header-nav-link:hover {
+  background: var(--color-background);
+}
+
+.header-nav-link:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Shop modal */
+.shop-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(18, 26, 43, 0.45);
+}
+
+.shop-modal {
+  width: min(100%, 36rem);
+  max-height: min(90vh, 44rem);
+  overflow: auto;
+  padding: 1.25rem 1.25rem 1.5rem;
+  border-radius: 1.25rem;
+  border: 2px solid #f0e0c8;
+  background: linear-gradient(180deg, #fffaf3 0%, #ffffff 40%);
+  box-shadow: 0 16px 40px rgba(18, 26, 43, 0.2);
+}
+
+.shop-modal:focus {
+  outline: none;
+}
+
+.shop-modal:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.shop-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.shop-modal-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-gray-800);
+}
+
+.shop-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: none;
+  border-radius: 9999px;
+  background: #f5ebe0;
+  color: var(--color-gray-800);
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.shop-modal-close:hover {
+  background: #ead9c4;
+}
+
+.shop-modal-close:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.shop-modal-xp {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-diamond);
+}
+
+.shop-modal-message {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.shop-modal-message--success {
+  background: #e8f7ee;
+  color: #1b6b3a;
+}
+
+.shop-modal-message--error {
+  background: #fdecea;
+  color: #9b1c1c;
+}
+
+.shop-modal-message--info {
+  background: #eef4ff;
+  color: #1e3a8a;
+}
+
+.shop-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.shop-item-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid #f0e0c8;
+  background: #ffffff;
+  text-align: center;
+}
+
+.shop-item-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 5.5rem;
+}
+
+.shop-item-image {
+  max-width: 100%;
+  max-height: 6.5rem;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.shop-item-name {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-gray-800);
+}
+
+.shop-item-price {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-diamond);
+}
+
+.shop-item-buy {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.shop-item-buy:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .header-nav-link {
+    font-size: 0.85rem;
+    padding: 0.35rem 0.55rem;
+  }
+
+  .detective-hq-shop-btn {
+    top: 0.35rem;
+    right: 0.35rem;
+  }
+
+  .shop-modal {
+    padding: 1rem;
+  }
+
+  .shop-modal-grid {
+    gap: 0.65rem;
+  }
+
+  .shop-item-name {
+    font-size: 0.85rem;
+  }
+}

@@ -171,6 +171,7 @@ export const api = {
           completedChallengeCount: 0,
           onboardingCompleted: false,
           colorBlindness: false,
+          hqOwnedItemIds: [],
         },
       };
     }
@@ -180,6 +181,13 @@ export const api = {
     return request(`/profiles/${userId}`, {
       method: 'PATCH',
       body: JSON.stringify(body),
+    });
+  },
+
+  purchaseHqItem: async (userId, itemId) => {
+    return request(`/profiles/${userId}/hq/purchase`, {
+      method: 'POST',
+      body: JSON.stringify({ itemId }),
     });
   },
 

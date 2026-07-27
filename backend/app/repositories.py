@@ -13,6 +13,7 @@ from app.constants import (
     normalize_avatar_id,
     require_unlocked_avatar,
 )
+from app.hq_shop import HQ_SHOP_BY_ID
 from app.services.challenge_helpers import strip_correct_answer
 from app.services.personalization import get_detective_tip
 from app.storage import (
@@ -237,6 +238,7 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
                 "completedChallengeCount": 0,
                 "onboardingCompleted": False,
                 "colorBlindness": False,
+                "hqOwnedItemIds": [],
             }
         }
 
@@ -254,6 +256,7 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
             "onboardingCompleted": profile["onboardingCompleted"],
             "colorBlindness": profile.get("colorBlindness", False),
             "settings": profile["settings"],
+            "hqOwnedItemIds": list(profile.get("hqOwnedItemIds") or []),
         }
     }
 
@@ -282,6 +285,40 @@ def update_profile(store: dict, user_id: str, body: dict) -> dict:
             "avatarId": normalize_avatar_id(profile.get("avatarId")),
             "settings": profile["settings"],
         }
+    }
+
+
+@with_store
+def purchase_hq_item(store: dict, user_id: str, item_id: str) -> dict:
+    """Spend profile totalXp on a Detective HQ shop item (no duplicate buys)."""
+    profile = get_profile(user_id, store)
+    if not profile:
+        raise ValueError("Profile not found")
+
+    item = HQ_SHOP_BY_ID.get(item_id)
+    if not item:
+        raise ValueError("Unknown shop item")
+
+    owned = list(profile.get("hqOwnedItemIds") or [])
+    if item_id in owned:
+        raise ValueError("Already owned")
+
+    price = int(item["price"])
+    total_xp = int(profile.get("totalXp") or 0)
+    if total_xp < price:
+        raise ValueError("Not enough XP")
+
+    profile["totalXp"] = total_xp - price
+    profile["currentLevelXp"] = max(0, int(profile.get("currentLevelXp") or 0) - price)
+    owned.append(item_id)
+    profile["hqOwnedItemIds"] = owned
+
+    return {
+        "itemId": item_id,
+        "totalXp": profile["totalXp"],
+        "currentLevelXp": profile["currentLevelXp"],
+        "hqOwnedItemIds": owned,
+        "message": "Purchase successful",
     }
 
 
@@ -319,6 +356,7 @@ def create_user(store: dict, body: dict) -> dict:
         "lastChallengeId": None,
         "lastChallengeProgress": None,
         "settings": {"notifications": True, "sound": True, "privacy": False},
+        "hqOwnedItemIds": [],
     }
     store["profiles"].append(profile)
 

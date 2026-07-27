@@ -15,6 +15,10 @@ class UpdateProfile(BaseModel):
     settings: dict | None = None
 
 
+class PurchaseHqItem(BaseModel):
+    itemId: str = Field(..., min_length=1, max_length=64)
+
+
 class OnboardingComplete(BaseModel):
     username: str = Field(..., min_length=1, max_length=50)
     age: int = Field(..., ge=1)

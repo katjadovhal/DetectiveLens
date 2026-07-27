@@ -1,3 +1,3 @@
-import { initRouter } from './router.js?v=settings-6';
+import { initRouter } from './router.js?v=hq-1';
 
 initRouter();
