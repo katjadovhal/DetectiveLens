@@ -1,0 +1,34 @@
+{
+  "slug": "puppy-001",
+  "type": "fake_post",
+  "difficulty": "Medium",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "emotions", "color"],
+  "xpReward": 100,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/puppy/19a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/puppy/19.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph.",
+        "The background in image B is blurred.",
+        "The puppy in image B appears unusually cute.",
+        "The colors in image B are too saturated."
+      ]
+    }
+  }
+}
