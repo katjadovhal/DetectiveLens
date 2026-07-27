@@ -15,7 +15,10 @@ from app.constants import (
 )
 from app.hq_shop import HQ_SHOP_BY_ID
 from app.services.challenge_helpers import strip_correct_answer
-from app.services.personalization import get_detective_tip
+from app.services.hint_engine.analytics import build_pattern_summaries
+from app.services.hint_engine.deterministic import build_detective_tip
+from app.services.hint_engine.policy import select_personalization_mode
+from app.services.hint_engine.service import derive_age_band
 from app.storage import (
     find_by_id_or_slug,
     find_one,
@@ -239,6 +242,7 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
                 "onboardingCompleted": False,
                 "colorBlindness": False,
                 "hqOwnedItemIds": [],
+                "ageBand": "11_13",
             }
         }
 
@@ -257,6 +261,7 @@ def get_profile_data(user_id: str, store: dict | None = None) -> dict:
             "colorBlindness": profile.get("colorBlindness", False),
             "settings": profile["settings"],
             "hqOwnedItemIds": list(profile.get("hqOwnedItemIds") or []),
+            "ageBand": profile.get("ageBand", "11_13"),
         }
     }
 
@@ -331,7 +336,7 @@ def create_user(store: dict, body: dict) -> dict:
         raise ValueError("Username already exists")
 
     user_id = new_id()
-    # New profiles start at 0 XP — only free avatars are allowed.
+    age = int(body.get("age", 11))
     avatar_id = require_unlocked_avatar(body.get("avatarId"), 0)
     user = {
         "id": user_id,
@@ -357,6 +362,8 @@ def create_user(store: dict, body: dict) -> dict:
         "lastChallengeProgress": None,
         "settings": {"notifications": True, "sound": True, "privacy": False},
         "hqOwnedItemIds": [],
+        "ageBand": derive_age_band(age),
+        "youngReader": age <= 7,
     }
     store["profiles"].append(profile)
 
@@ -395,6 +402,26 @@ def start_challenge(store: dict, user_id: str, challenge_id: str) -> dict:
 
 
 @with_store
+def record_hint_view(store: dict, session_id: str, hint_id: str) -> dict:
+    attempt = find_one(store["challenge_attempts"], id=session_id)
+    if not attempt or attempt.get("completedAt"):
+        raise ValueError("Invalid session")
+
+    viewed = list(attempt.get("hintsViewed") or [])
+    if hint_id not in viewed:
+        viewed.append(hint_id)
+    attempt["hintsViewed"] = viewed
+    attempt["hintsUsed"] = len(viewed)
+    return {"hintsViewed": viewed, "hintsUsed": attempt["hintsUsed"]}
+
+
+def get_learning_insights_data(user_id: str) -> dict:
+    from app.services.hint_engine.service import get_learning_insights
+
+    return get_learning_insights(user_id, get_challenges())
+
+
+@with_store
 def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     attempt = find_one(store["challenge_attempts"], id=session_id)
     if not attempt:
@@ -412,10 +439,24 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
 
     attempt["selectedAnswer"] = body["selectedPostId"]
     attempt["isCorrect"] = is_correct
-    attempt["hintsUsed"] = body.get("hintsUsed", 0)
-    attempt["timeSpentMs"] = body.get("timeSpentMs")
+    viewed_count = len(attempt.get("hintsViewed") or [])
+    attempt["hintsUsed"] = max(int(body.get("hintsUsed", 0)), viewed_count)
     attempt["xpEarned"] = xp_earned
     attempt["completedAt"] = now_iso()
+
+    if body.get("timeSpentMs") is not None:
+        attempt["timeSpentMs"] = body.get("timeSpentMs")
+    else:
+        started = attempt.get("startedAt")
+        if started:
+            try:
+                start = datetime.fromisoformat(started)
+                end = datetime.fromisoformat(attempt["completedAt"])
+                attempt["timeSpentMs"] = max(0, int((end - start).total_seconds() * 1000))
+            except ValueError:
+                attempt["timeSpentMs"] = None
+        else:
+            attempt["timeSpentMs"] = None
 
     profile = get_profile(attempt["userId"], store)
     leveled_up = False
@@ -441,12 +482,26 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
             }
         )
 
-    tip = get_detective_tip(
-        is_correct=is_correct,
-        selected_answer=body["selectedPostId"],
-        correct_answer=correct_post_id,
-        challenge_type=challenge["type"],
-    )
+    detective_tip = None
+    if not is_correct:
+        pattern_ids = challenge.get("skillCategoryIds") or []
+        summaries = build_pattern_summaries(
+            attempt["userId"],
+            store["challenge_attempts"],
+            {challenge["id"]: challenge},
+            pattern_ids,
+        )
+        policy = select_personalization_mode(summaries, pattern_ids)
+        tip_payload = build_detective_tip(
+            pattern_ids,
+            policy.personalization_mode,
+            policy.evidence_count,
+        )
+        detective_tip = {
+            "id": policy.personalization_mode,
+            "message": tip_payload["text"],
+            "checklist": tip_payload["checklist"],
+        }
 
     explanation = content.get("explanation", {}).get("bullets", [])
     updated_xp = profile["totalXp"] if profile else None
@@ -458,7 +513,7 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
         "correctAnswer": correct_post_id,
         "explanation": explanation,
         "xpEarned": xp_earned,
-        "detectiveTip": tip.to_dict() if tip else None,
+        "detectiveTip": detective_tip,
         "updatedXp": updated_xp,
         "leveledUp": leveled_up,
         "currentLevel": updated_level,

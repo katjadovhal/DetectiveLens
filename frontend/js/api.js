@@ -191,6 +191,17 @@ export const api = {
     });
   },
 
+  requestHint: async (challengeId, body) => {
+    return request(`/challenges/${challengeId}/hint`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+
+  getLearningInsights: async (userId) => {
+    return request(`/profiles/${userId}/learning-insights`);
+  },
+
   getChallenge: async (id) => {
     try {
       return await request(`/challenges/${id}`);
