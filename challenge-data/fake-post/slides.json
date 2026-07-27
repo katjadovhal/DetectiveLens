@@ -1,0 +1,40 @@
+{
+  "slug": "slides-001",
+  "type": "fake_post",
+  "difficulty": "medium",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["anatomy", "waxy_perfect", "shiny_texture", "functional"],
+  "xpReward": 100,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/slides/21a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/slides/21.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image B is a real photograph.",
+        "The girl's fingers in the image B are deformed",
+        "The girl's arms are bent unnaturaly",
+        "The girl's skin in image B is waxy and smooth",
+        "The hoody's texture is smooth and waxy",
+        "In the image B the girl's skin and slides surface are shiny",
+        "In the image B the water distributes unnaturally and merges with slides in the blue parts",
+        "In the image B the girl's teeth are poorly defined and blurred"
+
+      ]
+    }
+  }
+}
+

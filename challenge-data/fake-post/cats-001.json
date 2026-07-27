@@ -1,0 +1,36 @@
+{
+  "slug": "cats-001",
+  "type": "fake_post",
+  "difficulty": "medium",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "anatomy", "color", "sociocultural"],
+  "xpReward": 100,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/cats/4a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/cats/4.jpg"
+      }
+    ],
+
+    "correctPostId": "A",
+
+    "explanation": {
+      "bullets": [
+        "Image A was generated using AI.",
+        "Image B is a real photograph.",
+        "The background in image A is blurred",
+        "In image A, the ear of a red cat in the middle foreground is smothered, and the gray's cat ear in the second row right is too big",
+        "The image A features oversaturated lightning",
+        "In image A the cats are sitting neatly in a row, which is unrealistic behavior for cats"
+
+      ]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "slug": "dolphin-001",
+  "type": "fake_post",
+  "difficulty": "easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["sociocultural", "waxy_perfect"],
+  "xpReward": 50,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/dolphin/20a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/dolphin/20.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image B is a real photograph.",
+        "The dolphin in the image B is wearing a hoody",
+        "The dolphin in the image B has a human body",
+        "The hoody's texture is smooth and waxy"
+
+      ]
+    }
+  }
+}

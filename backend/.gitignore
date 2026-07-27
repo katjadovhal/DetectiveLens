@@ -7,3 +7,5 @@ venv/
 .pytest_cache/
 .mypy_cache/
 data/store.json
+*.log
+.codex-venv/
