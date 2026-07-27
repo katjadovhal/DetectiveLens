@@ -1,0 +1,35 @@
+{
+  "slug": "busDriver-001",
+  "type": "fake_post",
+  "difficulty": "Easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "shiny_texture", "waxy_perfect", "color"],
+  "xpReward": 50,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/busDriver/17a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/busDriver/17.jpg"
+      }
+    ],
+
+    "correctPostId": "A",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph.",
+        "The background in image B is blurred.",
+        "The woman's eyes in image B have a shiny texture.",
+        "The woman in image B has waxy and perfect skin.",
+        "The clothes of the woman in image B are too perfect and saturated."
+      ]
+    }
+  }
+}
