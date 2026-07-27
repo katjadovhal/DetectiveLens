@@ -24,7 +24,10 @@
     "explanation": {
       "bullets": [
         "Image B was generated using AI.",
-        "Image A is a real photograph."
+        "Image A is a real photograph.",
+        "In image B, the surface of the orange and water droplets are shiny",
+        "In image B, the right side of the orange is blurry and lacks texture",
+        "In image B, the colors are vibrant and oversaturated"
       ]
     }
   }

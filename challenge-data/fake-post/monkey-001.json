@@ -23,8 +23,14 @@
 
     "explanation": {
       "bullets": [
-        "Image B was generated using AI, it features a pitiful human-like face expression, over-edited perfect features, smooth fur and skin, anthropomorphic clothing, and unnatural face proportions.",
-        "Image A is a real photograph."
+        "Image B was generated using AI, it features a pitiful human-like face expression, over-edited perfect features, smooth fur and skin",
+        "Image A is a real photograph.",
+        "In image B, the colors and lightning are too bright and oversaturated"
+        "In image B, the monkey's face is too human-like, with a pitiful expression and anthropomorphic features, which is not typical for real monkeys."
+        "In image B, the monkey's skin is too smooth and waxy, the wrinkles are perfect"
+        "In image B, the monkey is wearing clothes, which is not typical for real monkeys."
+        "In image B, the monkey's face proportions are unnatural, with a larger forehead, smaller jaw, and bigger eyes"
+
       ]
     }
   }

@@ -24,7 +24,11 @@
     "explanation": {
       "bullets": [
         "Image B was generated using AI.",
-        "Image A is a real photograph."
+        "Image A is a real photograph.",
+        "In image B, the view out of the window is blurry and lacks detail",
+        "In image B, the upholstery on the chairs is shiny, overly plump and smooth and waxy, which is not typical for real-life objects",
+        "In image B, the lightning is oversaturated",
+        "In image B, the colors are oversaturated"
       ]
     }
   }
