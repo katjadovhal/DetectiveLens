@@ -58,11 +58,11 @@
       "displayName": "Alex",
       "selfReportedLevel": "beginner",
       "currentLevel": 4,
-      "totalXp": 400,
-      "currentLevelXp": 350,
+      "totalXp": 500,
+      "currentLevelXp": 450,
       "dailyStreak": 0,
       "onboardingCompleted": true,
-      "lastChallengeId": "slides-001",
+      "lastChallengeId": "pizza-001",
       "lastChallengeProgress": null,
       "settings": {
         "notifications": true,
@@ -412,9 +412,9 @@
       "id": "2c0ccde1-2974-4cc1-93a4-6b796f042062",
       "userId": "demo-user-id",
       "categoryId": "color",
-      "score": 0.3333333333333333,
-      "attempts": 1,
-      "correct": 1
+      "score": 0.6666666666666666,
+      "attempts": 2,
+      "correct": 2
     },
     {
       "id": "42b2bcfe-6729-4184-9caa-f27d7caa0065",
@@ -436,9 +436,9 @@
       "id": "cfc74e32-910e-4442-8158-89953c9a65d4",
       "userId": "demo-user-id",
       "categoryId": "shiny_texture",
-      "score": 0.25,
-      "attempts": 1,
-      "correct": 1
+      "score": 0.5833333333333333,
+      "attempts": 2,
+      "correct": 2
     },
     {
       "id": "052d4a3f-42c5-4605-9c5f-aff54471cc62",
@@ -679,6 +679,14 @@
       "score": 0,
       "attempts": 0,
       "correct": 0
+    },
+    {
+      "id": "661c726f-d4c8-440a-a836-0e9c93fb6eee",
+      "userId": "demo-user-id",
+      "categoryId": "blurred_textures",
+      "score": 0.3333333333333333,
+      "attempts": 1,
+      "correct": 1
     }
   ],
   "challenge_attempts": [
@@ -1554,6 +1562,52 @@
       "timeSpentMs": null,
       "xpEarned": 0,
       "scoreBreakdown": null
+    },
+    {
+      "id": "dfe0e9cf-8a1c-418c-8122-2ef90da4882e",
+      "userId": "demo-user-id",
+      "challengeId": "fish-001",
+      "startedAt": "2026-07-27T19:37:26.242062",
+      "completedAt": null,
+      "selectedAnswer": null,
+      "isCorrect": null,
+      "hintsUsed": 1,
+      "hintsViewed": [
+        "fish-001:pre_answer_hint:v1"
+      ],
+      "timeSpentMs": null,
+      "xpEarned": 0,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "efdc28da-04d8-4c28-8baa-a180930e5ea3",
+      "userId": "demo-user-id",
+      "challengeId": "pizza-001",
+      "startedAt": "2026-07-27T19:54:03.165633",
+      "completedAt": "2026-07-27T19:54:06.440851",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 3275,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "58422041-3c9a-4ef3-be01-a4ca04618d71",
+      "userId": "demo-user-id",
+      "challengeId": "pizza-001",
+      "startedAt": "2026-07-27T19:56:57.934959",
+      "completedAt": null,
+      "selectedAnswer": null,
+      "isCorrect": null,
+      "hintsUsed": 1,
+      "hintsViewed": [
+        "pizza-001:pre_answer_hint:v1"
+      ],
+      "timeSpentMs": null,
+      "xpEarned": 0,
+      "scoreBreakdown": null
     }
   ],
   "xp_transactions": [
@@ -1892,6 +1946,14 @@
       "source": "challenge",
       "referenceId": "3dddfaed-fdb0-4fda-a416-7739d4cccecc",
       "createdAt": "2026-07-27T17:42:20.469237"
+    },
+    {
+      "id": "d9a129f1-f052-4115-8363-c9c01080bb2a",
+      "userId": "demo-user-id",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "efdc28da-04d8-4c28-8baa-a180930e5ea3",
+      "createdAt": "2026-07-27T19:54:06.441054"
     }
   ],
   "detective_tips": [],
@@ -1900,6 +1962,72 @@
     "date": "2026-07-27",
     "challengeId": "library-001"
   },
-  "user_badges": [],
-  "notifications": []
+  "user_badges": [
+    {
+      "id": "1df12e7e-6033-49db-a245-b38dda508b82",
+      "userId": "demo-user-id",
+      "badgeId": "first_case",
+      "earnedAt": "2026-07-27T19:54:06.441183"
+    },
+    {
+      "id": "46e1af2f-7b48-4550-9981-00d4dabaea48",
+      "userId": "demo-user-id",
+      "badgeId": "case_solver",
+      "earnedAt": "2026-07-27T19:54:06.441183"
+    },
+    {
+      "id": "80851ed1-1242-41ec-a2a1-588dbe3aec6a",
+      "userId": "demo-user-id",
+      "badgeId": "pattern_explorer",
+      "earnedAt": "2026-07-27T19:54:06.441183"
+    },
+    {
+      "id": "4f2c3660-55e1-4ed0-8a67-8b3c8343799f",
+      "userId": "demo-user-id",
+      "badgeId": "detail_detective",
+      "earnedAt": "2026-07-27T19:54:06.441183"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "e3579006-d704-455a-896a-c97df9acf198",
+      "userId": "demo-user-id",
+      "type": "badge_unlocked",
+      "badgeId": "first_case",
+      "title": "New badge unlocked!",
+      "message": "You earned the First Case badge.",
+      "createdAt": "2026-07-27T19:54:06.441183",
+      "readAt": null
+    },
+    {
+      "id": "845d9ab2-25ed-49ef-91e1-e020d6d3b579",
+      "userId": "demo-user-id",
+      "type": "badge_unlocked",
+      "badgeId": "case_solver",
+      "title": "New badge unlocked!",
+      "message": "You earned the Case Solver badge.",
+      "createdAt": "2026-07-27T19:54:06.441183",
+      "readAt": null
+    },
+    {
+      "id": "96d10c4a-826a-4b13-85b2-00aad1308668",
+      "userId": "demo-user-id",
+      "type": "badge_unlocked",
+      "badgeId": "pattern_explorer",
+      "title": "New badge unlocked!",
+      "message": "You earned the Pattern Explorer badge.",
+      "createdAt": "2026-07-27T19:54:06.441183",
+      "readAt": null
+    },
+    {
+      "id": "c13d5a72-d128-4809-bcc4-d23b64a27bed",
+      "userId": "demo-user-id",
+      "type": "badge_unlocked",
+      "badgeId": "detail_detective",
+      "title": "New badge unlocked!",
+      "message": "You earned the Detail Detective badge.",
+      "createdAt": "2026-07-27T19:54:06.441183",
+      "readAt": null
+    }
+  ]
 }

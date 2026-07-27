@@ -3,6 +3,7 @@ import { adaptiveMessageClass } from '../adaptive-presentation.js';
 import { setLastUserId, withUserId } from '../session.js';
 import { openShareModal } from '../share-modal.js';
 import { showToast, toastMessageForBadges } from '../toast.js';
+import { ingestBadgeUnlockNotifications } from '../header.js';
 
 function renderSocialPost(post, selected, disabled) {
   return `
@@ -468,6 +469,7 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
         const unlocked = state.result.newlyUnlockedBadges || [];
         if (unlocked.length) {
           showToast(toastMessageForBadges(unlocked));
+          ingestBadgeUnlockNotifications(unlocked);
         }
         await loadDetectiveTip();
       } catch (err) {

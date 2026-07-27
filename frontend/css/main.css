@@ -1990,6 +1990,17 @@ button.profile-pick-card,
   font-weight: 700;
 }
 
+.badge-card--highlight {
+  box-shadow: 0 0 0 3px var(--color-primary, #7c3aed);
+  border-color: var(--color-primary, #7c3aed);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge-card--highlight {
+    transition: none;
+  }
+}
+
 .notification-count {
   position: absolute;
   top: 0.15rem;
@@ -2028,6 +2039,25 @@ button.profile-pick-card,
   outline-offset: 2px;
 }
 
+.notification-item-row {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.notification-item-icon {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+.notification-item-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
 .notification-item--unread .notification-item-title {
   font-weight: 800;
 }
@@ -2041,6 +2071,12 @@ button.profile-pick-card,
   font-size: 0.9rem;
   color: var(--color-gray-600, #4b5563);
   font-weight: 500;
+}
+
+.notification-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
 }
 
 .notification-empty {
@@ -2074,6 +2110,17 @@ button.profile-pick-card,
   margin: 0;
   font-weight: 600;
   color: var(--color-gray-800, #1f2937);
+}
+
+.app-toast-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.app-toast-body .app-toast-text:first-child {
+  font-weight: 800;
 }
 
 .app-toast-dismiss {

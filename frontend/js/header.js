@@ -49,8 +49,17 @@ export async function renderHeader(show = true) {
     }
   }
 
+  paintHeaderShell({ userId, xp, avatarHtml, notifications, unreadCount });
+}
+
+function paintHeaderShell({ userId, xp, avatarHtml, notifications, unreadCount }) {
+  const header = document.getElementById('app-header');
+  if (!header) return;
+
   const unreadLabel =
-    unreadCount > 0 ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}` : 'No unread notifications';
+    unreadCount > 0
+      ? `${unreadCount} unread`
+      : 'No unread notifications';
 
   header.innerHTML = `
     <div class="header-inner">
@@ -87,7 +96,7 @@ export async function renderHeader(show = true) {
           </button>
           <div class="dropdown-menu dropdown-menu-wide hidden" id="notification-menu" role="menu">
             <p class="dropdown-title">Notifications</p>
-            ${renderNotificationItems(notifications, userId)}
+            <div id="notification-list">${renderNotificationItems(notifications, userId)}</div>
           </div>
         </div>
         <div class="dropdown" id="profile-dropdown">
@@ -118,28 +127,58 @@ function renderNotificationItems(notifications, userId) {
     return `<p class="dropdown-item notification-empty">You're all caught up! No new alerts.</p>`;
   }
 
-  return notifications
-    .map((note) => {
-      const unread = !note.readAt;
-      const href =
-        note.type === 'badge_unlocked'
-          ? `${withUserId('/profile', userId)}#profile-badges`
-          : withUserId('/profile', userId);
-      return `
-        <button
-          type="button"
-          class="dropdown-item notification-item${unread ? ' notification-item--unread' : ''}"
-          role="menuitem"
-          data-notification-id="${escapeHtml(note.id)}"
-          data-notification-href="${href}"
-        >
+  return notifications.map((note) => renderNotificationItem(note, userId)).join('');
+}
+
+function renderNotificationItem(note, userId) {
+  const unread = !note.readAt;
+  const badgeId = note.badgeId || '';
+  const href =
+    note.type === 'badge_unlocked' && badgeId
+      ? `${withUserId('/profile', userId)}#badge-${encodeURIComponent(badgeId)}`
+      : withUserId('/profile', userId);
+  const icon = note.icon || (note.type === 'badge_unlocked' ? '🎖️' : '🔔');
+  const timeLabel = formatRelativeTime(note.createdAt);
+
+  return `
+    <button
+      type="button"
+      class="dropdown-item notification-item${unread ? ' notification-item--unread' : ''}"
+      role="menuitem"
+      data-notification-id="${escapeHtml(note.id)}"
+      data-notification-href="${href}"
+    >
+      <span class="notification-item-row">
+        <span class="notification-item-icon" aria-hidden="true">${escapeHtml(icon)}</span>
+        <span class="notification-item-copy">
           <span class="notification-item-title">${escapeHtml(note.title || 'Notification')}</span>
           <span class="notification-item-message">${escapeHtml(note.message || '')}</span>
-          <span class="notification-item-meta">${unread ? 'Unread' : 'Read'}</span>
-        </button>
-      `;
-    })
-    .join('');
+          <span class="notification-item-meta">
+            <span>${unread ? 'Unread' : 'Read'}</span>
+            ${timeLabel ? `<span aria-hidden="true">·</span><span>${escapeHtml(timeLabel)}</span>` : ''}
+          </span>
+        </span>
+      </span>
+    </button>
+  `;
+}
+
+function formatRelativeTime(iso) {
+  if (!iso) return '';
+  try {
+    const then = new Date(iso).getTime();
+    if (Number.isNaN(then)) return '';
+    const diffSec = Math.round((Date.now() - then) / 1000);
+    if (diffSec < 60) return 'Just now';
+    if (diffSec < 3600) return `${Math.floor(diffSec / 60)} min ago`;
+    if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} h ago`;
+    return new Date(iso).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+    });
+  } catch {
+    return '';
+  }
 }
 
 function bindNotificationActions(userId) {
@@ -163,8 +202,10 @@ function bindNotificationActions(userId) {
 
 function setupDropdown(wrapperId, menuId) {
   const wrapper = document.getElementById(wrapperId);
+  if (!wrapper) return;
   const menu = document.getElementById(menuId);
   const btn = wrapper.querySelector('button');
+  if (!menu || !btn) return;
 
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -189,4 +230,63 @@ document.addEventListener('click', closeAllDropdowns);
 export function updateHeaderXp(xp) {
   const el = document.getElementById('header-xp');
   if (el) el.textContent = xp;
+}
+
+/**
+ * Immediately reflect newly unlocked badge notifications in the bell/dropdown
+ * without a full page refresh.
+ * @param {Array<object>} unlocks from submit newlyUnlockedBadges
+ */
+export function ingestBadgeUnlockNotifications(unlocks) {
+  if (!Array.isArray(unlocks) || unlocks.length === 0) return;
+
+  const list = document.getElementById('notification-list');
+  const bell = document.getElementById('notification-bell-btn');
+  if (!list || !bell) return;
+
+  const userId = resolveActiveUserId();
+  const empty = list.querySelector('.notification-empty');
+  if (empty) empty.remove();
+
+  const nowIso = new Date().toISOString();
+  const notes = unlocks.map((badge, index) => ({
+    id: badge.notificationId || `local-badge-${badge.id || index}-${Date.now()}`,
+    type: 'badge_unlocked',
+    badgeId: badge.id,
+    icon: badge.icon || '🎖️',
+    title: 'New badge unlocked!',
+    message: badge.message || `You earned the ${badge.title || 'badge'} badge.`,
+    createdAt: badge.earnedAt || nowIso,
+    readAt: null,
+  }));
+
+  const html = notes.map((note) => renderNotificationItem(note, userId)).join('');
+  list.insertAdjacentHTML('afterbegin', html);
+  bindNotificationActions(userId);
+
+  const countText = bell.querySelector('.notification-count')?.textContent || '0';
+  const currentUnread = countText === '9+' ? 10 : Number(countText) || 0;
+  updateBellUnreadCount(currentUnread + notes.length);
+}
+
+function updateBellUnreadCount(unreadCount) {
+  const bell = document.getElementById('notification-bell-btn');
+  if (!bell) return;
+
+  const unreadLabel =
+    unreadCount > 0 ? `${unreadCount} unread` : 'No unread notifications';
+  bell.setAttribute('aria-label', `Notifications, ${unreadLabel}`);
+
+  let countEl = bell.querySelector('.notification-count');
+  if (unreadCount <= 0) {
+    if (countEl) countEl.remove();
+    return;
+  }
+  if (!countEl) {
+    countEl = document.createElement('span');
+    countEl.className = 'notification-count';
+    countEl.setAttribute('aria-hidden', 'true');
+    bell.appendChild(countEl);
+  }
+  countEl.textContent = unreadCount > 9 ? '9+' : String(unreadCount);
 }

@@ -8,7 +8,6 @@ from typing import Any
 FIRST_CASE_TARGET = 1
 CASE_SOLVER_TARGET = 10
 CLUE_STRATEGIST_TARGET = 3
-COMEBACK_TARGET = 1
 PATTERN_EXPLORER_TARGET = 4
 DETAIL_DETECTIVE_MIN_RELEVANT = 5
 DETAIL_DETECTIVE_RECENT_WINDOW = 5
@@ -24,7 +23,7 @@ BADGE_CATALOGUE: list[dict[str, Any]] = [
         "target": FIRST_CASE_TARGET,
         "whyItMatters": "Starting your first case begins your detective training.",
         "approvedUnlockReason": "You completed your first challenge.",
-        "approvedNotification": "You earned First Case.",
+        "approvedNotification": "You earned the First Case badge.",
     },
     {
         "id": "case_solver",
@@ -35,7 +34,7 @@ BADGE_CATALOGUE: list[dict[str, Any]] = [
         "target": CASE_SOLVER_TARGET,
         "whyItMatters": "Practice across many cases builds investigation habits.",
         "approvedUnlockReason": "You completed 10 challenges.",
-        "approvedNotification": "You earned Case Solver.",
+        "approvedNotification": "You earned the Case Solver badge.",
     },
     {
         "id": "clue_strategist",
@@ -45,22 +44,8 @@ BADGE_CATALOGUE: list[dict[str, Any]] = [
         "category": "learning_strategy",
         "target": CLUE_STRATEGIST_TARGET,
         "whyItMatters": "Using clues can help you learn an investigation strategy.",
-        "approvedUnlockReason": "You used a clue and then solved 3 challenges correctly.",
-        "approvedNotification": "You earned Clue Strategist.",
-    },
-    {
-        "id": "comeback_detective",
-        "title": "Comeback Detective",
-        "description": "Improve on a case type you missed earlier.",
-        "icon": "🔄",
-        "category": "recovery",
-        "target": COMEBACK_TARGET,
-        "whyItMatters": "Trying again after a miss is an important learning skill.",
-        "approvedUnlockReason": (
-            "You later solved a challenge that shared investigation clues "
-            "with one you missed earlier."
-        ),
-        "approvedNotification": "You earned Comeback Detective.",
+        "approvedUnlockReason": "You used clues successfully in three challenges.",
+        "approvedNotification": "You earned the Clue Strategist badge.",
     },
     {
         "id": "pattern_explorer",
@@ -71,7 +56,7 @@ BADGE_CATALOGUE: list[dict[str, Any]] = [
         "target": PATTERN_EXPLORER_TARGET,
         "whyItMatters": "Seeing many clue types helps you compare carefully.",
         "approvedUnlockReason": "Your completed challenges covered at least 4 clue types.",
-        "approvedNotification": "You earned Pattern Explorer.",
+        "approvedNotification": "You earned the Pattern Explorer badge.",
     },
     {
         "id": "detail_detective",
@@ -88,7 +73,7 @@ BADGE_CATALOGUE: list[dict[str, Any]] = [
             "You completed 5 challenges linked to one clue type, "
             "with strong recent accuracy."
         ),
-        "approvedNotification": "You earned Detail Detective.",
+        "approvedNotification": "You earned the Detail Detective badge.",
     },
 ]
 

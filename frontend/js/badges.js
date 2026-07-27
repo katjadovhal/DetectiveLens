@@ -35,7 +35,11 @@ function renderBadgeCard(badge) {
     : '';
 
   return `
-    <li class="badge-card ${unlocked ? 'badge-card--unlocked' : 'badge-card--locked'}" tabindex="0">
+    <li
+      class="badge-card ${unlocked ? 'badge-card--unlocked' : 'badge-card--locked'}"
+      id="badge-${escapeHtml(badge.id)}"
+      tabindex="0"
+    >
       <div class="badge-card-header">
         <span class="badge-card-icon" aria-hidden="true">${escapeHtml(badge.icon || '🎖️')}</span>
         <span class="badge-card-status" aria-label="${statusText}">

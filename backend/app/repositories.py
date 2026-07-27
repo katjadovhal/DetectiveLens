@@ -550,51 +550,93 @@ def apply_badge_unlocks(store: dict, *, user_id: str, profile: dict | None) -> l
     payloads: list[dict] = []
 
     for badge in newly:
-        already = find_one(store["user_badges"], userId=user_id, badgeId=badge["id"])
-        if already:
+        badge_id = badge["id"]
+        if _has_user_badge(store, user_id, badge_id):
             continue
 
         store["user_badges"].append(
             {
                 "id": new_id(),
                 "userId": user_id,
-                "badgeId": badge["id"],
+                "badgeId": badge_id,
                 "earnedAt": earned_at,
             }
         )
 
-        # Never notify twice for the same unlock.
-        existing_note = next(
-            (
-                n
-                for n in store["notifications"]
-                if n.get("userId") == user_id
-                and n.get("type") == "badge_unlocked"
-                and n.get("badgeId") == badge["id"]
-            ),
-            None,
-        )
         payload = build_unlock_payload(badge, age_band=age_band)
         payload["earnedAt"] = earned_at
+        payload["notificationId"] = None
         payloads.append(payload)
 
-        if existing_note:
+        if _has_badge_unlock_notification(store, user_id, badge_id):
             continue
 
+        note_id = new_id()
         store["notifications"].append(
             {
-                "id": new_id(),
+                "id": note_id,
                 "userId": user_id,
                 "type": "badge_unlocked",
-                "badgeId": badge["id"],
-                "title": "New badge unlocked",
+                "badgeId": badge_id,
+                "title": "New badge unlocked!",
                 "message": payload["message"],
                 "createdAt": earned_at,
                 "readAt": None,
             }
         )
+        payload["notificationId"] = note_id
 
     return payloads
+
+
+def _has_user_badge(store: dict, user_id: str, badge_id: str) -> bool:
+    return find_one(store.get("user_badges", []), userId=user_id, badgeId=badge_id) is not None
+
+
+def _has_badge_unlock_notification(store: dict, user_id: str, badge_id: str) -> bool:
+    return any(
+        n.get("userId") == user_id
+        and n.get("type") == "badge_unlocked"
+        and n.get("badgeId") == badge_id
+        for n in store.get("notifications", [])
+    )
+
+
+def backfill_missing_badge_notifications(store: dict, user_id: str, profile: dict | None = None) -> int:
+    """Idempotent optional helper: one notification per earned badge that lacks one.
+
+    Not called from profile load or submit. Returns number of notifications created.
+    """
+    store.setdefault("user_badges", [])
+    store.setdefault("notifications", [])
+    age_band = resolve_age_band(profile)
+    created = 0
+    for row in list(store["user_badges"]):
+        if row.get("userId") != user_id:
+            continue
+        badge_id = row.get("badgeId")
+        if not badge_id or _has_badge_unlock_notification(store, user_id, badge_id):
+            continue
+        from app.badges.catalogue import get_badge_def
+
+        badge = get_badge_def(badge_id)
+        if not badge:
+            continue
+        payload = build_unlock_payload(badge, age_band=age_band)
+        store["notifications"].append(
+            {
+                "id": new_id(),
+                "userId": user_id,
+                "type": "badge_unlocked",
+                "badgeId": badge_id,
+                "title": "New badge unlocked!",
+                "message": payload["message"],
+                "createdAt": row.get("earnedAt") or now_iso(),
+                "readAt": None,
+            }
+        )
+        created += 1
+    return created
 
 
 def get_user_badges_data(user_id: str) -> dict:
