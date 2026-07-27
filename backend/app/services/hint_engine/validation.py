@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import re
 
-from app.schemas import AdaptiveMessage
+from app.schemas import AdaptiveMessage, MessagePresentation
 from app.services.hint_engine.pattern_templates import WORD_LIMITS, YOUNG_WORD_LIMIT
+from app.services.hint_engine.presentation import default_presentation, validate_presentation
 
 FORBIDDEN_PHRASES = [
     "you are bad at",
@@ -38,6 +39,10 @@ PRE_ANSWER_FORBIDDEN = [
 ]
 
 OPTION_LABEL_RE = re.compile(r"(?<![a-z])option\s+[ab](?![a-z])", re.I)
+UNSAFE_MARKUP_RE = re.compile(
+    r"(</?[a-z][^>]*>|javascript:|url\(|@font-face|font-family\s*:)",
+    re.I,
+)
 
 
 def _word_count(text: str) -> int:
@@ -64,6 +69,9 @@ def validate_message(
         if phrase in combined:
             errors.append(f"forbidden_phrase:{phrase}")
 
+    if UNSAFE_MARKUP_RE.search(f"{message.title} {message.text} {' '.join(message.checklist)}"):
+        errors.append("unsafe_markup")
+
     for pid in message.pattern_ids:
         if pid not in allowed_pattern_ids:
             errors.append(f"unknown_pattern:{pid}")
@@ -85,17 +93,25 @@ def validate_message(
             errors.append("invalid_evidence_claim")
 
     if approved_text and stage in ("answer_explanation", "detective_tip"):
-        # Reject invented counts not present in approved text
         numbers = re.findall(r"\b\d+\b", message.text)
         approved_numbers = re.findall(r"\b\d+\b", approved_text)
         for num in numbers:
             if num not in approved_numbers and "last" in message.text.lower():
                 errors.append("invented_count")
 
+    errors.extend(validate_presentation(message.presentation, age_band))
     return errors
 
 
-def to_adaptive_message(payload: dict) -> AdaptiveMessage:
+def to_adaptive_message(payload: dict, age_band: str) -> AdaptiveMessage:
+    presentation = payload.get("presentation")
+    if isinstance(presentation, MessagePresentation):
+        resolved = presentation
+    elif isinstance(presentation, dict):
+        resolved = MessagePresentation.model_validate(presentation)
+    else:
+        resolved = default_presentation(age_band)
+
     return AdaptiveMessage(
         title=payload["title"],
         text=payload["text"],
@@ -104,4 +120,5 @@ def to_adaptive_message(payload: dict) -> AdaptiveMessage:
         pattern_ids=payload.get("pattern_ids") or [],
         evidence_claim=payload.get("evidence_claim"),
         reveals_answer=bool(payload.get("reveals_answer")),
+        presentation=resolved,
     )

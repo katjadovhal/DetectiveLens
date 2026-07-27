@@ -1,4 +1,5 @@
 import { api, escapeHtml } from '../api.js';
+import { adaptiveMessageClass } from '../adaptive-presentation.js';
 import { setLastUserId, withUserId } from '../session.js';
 
 function renderSocialPost(post, selected, disabled) {
@@ -14,6 +15,7 @@ function renderSocialPost(post, selected, disabled) {
 function renderClueCard(clueState) {
   if (!clueState.first && clueState.status !== 'loading_first') return '';
 
+  const active = clueState.stronger || clueState.first;
   const showStrongerBtn =
     clueState.first &&
     !clueState.strongerUsed &&
@@ -26,8 +28,10 @@ function renderClueCard(clueState) {
         ? escapeHtml(clueState.stronger.text)
         : escapeHtml(clueState.first?.text || '');
 
+  const presentationClass = adaptiveMessageClass(active?.presentation);
+
   return `
-    <div class="detective-clue-card" role="region" aria-label="Detective clue">
+    <div class="detective-clue-card ${presentationClass}" role="region" aria-label="Detective clue">
       <h2 class="detective-clue-title">${escapeHtml(clueState.first?.title || 'Detective Clue')}</h2>
       <p class="detective-clue-text">${text}</p>
       ${
@@ -73,8 +77,9 @@ function renderExplanationCard(explanation, loading) {
           .map((item) => `<li>${escapeHtml(item)}</li>`)
           .join('')}</ul>`
       : '';
+  const presentationClass = adaptiveMessageClass(explanation.presentation);
   return `
-    <div class="explanation-card" role="region" aria-label="Why explanation">
+    <div class="explanation-card ${presentationClass}" role="region" aria-label="Why explanation">
       <h3 class="explanation-card-title">${escapeHtml(explanation.title || 'Why?')}</h3>
       <p class="explanation-card-text">${escapeHtml(explanation.text)}</p>
       ${checklist}
@@ -92,8 +97,10 @@ function renderDetectiveTipBlock(tip, loading) {
   const checklist = tip.checklist || [];
   if (!message) return '';
 
+  const presentationClass = adaptiveMessageClass(tip.presentation);
+
   return `
-    <div class="tip-box">
+    <div class="tip-box ${presentationClass}">
       <span class="tip-icon" role="img" aria-label="Detective mascot">🐕</span>
       <div>
         <p class="tip-message">${escapeHtml(message)}</p>
@@ -112,12 +119,15 @@ function renderDetectiveTipBlock(tip, loading) {
 }
 
 function renderPracticeRecommendation(tip, userId) {
-  const challengeId = tip?.recommendedChallengeId;
+  const practice = tip?.practiceRecommendation || tip;
+  const challengeId = practice?.recommendedChallengeId || tip?.recommendedChallengeId;
   if (!challengeId) return '';
   const href = withUserId(`/challenges/fake-post/${challengeId}`, userId);
+  const text = practice?.text || 'This is a useful next practice area.';
+  const presentationClass = adaptiveMessageClass(practice?.presentation);
   return `
-    <div class="practice-recommendation">
-      <p class="practice-recommendation-text">This is a useful next practice area.</p>
+    <div class="practice-recommendation ${presentationClass}">
+      <p class="practice-recommendation-text">${escapeHtml(text)}</p>
       <a href="${href}" class="btn btn-secondary" data-link id="practice-skill-btn">Practise this skill</a>
     </div>
   `;

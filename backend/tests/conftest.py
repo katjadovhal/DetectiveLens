@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 import pytest
 
@@ -26,6 +25,8 @@ def temp_store(tmp_path, monkeypatch):
                         "currentLevelXp": 500,
                         "dailyStreak": 0,
                         "onboardingCompleted": True,
+                        "ageBand": "11_13",
+                        "youngReader": False,
                         "settings": {
                             "notifications": True,
                             "sound": True,
@@ -44,4 +45,6 @@ def temp_store(tmp_path, monkeypatch):
         )
     )
     monkeypatch.setattr(settings, "data_dir", str(store_dir))
+    # Tests use deterministic fallbacks; Ollama is not required.
+    monkeypatch.setattr(settings, "hint_engine_enabled", False)
     return store_path

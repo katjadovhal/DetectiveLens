@@ -4,6 +4,7 @@ from app.services.hint_engine.service import (
     generate_hint,
     get_learning_insights,
     stable_hint_id,
+    validate_onboarding_age,
 )
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     "generate_hint",
     "get_learning_insights",
     "stable_hint_id",
+    "validate_onboarding_age",
 ]

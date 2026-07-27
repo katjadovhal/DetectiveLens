@@ -118,3 +118,52 @@ def build_detective_tip(
         "evidence_claim": str(evidence_count) if evidence_count else None,
         "reveals_answer": False,
     }
+
+
+def build_practice_recommendation(pattern_id: str | None = None) -> dict:
+    if pattern_id:
+        template = get_template(pattern_id)
+        tip = template.get("transferTip") or GENERIC_FALLBACK["transferTip"]
+        text = f"This is a useful next practice area. {tip}"
+    else:
+        text = "This is a useful next practice area. Try another challenge with similar clues."
+    return {
+        "title": "Practise this skill",
+        "text": text,
+        "checklist": [],
+        "tone": "encouraging",
+        "pattern_ids": [pattern_id] if pattern_id else [],
+        "unknown_pattern_ids": [],
+        "evidence_claim": None,
+        "reveals_answer": False,
+    }
+
+
+def build_learning_insight(
+    personalization_mode: str,
+    practice_pattern: str | None = None,
+    developing_strength: str | None = None,
+) -> dict:
+    if personalization_mode == "insufficient_data":
+        text = "Keep practising challenges to build your personal detective insights."
+    elif practice_pattern:
+        tip = get_template(practice_pattern).get("transferTip") or GENERIC_FALLBACK["transferTip"]
+        text = f"A useful next focus is this clue type. {tip}"
+    elif developing_strength:
+        tip = get_template(developing_strength).get("transferTip") or GENERIC_FALLBACK["transferTip"]
+        text = f"These clues are becoming a strength. {tip}"
+    elif personalization_mode == "recent_recovery":
+        text = "You are recognising useful clues more successfully. Keep comparing carefully."
+    else:
+        text = "Compare small details across both images before you decide."
+
+    return {
+        "title": "Learning insight",
+        "text": text,
+        "checklist": [],
+        "tone": "encouraging",
+        "pattern_ids": [p for p in [practice_pattern, developing_strength] if p],
+        "unknown_pattern_ids": [],
+        "evidence_claim": None,
+        "reveals_answer": False,
+    }

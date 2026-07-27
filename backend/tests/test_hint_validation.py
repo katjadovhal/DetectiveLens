@@ -1,5 +1,10 @@
-from app.schemas import AdaptiveMessage
+from app.schemas import AdaptiveMessage, MessagePresentation
+from app.services.hint_engine.presentation import default_presentation, validate_presentation
 from app.services.hint_engine.validation import validate_message
+
+
+def _presentation(age_band="11_13"):
+    return default_presentation(age_band)
 
 
 def test_pre_answer_rejects_answer_reveal():
@@ -10,6 +15,7 @@ def test_pre_answer_rejects_answer_reveal():
         tone="supportive",
         pattern_ids=["color"],
         reveals_answer=False,
+        presentation=_presentation(),
     )
     errors = validate_message(
         message,
@@ -28,6 +34,7 @@ def test_pre_answer_accepts_safe_clue():
         tone="supportive",
         pattern_ids=["color"],
         reveals_answer=False,
+        presentation=_presentation(),
     )
     errors = validate_message(
         message,
@@ -46,6 +53,7 @@ def test_forbidden_personalization_phrase_rejected():
         tone="supportive",
         pattern_ids=["color"],
         reveals_answer=False,
+        presentation=_presentation(),
     )
     errors = validate_message(
         message,
@@ -54,3 +62,21 @@ def test_forbidden_personalization_phrase_rejected():
         age_band="11_13",
     )
     assert any("forbidden_phrase" in e for e in errors)
+
+
+def test_presentation_rejects_wrong_age_band_preset():
+    presentation = MessagePresentation(
+        preset="advanced_reader",
+        font_style="standard",
+        font_scale="compact",
+        line_spacing="normal",
+        content_width="wide",
+        emphasis_style="none",
+    )
+    errors = validate_presentation(presentation, "8_10")
+    assert any("presentation_invalid:preset" in e for e in errors)
+
+
+def test_default_presentation_valid_for_each_band():
+    for band in ("8_10", "11_13", "14_16"):
+        assert validate_presentation(default_presentation(band), band) == []

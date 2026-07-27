@@ -18,7 +18,7 @@ from app.services.challenge_helpers import strip_correct_answer
 from app.services.hint_engine.analytics import build_pattern_summaries
 from app.services.hint_engine.deterministic import build_detective_tip
 from app.services.hint_engine.policy import select_personalization_mode
-from app.services.hint_engine.service import derive_age_band
+from app.services.hint_engine.service import derive_age_band, validate_onboarding_age
 from app.storage import (
     find_by_id_or_slug,
     find_one,
@@ -336,7 +336,7 @@ def create_user(store: dict, body: dict) -> dict:
         raise ValueError("Username already exists")
 
     user_id = new_id()
-    age = int(body.get("age", 11))
+    age = validate_onboarding_age(int(body.get("age", 11)))
     avatar_id = require_unlocked_avatar(body.get("avatarId"), 0)
     user = {
         "id": user_id,
@@ -363,7 +363,7 @@ def create_user(store: dict, body: dict) -> dict:
         "settings": {"notifications": True, "sound": True, "privacy": False},
         "hqOwnedItemIds": [],
         "ageBand": derive_age_band(age),
-        "youngReader": age <= 7,
+        "youngReader": False,
     }
     store["profiles"].append(profile)
 
@@ -415,10 +415,11 @@ def record_hint_view(store: dict, session_id: str, hint_id: str) -> dict:
     return {"hintsViewed": viewed, "hintsUsed": attempt["hintsUsed"]}
 
 
-def get_learning_insights_data(user_id: str) -> dict:
+async def get_learning_insights_data(user_id: str) -> dict:
     from app.services.hint_engine.service import get_learning_insights
 
-    return get_learning_insights(user_id, get_challenges())
+    profile = get_profile(user_id)
+    return await get_learning_insights(user_id, get_challenges(), profile=profile)
 
 
 @with_store

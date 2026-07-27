@@ -30,6 +30,12 @@ def test_pre_answer_hint_without_ollama(temp_store):
     assert response.text
     assert response.revealsAnswer is False
     assert response.fallbackUsed is True
+    assert response.presentation is not None
+    assert response.presentation.preset in (
+        "young_reader",
+        "middle_reader",
+        "advanced_reader",
+    )
     assert "correct answer" not in response.text.lower()
 
 

@@ -10,17 +10,20 @@ from app.services.hint_engine.analytics import build_pattern_summaries, compact_
 from app.services.hint_engine.deterministic import (
     build_answer_explanation,
     build_detective_tip,
+    build_learning_insight,
+    build_practice_recommendation,
     build_pre_answer_hint,
 )
-from app.services.hint_engine.ollama_adapter import adapt_with_ollama
+from app.services.hint_engine.ollama_adapter import adapt_message_result
 from app.services.hint_engine.policy import select_personalization_mode, select_practice_challenge
-from app.services.hint_engine.validation import to_adaptive_message, validate_message
 from app.storage import load_store
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_AGE_BAND = "11_13"
 HINT_VERSION = "v1"
+SUPPORTED_AGE_MIN = 5
+SUPPORTED_AGE_MAX = 99
 
 
 def derive_age_band(age: int) -> str:
@@ -29,6 +32,15 @@ def derive_age_band(age: int) -> str:
     if age <= 13:
         return "11_13"
     return "14_16"
+
+
+def validate_onboarding_age(age: int) -> int:
+    """Validate age for onboarding and return the normalised integer."""
+    if not isinstance(age, int) or isinstance(age, bool):
+        raise ValueError(f"Age must be between {SUPPORTED_AGE_MIN} and {SUPPORTED_AGE_MAX}")
+    if age < SUPPORTED_AGE_MIN or age > SUPPORTED_AGE_MAX:
+        raise ValueError(f"Age must be between {SUPPORTED_AGE_MIN} and {SUPPORTED_AGE_MAX}")
+    return age
 
 
 def stable_hint_id(slug: str, stage: str) -> str:
@@ -75,6 +87,19 @@ def build_detective_tip_payload(
     return build_detective_tip(pattern_ids, policy.personalization_mode, policy.evidence_count)
 
 
+def _message_to_response_fields(message) -> dict:
+    return {
+        "title": message.title,
+        "text": message.text,
+        "checklist": message.checklist,
+        "tone": message.tone,
+        "patternIds": message.pattern_ids,
+        "evidenceClaim": message.evidence_claim,
+        "revealsAnswer": message.reveals_answer,
+        "presentation": message.presentation.model_dump(),
+    }
+
+
 async def generate_hint(
     challenge: dict,
     *,
@@ -90,6 +115,7 @@ async def generate_hint(
     attempts = store.get("challenge_attempts", [])
     pattern_ids = list(challenge.get("skillCategoryIds") or [])
     slug = challenge.get("slug") or challenge["id"]
+    # Age band comes only from the stored profile — never from the client.
     age_band = (profile or {}).get("ageBand") or DEFAULT_AGE_BAND
     is_young = bool((profile or {}).get("youngReader"))
 
@@ -102,8 +128,8 @@ async def generate_hint(
     policy = select_personalization_mode(summaries, pattern_ids)
     interaction_summary = compact_summary_for_patterns(summaries, pattern_ids)
 
-    fallback_used = False
     recommended_challenge_id = None
+    practice_recommendation_payload = None
 
     if stage in ("pre_answer_hint", "stronger_hint"):
         open_attempt = _find_open_attempt(attempts, session_id, user_id, challenge["id"])
@@ -123,8 +149,7 @@ async def generate_hint(
         for unknown in approved.get("unknown_pattern_ids") or []:
             logger.info("Unknown pattern id in hint request: %s", unknown)
 
-        message = to_adaptive_message(approved)
-        adapted = await adapt_with_ollama(
+        adapted = await adapt_message_result(
             age_band=age_band,
             locale=locale,
             stage=stage,
@@ -132,23 +157,11 @@ async def generate_hint(
             pattern_ids=approved["pattern_ids"],
             personalization_mode=policy.personalization_mode,
             interaction_summary=interaction_summary,
+            allowed_pattern_ids=pattern_ids,
+            is_young=is_young,
         )
-        if adapted:
-            errors = validate_message(
-                adapted,
-                stage=stage,
-                allowed_pattern_ids=pattern_ids,
-                age_band=age_band,
-                is_young=is_young,
-                approved_text=approved["text"],
-            )
-            if not errors:
-                message = adapted
-            else:
-                fallback_used = True
-                logger.info("Hint validation failed: %s", errors)
-        else:
-            fallback_used = True
+        message = adapted.message
+        fallback_used = adapted.fallback_used
 
         hint_id = pre_id if stage == "pre_answer_hint" else strong_id
         if record_hint_view_fn and hint_id not in viewed:
@@ -164,6 +177,16 @@ async def generate_hint(
 
         if stage == "answer_explanation":
             approved = build_answer_explanation(bullets)
+        elif stage == "practice_recommendation":
+            recommended_challenge_id = select_practice_challenge(
+                user_id,
+                challenge["id"],
+                policy.practice_pattern,
+                attempts,
+                challenges,
+                challenge.get("difficulty", "medium"),
+            )
+            approved = build_practice_recommendation(policy.practice_pattern)
         else:
             approved = build_detective_tip(
                 pattern_ids,
@@ -182,8 +205,7 @@ async def generate_hint(
         for unknown in approved.get("unknown_pattern_ids") or []:
             logger.info("Unknown pattern id in post-answer hint: %s", unknown)
 
-        message = to_adaptive_message(approved)
-        adapted = await adapt_with_ollama(
+        adapted = await adapt_message_result(
             age_band=age_band,
             locale=locale,
             stage=stage,
@@ -191,22 +213,30 @@ async def generate_hint(
             pattern_ids=approved["pattern_ids"],
             personalization_mode=policy.personalization_mode,
             interaction_summary=interaction_summary,
+            allowed_pattern_ids=pattern_ids,
+            is_young=is_young,
         )
-        if adapted:
-            errors = validate_message(
-                adapted,
-                stage=stage,
-                allowed_pattern_ids=pattern_ids,
+        message = adapted.message
+        fallback_used = adapted.fallback_used
+
+        if stage == "detective_tip" and recommended_challenge_id:
+            practice_approved = build_practice_recommendation(policy.practice_pattern)
+            practice_adapted = await adapt_message_result(
                 age_band=age_band,
+                locale=locale,
+                stage="practice_recommendation",
+                approved=practice_approved,
+                pattern_ids=practice_approved["pattern_ids"],
+                personalization_mode=policy.personalization_mode,
+                interaction_summary=interaction_summary,
+                allowed_pattern_ids=pattern_ids,
                 is_young=is_young,
-                approved_text=approved["text"],
             )
-            if not errors:
-                message = adapted
-            else:
-                fallback_used = True
-        else:
-            fallback_used = True
+            practice_recommendation_payload = {
+                **_message_to_response_fields(practice_adapted.message),
+                "recommendedChallengeId": recommended_challenge_id,
+                "fallbackUsed": practice_adapted.fallback_used,
+            }
 
     return HintResponse(
         title=message.title,
@@ -220,12 +250,16 @@ async def generate_hint(
         fallbackUsed=fallback_used,
         recommendedChallengeId=recommended_challenge_id,
         ageBand=age_band,
+        presentation=message.presentation,
+        practiceRecommendation=practice_recommendation_payload,
     )
 
 
-def get_learning_insights(
+async def get_learning_insights(
     user_id: str,
     challenges: list[dict],
+    profile: dict | None = None,
+    locale: str = "en",
 ) -> dict[str, Any]:
     store = load_store()
     attempts = store.get("challenge_attempts", [])
@@ -233,6 +267,8 @@ def get_learning_insights(
     summaries = build_pattern_summaries(user_id, attempts, by_id)
     all_patterns = list(summaries.keys())
     policy = select_personalization_mode(summaries, all_patterns)
+    age_band = (profile or {}).get("ageBand") or DEFAULT_AGE_BAND
+    is_young = bool((profile or {}).get("youngReader"))
 
     practice_pattern = policy.practice_pattern
     recommended = None
@@ -253,8 +289,26 @@ def get_learning_insights(
             break
 
     recovery = any(s.recent_recovery for s in summaries.values())
-
     status = "ready" if any(s.relevant_attempts > 0 for s in summaries.values()) else "insufficient_data"
+
+    insight_approved = build_learning_insight(
+        policy.personalization_mode,
+        practice_pattern=practice_pattern,
+        developing_strength=developing,
+    )
+    interaction_summary = compact_summary_for_patterns(summaries, all_patterns or list(summaries.keys()))
+    insight_adapted = await adapt_message_result(
+        age_band=age_band,
+        locale=locale,
+        stage="detective_tip",
+        approved=insight_approved,
+        pattern_ids=insight_approved["pattern_ids"],
+        personalization_mode=policy.personalization_mode,
+        interaction_summary=interaction_summary,
+        allowed_pattern_ids=all_patterns or insight_approved["pattern_ids"],
+        is_young=is_young,
+    )
+    insight_message = insight_adapted.message
 
     return {
         "status": status,
@@ -264,5 +318,10 @@ def get_learning_insights(
         "recentRecovery": recovery,
         "recommendedChallengeIds": [recommended] if recommended else [],
         "personalizationMode": policy.personalization_mode,
-        "message": None,
+        "ageBand": age_band,
+        "message": {
+            **_message_to_response_fields(insight_message),
+            "fallbackUsed": insight_adapted.fallback_used,
+        },
+        "presentation": insight_message.presentation.model_dump(),
     }

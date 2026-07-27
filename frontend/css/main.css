@@ -837,6 +837,102 @@ ul {
   color: var(--color-gray-700);
 }
 
+/* Age-adaptive presentation presets — fixed classes only, never injected CSS */
+.adaptive-message {
+  font-size: max(1rem, var(--font-size-base));
+}
+
+.adaptive-message--young {
+  letter-spacing: 0.01em;
+}
+
+.adaptive-message--middle {
+  letter-spacing: 0;
+}
+
+.adaptive-message--advanced {
+  letter-spacing: 0;
+}
+
+.adaptive-message--rounded {
+  font-family: "Nunito", system-ui, sans-serif;
+  border-radius: var(--radius-xl);
+}
+
+.adaptive-message--scale-large {
+  font-size: max(1.25rem, var(--font-size-base));
+}
+
+.adaptive-message--scale-large .detective-clue-text,
+.adaptive-message--scale-large .explanation-card-text,
+.adaptive-message--scale-large .tip-message,
+.adaptive-message--scale-large .practice-recommendation-text,
+.adaptive-message--scale-large .learning-insight-text {
+  font-size: max(1.25rem, 1.25em);
+  line-height: 1.75;
+}
+
+.adaptive-message--scale-medium {
+  font-size: max(1.125rem, var(--font-size-base));
+}
+
+.adaptive-message--scale-compact {
+  font-size: max(1rem, var(--font-size-base));
+}
+
+.adaptive-message--spacing-relaxed {
+  line-height: 1.75;
+}
+
+.adaptive-message--spacing-normal {
+  line-height: 1.55;
+}
+
+.adaptive-message--width-narrow {
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.adaptive-message--width-medium {
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.adaptive-message--width-wide {
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.adaptive-message--emphasis-keywords .detective-clue-text,
+.adaptive-message--emphasis-keywords .explanation-card-text,
+.adaptive-message--emphasis-keywords .tip-message,
+.adaptive-message--emphasis-keywords .practice-recommendation-text,
+.adaptive-message--emphasis-keywords .learning-insight-text {
+  font-weight: 600;
+}
+
+.learning-insight-card {
+  margin-top: 1rem;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  text-align: left;
+}
+
+.learning-insight-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.learning-insight-text {
+  margin: 0;
+  line-height: 1.6;
+}
+
 .daily-completion-text {
   font-size: 1.125rem;
   color: var(--color-gray-700);

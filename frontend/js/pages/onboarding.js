@@ -9,8 +9,8 @@ import { setLastUserId } from '../session.js';
 
 const NAME_MIN = 2;
 const NAME_MAX = 50;
-const AGE_MIN = 1;
-const AGE_MAX = 120;
+const AGE_MIN = 5;
+const AGE_MAX = 99;
 
 function ageOptionsHtml(selectedAge) {
   const options = ['<option value="">Select age</option>'];

@@ -1,4 +1,5 @@
 import { api, escapeHtml } from '../api.js';
+import { adaptiveMessageClass } from '../adaptive-presentation.js';
 import {
   getAvatarMarkup,
   getAvatarLabel,
@@ -15,6 +16,21 @@ import {
   loadValidUser,
 } from '../session.js';
 import { getProgressSummary, renderXpBarHtml } from '../xp.js';
+
+function renderLearningInsight(insight) {
+  const message = insight?.message;
+  if (!message?.text) return '';
+  const presentationClass = adaptiveMessageClass(message.presentation || insight.presentation);
+  return `
+    <section class="panel-card profile-learning-insight" aria-labelledby="learning-insight-heading">
+      <h2 id="learning-insight-heading" class="section-title">Learning insight</h2>
+      <div class="learning-insight-card ${presentationClass}">
+        <h3 class="learning-insight-title">${escapeHtml(message.title || 'Learning insight')}</h3>
+        <p class="learning-insight-text">${escapeHtml(message.text)}</p>
+      </div>
+    </section>
+  `;
+}
 
 export async function renderProfile(container) {
   const userId = resolveActiveUserId();
@@ -51,7 +67,14 @@ export async function renderProfile(container) {
     message: '',
     error: '',
     nameError: '',
+    learningInsight: null,
   };
+
+  try {
+    state.learningInsight = await api.getLearningInsights(userId);
+  } catch {
+    state.learningInsight = null;
+  }
 
   function paint() {
     container.innerHTML = `
@@ -125,6 +148,8 @@ export async function renderProfile(container) {
             </button>
           </section>
         </div>
+
+        ${renderLearningInsight(state.learningInsight)}
 
         <section class="panel-card profile-badges" aria-labelledby="badges-heading">
           <h2 id="badges-heading" class="section-title">Badges</h2>

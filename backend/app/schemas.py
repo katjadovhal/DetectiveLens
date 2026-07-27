@@ -19,18 +19,27 @@ class PurchaseHqItem(BaseModel):
     itemId: str = Field(..., min_length=1, max_length=64)
 
 
-class OnboardingComplete(BaseModel):
-    username: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., ge=1)
-    colorBlindness: bool = False
-    avatarId: str
-
-
 class CreateUser(BaseModel):
     username: str = Field(..., min_length=1, max_length=50)
-    age: int = Field(..., ge=1)
+    age: int = Field(..., ge=5, le=99)
     colorBlindness: bool = False
     avatarId: str
+
+
+class OnboardingComplete(BaseModel):
+    username: str = Field(..., min_length=1, max_length=50)
+    age: int = Field(..., ge=5, le=99)
+    colorBlindness: bool = False
+    avatarId: str
+
+
+class MessagePresentation(BaseModel):
+    preset: Literal["young_reader", "middle_reader", "advanced_reader"]
+    font_style: Literal["rounded", "standard"]
+    font_scale: Literal["large", "medium", "compact"]
+    line_spacing: Literal["relaxed", "normal"]
+    content_width: Literal["narrow", "medium", "wide"]
+    emphasis_style: Literal["keywords", "none"]
 
 
 class AdaptiveMessage(BaseModel):
@@ -41,6 +50,7 @@ class AdaptiveMessage(BaseModel):
     pattern_ids: list[str] = Field(default_factory=list)
     evidence_claim: str | None = None
     reveals_answer: bool = False
+    presentation: MessagePresentation
 
     @field_validator("checklist")
     @classmethod
@@ -56,6 +66,7 @@ class HintRequest(BaseModel):
         "stronger_hint",
         "answer_explanation",
         "detective_tip",
+        "practice_recommendation",
     ]
     locale: str = Field(default="en", max_length=16)
 
@@ -72,3 +83,5 @@ class HintResponse(BaseModel):
     fallbackUsed: bool = False
     recommendedChallengeId: str | None = None
     ageBand: str | None = None
+    presentation: MessagePresentation | None = None
+    practiceRecommendation: dict | None = None

@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     port: int = 3001
     demo_user_id: str = "demo-user-id"
 
-    hint_engine_enabled: bool = False
+    hint_engine_enabled: bool = True
     hint_model: str = "qwen3:4b"
     ollama_base_url: str = "http://localhost:11434"
     hint_timeout_seconds: float = 8.0
