@@ -23,6 +23,8 @@ def _default_store() -> dict:
             "date": None,
             "challengeId": None,
         },
+        "user_badges": [],
+        "notifications": [],
     }
 
 

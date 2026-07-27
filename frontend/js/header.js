@@ -23,12 +23,15 @@ export async function renderHeader(show = true) {
   const userId = resolveActiveUserId();
   let xp = 0;
   let avatarHtml = getAvatarMarkup(null, { className: 'avatar-img avatar-img--header' });
+  let notifications = [];
+  let unreadCount = 0;
 
   if (userId) {
     try {
-      const [{ profile }, home] = await Promise.all([
+      const [{ profile }, home, noteData] = await Promise.all([
         api.getProfile(userId),
         api.getHome(userId),
+        api.getNotifications(userId).catch(() => ({ notifications: [], unreadCount: 0 })),
       ]);
       if (!profile?.userId && !profile?.id) {
         if (getLastUserId() === userId) clearLastUserId();
@@ -39,10 +42,15 @@ export async function renderHeader(show = true) {
           className: 'avatar-img avatar-img--header',
         });
       }
+      notifications = noteData.notifications || [];
+      unreadCount = noteData.unreadCount || 0;
     } catch {
       /* keep defaults */
     }
   }
+
+  const unreadLabel =
+    unreadCount > 0 ? `${unreadCount} unread notification${unreadCount === 1 ? '' : 's'}` : 'No unread notifications';
 
   header.innerHTML = `
     <div class="header-inner">
@@ -62,10 +70,24 @@ export async function renderHeader(show = true) {
           <span class="xp-link-label">XP</span>
         </a>
         <div class="dropdown" id="notification-dropdown">
-          <button type="button" class="icon-btn" aria-label="Notifications" aria-expanded="false">🔔</button>
-          <div class="dropdown-menu dropdown-menu-wide hidden" id="notification-menu">
+          <button
+            type="button"
+            class="icon-btn"
+            id="notification-bell-btn"
+            aria-label="Notifications, ${unreadLabel}"
+            aria-expanded="false"
+            aria-haspopup="true"
+          >
+            <span aria-hidden="true">🔔</span>
+            ${
+              unreadCount > 0
+                ? `<span class="notification-count" aria-hidden="true">${unreadCount > 9 ? '9+' : unreadCount}</span>`
+                : ''
+            }
+          </button>
+          <div class="dropdown-menu dropdown-menu-wide hidden" id="notification-menu" role="menu">
             <p class="dropdown-title">Notifications</p>
-            <p class="dropdown-item">You're all caught up! No new alerts.</p>
+            ${renderNotificationItems(notifications, userId)}
           </div>
         </div>
         <div class="dropdown" id="profile-dropdown">
@@ -88,6 +110,55 @@ export async function renderHeader(show = true) {
 
   setupDropdown('notification-dropdown', 'notification-menu');
   setupDropdown('profile-dropdown', 'profile-menu');
+  bindNotificationActions(userId);
+}
+
+function renderNotificationItems(notifications, userId) {
+  if (!notifications.length) {
+    return `<p class="dropdown-item notification-empty">You're all caught up! No new alerts.</p>`;
+  }
+
+  return notifications
+    .map((note) => {
+      const unread = !note.readAt;
+      const href =
+        note.type === 'badge_unlocked'
+          ? `${withUserId('/profile', userId)}#profile-badges`
+          : withUserId('/profile', userId);
+      return `
+        <button
+          type="button"
+          class="dropdown-item notification-item${unread ? ' notification-item--unread' : ''}"
+          role="menuitem"
+          data-notification-id="${escapeHtml(note.id)}"
+          data-notification-href="${href}"
+        >
+          <span class="notification-item-title">${escapeHtml(note.title || 'Notification')}</span>
+          <span class="notification-item-message">${escapeHtml(note.message || '')}</span>
+          <span class="notification-item-meta">${unread ? 'Unread' : 'Read'}</span>
+        </button>
+      `;
+    })
+    .join('');
+}
+
+function bindNotificationActions(userId) {
+  if (!userId) return;
+  document.querySelectorAll('[data-notification-id]').forEach((btn) => {
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const notificationId = btn.getAttribute('data-notification-id');
+      const href = btn.getAttribute('data-notification-href');
+      try {
+        await api.markNotificationRead(userId, notificationId);
+      } catch {
+        /* still navigate */
+      }
+      if (href) {
+        window.location.href = href;
+      }
+    });
+  });
 }
 
 function setupDropdown(wrapperId, menuId) {

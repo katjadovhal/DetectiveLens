@@ -1,5 +1,6 @@
 import { api, escapeHtml } from '../api.js';
 import { adaptiveMessageClass } from '../adaptive-presentation.js';
+import { renderBadgeCatalogue } from '../badges.js';
 import {
   getAvatarMarkup,
   getAvatarLabel,
@@ -60,6 +61,14 @@ export async function renderProfile(container) {
     initialAvatar = normalizeAvatarId(null);
   }
 
+  let badges = [];
+  try {
+    const badgeData = await api.getBadges(userId);
+    badges = badgeData.badges || [];
+  } catch {
+    badges = [];
+  }
+
   const state = {
     displayName: profile.displayName || '',
     avatarId: initialAvatar,
@@ -68,6 +77,7 @@ export async function renderProfile(container) {
     error: '',
     nameError: '',
     learningInsight: null,
+    badges,
   };
 
   try {
@@ -151,17 +161,22 @@ export async function renderProfile(container) {
 
         ${renderLearningInsight(state.learningInsight)}
 
-        <section class="panel-card profile-badges" aria-labelledby="badges-heading">
+        <section class="panel-card profile-badges" id="profile-badges" aria-labelledby="badges-heading" tabindex="-1">
           <h2 id="badges-heading" class="section-title">Badges</h2>
-          <div class="badge-empty" role="status">
-            <span class="badge-empty-icon" aria-hidden="true">📦</span>
-            <p class="profile-empty-state">No badges yet. Keep playing challenges to earn your first badge!</p>
-          </div>
+          ${renderBadgeCatalogue(state.badges)}
         </section>
        </div>
      `;
 
-     const nameInput = container.querySelector('#profile-display-name');
+    if (window.location.hash === '#profile-badges' || window.location.hash === '#badges-heading') {
+      const section = container.querySelector('#profile-badges');
+      if (section) {
+        section.focus({ preventScroll: false });
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    const nameInput = container.querySelector('#profile-display-name');
     nameInput.addEventListener('input', (e) => {
       state.displayName = e.target.value;
       state.nameError = '';

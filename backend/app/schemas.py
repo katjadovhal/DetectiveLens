@@ -85,3 +85,7 @@ class HintResponse(BaseModel):
     ageBand: str | None = None
     presentation: MessagePresentation | None = None
     practiceRecommendation: dict | None = None
+
+
+class MarkNotificationRead(BaseModel):
+    notificationId: str = Field(..., min_length=1, max_length=64)

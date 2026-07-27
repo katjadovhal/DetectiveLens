@@ -1899,5 +1899,7 @@
   "daily_challenge_cache": {
     "date": "2026-07-27",
     "challengeId": "library-001"
-  }
+  },
+  "user_badges": [],
+  "notifications": []
 }
