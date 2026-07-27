@@ -37,17 +37,20 @@
       "displayName": "Alex",
       "selfReportedLevel": "beginner",
       "currentLevel": 4,
-      "totalXp": 0,
-      "currentLevelXp": 0,
+      "totalXp": 150,
+      "currentLevelXp": 100,
       "dailyStreak": 0,
       "onboardingCompleted": true,
-      "lastChallengeId": "road-001",
+      "lastChallengeId": "supermarket-001",
       "lastChallengeProgress": null,
       "settings": {
         "notifications": true,
         "sound": true,
         "privacy": false
-      }
+      },
+      "hqOwnedItemIds": [
+        "desk-dark"
+      ]
     },
     {
       "id": "d70a7759-2d8d-4720-8bb7-fcd84c80da45",
@@ -749,6 +752,90 @@
       "timeSpentMs": null,
       "xpEarned": 150,
       "scoreBreakdown": null
+    },
+    {
+      "id": "12bd6123-0797-4450-8887-fcd45c950949",
+      "userId": "demo-user-id",
+      "challengeId": "marathon-001",
+      "startedAt": "2026-07-26T18:43:29.684918",
+      "completedAt": null,
+      "selectedAnswer": null,
+      "isCorrect": null,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 0,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "68c13ce1-1ca2-4ce9-9cf8-631ccd4afea1",
+      "userId": "demo-user-id",
+      "challengeId": "orange-001",
+      "startedAt": "2026-07-26T18:43:33.626457",
+      "completedAt": "2026-07-26T18:43:34.991189",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "d8c5b28d-c647-41b6-8439-a2cf6ca63608",
+      "userId": "demo-user-id",
+      "challengeId": "orange-001",
+      "startedAt": "2026-07-27T09:28:22.105689",
+      "completedAt": null,
+      "selectedAnswer": null,
+      "isCorrect": null,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 0,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "f1388f33-6c5e-4123-afb4-89a8453f4002",
+      "userId": "demo-user-id",
+      "challengeId": "library-001",
+      "startedAt": "2026-07-27T09:28:54.071635",
+      "completedAt": "2026-07-27T09:28:55.442640",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "48fed2df-57f0-4577-b5d8-d114b8db6805",
+      "userId": "demo-user-id",
+      "challengeId": "class-001",
+      "startedAt": "2026-07-27T09:28:57.956206",
+      "completedAt": "2026-07-27T09:28:59.399892",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "8086b553-9943-47af-b24a-0e46d8b489b7",
+      "userId": "demo-user-id",
+      "challengeId": "supermarket-001",
+      "startedAt": "2026-07-27T09:29:02.336546",
+      "completedAt": "2026-07-27T09:29:04.635956",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": null,
+      "xpEarned": 150,
+      "scoreBreakdown": null
     }
   ],
   "xp_transactions": [
@@ -919,12 +1006,44 @@
       "source": "challenge",
       "referenceId": "efcc3bc7-0c19-497e-98e1-1d3c7d91077c",
       "createdAt": "2026-07-05T17:43:10.184127"
+    },
+    {
+      "id": "aa7c5748-5edc-4424-b32d-3f9ce492a562",
+      "userId": "demo-user-id",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "68c13ce1-1ca2-4ce9-9cf8-631ccd4afea1",
+      "createdAt": "2026-07-26T18:43:34.991410"
+    },
+    {
+      "id": "a261748c-4c01-4c51-9add-649950bfad4c",
+      "userId": "demo-user-id",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "f1388f33-6c5e-4123-afb4-89a8453f4002",
+      "createdAt": "2026-07-27T09:28:55.442853"
+    },
+    {
+      "id": "5fc65307-f329-47ff-b6b2-227217fbf588",
+      "userId": "demo-user-id",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "48fed2df-57f0-4577-b5d8-d114b8db6805",
+      "createdAt": "2026-07-27T09:28:59.399953"
+    },
+    {
+      "id": "54782924-d8bd-4fe8-b559-9b74f33d7d7a",
+      "userId": "demo-user-id",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "8086b553-9943-47af-b24a-0e46d8b489b7",
+      "createdAt": "2026-07-27T09:29:04.636144"
     }
   ],
   "detective_tips": [],
   "daily_missions": [],
   "daily_challenge_cache": {
-    "date": "2026-07-05",
-    "challengeId": "monkey-001"
+    "date": "2026-07-27",
+    "challengeId": "library-001"
   }
 }

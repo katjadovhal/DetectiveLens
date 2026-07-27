@@ -1,13 +1,14 @@
-import { renderHeader } from './header.js?v=avatars-1';
-import { renderStart } from './pages/start.js?v=avatars-1';
-import { renderOnboarding } from './pages/onboarding.js?v=avatars-1';
-import { renderSelectUser } from './pages/select-user.js?v=avatars-1';
-import { renderChallengeStaging } from './pages/challenge-staging.js?v=avatars-1';
-import { renderChallenge } from './pages/challenge.js?v=avatars-1';
-import { renderProfile } from './pages/profile.js?v=avatars-1';
-import { renderSettings } from './pages/settings.js?v=avatars-1';
-import { renderPlaceholder } from './pages/placeholder.js?v=avatars-1';
-import { resolveActiveUserId, setLastUserId, withUserId } from './session.js?v=avatars-1';
+import { renderHeader } from './header.js?v=hq-1';
+import { renderStart } from './pages/start.js?v=hq-1';
+import { renderOnboarding } from './pages/onboarding.js?v=hq-1';
+import { renderSelectUser } from './pages/select-user.js?v=hq-1';
+import { renderChallengeStaging } from './pages/challenge-staging.js?v=hq-1';
+import { renderChallenge } from './pages/challenge.js?v=hq-1';
+import { renderProfile } from './pages/profile.js?v=hq-1';
+import { renderSettings } from './pages/settings.js?v=hq-1';
+import { renderDetectiveHQ } from './pages/detective-hq.js?v=hq-1';
+import { renderPlaceholder } from './pages/placeholder.js?v=hq-1';
+import { resolveActiveUserId, setLastUserId, withUserId } from './session.js?v=hq-1';
 
 const PLACEHOLDERS = {
   '/progress/xp': {
@@ -34,6 +35,7 @@ function matchRoute(path) {
   if (path === '/onboarding') return { name: 'onboarding' };
   if (path === '/select-user') return { name: 'select-user' };
   if (path === '/challenge-staging') return { name: 'challenge-staging' };
+  if (path === '/detective-hq') return { name: 'detective-hq' };
   if (path === '/profile') return { name: 'profile' };
   if (path === '/profile/settings') return { name: 'settings' };
   const challengeMatch = path.match(/^\/challenges\/fake-post\/(.+)$/);
@@ -66,6 +68,14 @@ async function navigate(path, push = true) {
     setLastUserId(userId);
     await renderHeader(true);
     await renderChallengeStaging(main, userId);
+  } else if (route.name === 'detective-hq') {
+    if (!userId) {
+      window.location.href = '/';
+      return;
+    }
+    setLastUserId(userId);
+    await renderHeader(true);
+    await renderDetectiveHQ(main);
   } else if (route.name === 'profile') {
     if (!userId) {
       window.location.href = '/';
@@ -97,7 +107,10 @@ async function navigate(path, push = true) {
     let urlPath = rawPath;
     if (
       userId &&
-      (route.name === 'profile' || route.name === 'challenge-staging' || route.name === 'settings')
+      (route.name === 'profile' ||
+        route.name === 'challenge-staging' ||
+        route.name === 'settings' ||
+        route.name === 'detective-hq')
     ) {
       urlPath = withUserId(pathname, userId);
     }

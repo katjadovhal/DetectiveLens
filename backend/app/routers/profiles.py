@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
 from app import repositories as repo
-from app.schemas import UpdateProfile
+from app.schemas import PurchaseHqItem, UpdateProfile
 
 router = APIRouter(prefix="/profiles", tags=["profiles"])
 
@@ -31,6 +31,34 @@ def update_profile(body: UpdateProfile, user_id: str):
         raise HTTPException(
             status_code=404,
             detail={"error": "NOT_FOUND", "message": "Profile not found", "statusCode": 404},
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "SERVER_ERROR", "message": str(e), "statusCode": 500},
+        )
+
+
+@router.post("/{user_id}/hq/purchase")
+def purchase_hq_item(body: PurchaseHqItem, user_id: str):
+    try:
+        return repo.purchase_hq_item(user_id, body.itemId)
+    except ValueError as e:
+        message = str(e)
+        if message == "Profile not found":
+            raise HTTPException(
+                status_code=404,
+                detail={"error": "NOT_FOUND", "message": message, "statusCode": 404},
+            )
+        status = 400
+        error = "VALIDATION_ERROR"
+        if message == "Not enough XP":
+            error = "INSUFFICIENT_XP"
+        elif message == "Already owned":
+            error = "ALREADY_OWNED"
+        raise HTTPException(
+            status_code=status,
+            detail={"error": error, "message": message, "statusCode": status},
         )
     except Exception as e:
         raise HTTPException(

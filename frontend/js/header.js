@@ -51,6 +51,11 @@ export async function renderHeader(show = true) {
         DetectiveLens
       </a>
       <div class="header-actions">
+        ${
+          userId
+            ? `<a href="${withUserId('/detective-hq', userId)}" class="header-nav-link" data-link>Detective HQ</a>`
+            : ''
+        }
         <a href="${withUserId('/progress/xp', userId)}" class="xp-link" data-link title="View your XP and level">
           <span aria-hidden="true">💎</span>
           <span id="header-xp">${xp}</span>
