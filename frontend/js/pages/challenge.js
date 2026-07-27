@@ -381,14 +381,13 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
         });
       }
 
-    function bindFeedbackEvents() {
       const nextBtn = container.querySelector('#next-challenge-btn');
       const shareBtn = container.querySelector('#share-btn');
 
       if (shareBtn) {
         shareBtn.addEventListener('click', () => {
           const shareUrl = `https://detectivelens.app/challenge/${id}?shared=true`;
-          alert(`Share this challenge with a friend:\n\n${shareUrl}`);
+          //alert(`Share this challenge with a friend:\n\n${shareUrl}`);
           openShareModal(shareUrl, {
             onCopyAndClose: () => {
               const params = new URLSearchParams({ userId });
