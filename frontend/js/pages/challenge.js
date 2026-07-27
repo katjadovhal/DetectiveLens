@@ -1,6 +1,7 @@
 import { api, escapeHtml } from '../api.js';
 import { adaptiveMessageClass } from '../adaptive-presentation.js';
 import { setLastUserId, withUserId } from '../session.js';
+import { openShareModal } from '../share-modal.js';
 
 function renderSocialPost(post, selected, disabled) {
   return `
@@ -192,7 +193,7 @@ function renderPlaying(challenge, state) {
 
 function renderFeedbackView(result, feedbackState, userId, mode, challengeId) {
   const isDailyMode = mode === 'daily';
-  const nextLabel = isDailyMode ? 'Share & Continue' : 'Next Challenge';
+  const nextLabel = isDailyMode ? 'Continue' : 'Next Challenge';
   const tipContent = feedbackState.detectiveTipContent || result.detectiveTip;
 
   return `
@@ -396,7 +397,13 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
       if (shareBtn) {
         shareBtn.addEventListener('click', () => {
           const shareUrl = `https://detectivelens.app/challenge/${id}?shared=true`;
-          alert(`Share this challenge with a friend:\n\n${shareUrl}`);
+          //alert(`Share this challenge with a friend:\n\n${shareUrl}`);
+          openShareModal(shareUrl, {
+            onCopyAndClose: () => {
+              const params = new URLSearchParams({ userId });
+              window.location.href = `/challenge-staging?${params.toString()}`;
+            },
+          });
         });
       }
 
