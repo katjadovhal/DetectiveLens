@@ -127,7 +127,6 @@ function renderPlaying(challenge, state) {
 }
 
 function renderFeedbackView(result, showExplanation, userId, mode, challengeId) {
-  const shareUrl = `https://detectivelens.app/challenge/${challengeId}?shared=true`;
   const isDailyMode = mode === 'daily';
 
   const nextLabel = isDailyMode ? 'Share & Continue' : 'Next Challenge';
@@ -238,6 +237,39 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
       if (nextBtn) {
         nextBtn.addEventListener('click', async () => {
           const nextUserId = nextBtn.dataset.userId;
+          const mode = nextBtn.dataset.mode;
+          const leveledUp = Boolean(state.result?.leveledUp);
+
+          if (mode === 'practice' && leveledUp) {
+            const params = new URLSearchParams({ userId: nextUserId, levelUp: '1' });
+            window.location.href = `/challenge-staging?${params.toString()}`;
+            return;
+          }
+
+          if (mode === 'practice') {
+            try {
+              nextBtn.disabled = true;
+              const practiceData = await api.getNextPracticeChallenge(nextUserId);
+
+              if (practiceData.challenge?.id) {
+                const params = new URLSearchParams({
+                  userId: nextUserId,
+                  mode: 'practice',
+                });
+                window.location.href = `/challenges/fake-post/${practiceData.challenge.id}?${params.toString()}`;
+                return;
+              }
+
+              alert(practiceData.message || 'No more challenges available');
+            } catch (err) {
+              console.error('Error loading next practice challenge:', err);
+              alert('Could not load practice challenge');
+            } finally {
+              nextBtn.disabled = false;
+            }
+            return;
+          }
+
           const params = new URLSearchParams({ userId: nextUserId });
           if (state.result?.leveledUp) {
             params.set('levelUp', '1');
