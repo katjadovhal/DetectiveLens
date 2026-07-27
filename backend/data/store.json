@@ -985,7 +985,8 @@
   "detective_tips": [],
   "daily_missions": [],
   "daily_challenge_cache": {
-    "date": "2026-07-24",
-    "challengeId": "marathon-001"
-  }
+    "date": "2026-07-27",
+    "challengeId": "supermarket-001"
+  },
+  "notifications": []
 }

@@ -230,6 +230,28 @@ export const api = {
       body: JSON.stringify(body),
     });
   },
+
+  getBadges: async (userId) => {
+    return request(`/profiles/${userId}/badges`);
+  },
+
+  getNotifications: async (userId) => {
+    return request(`/profiles/${userId}/notifications`);
+  },
+
+  markNotificationRead: async (userId, notificationId) => {
+    return request(`/profiles/${userId}/notifications/read`, {
+      method: 'POST',
+      body: JSON.stringify({ notificationId }),
+    });
+  },
+
+  markAllNotificationsRead: async (userId) => {
+    return request(`/profiles/${userId}/notifications/read-all`, {
+      method: 'POST',
+      body: JSON.stringify({}),
+    });
+  },
 };
 
 export function escapeHtml(text) {

@@ -1,5 +1,6 @@
 import { api, escapeHtml } from '../api.js?v=hints-3';
 import { setLastUserId } from '../session.js?v=hints-3';
+import { showToast, toastMessageForBadges } from '../toast.js?v=badges-1';
 
 const HINT_STAGES = {
   1: { stage: 'pre_answer_hint', label: 'Investigation clue', hintLevel: 1 },
@@ -411,6 +412,10 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
         );
         state.submitting = false;
         paint();
+        const unlocked = state.result.newlyUnlockedBadges || [];
+        if (unlocked.length) {
+          showToast(toastMessageForBadges(unlocked));
+        }
         // Tip is available after a verified attempt for both outcomes.
         await fetchDetectiveTip();
       } catch (err) {

@@ -32,10 +32,22 @@ Where a citation from course slides is not verified in the repository, a **Refer
 
 1. **No authentication for MVP:** Multi-user selection via `userId` query + `localStorage.lastUserId` is enough for a classroom/demo desktop web app.
 2. **Emoji avatars only:** Sufficient for MVP identity; `imageUrl` is reserved for future PNG assets without changing the stored `avatarId` model.
-3. **Badges deferred:** Profile shows an accessible empty state (“No badges yet.”) rather than fake badge data.
+3. **Badges (MVP, evidence-based):** Profile shows a full catalogue of locked and unlocked badges. Unlocking is deterministic from completed `challenge_attempts` only. Persisted unlock rows store `{userId, badgeId, earnedAt}` only.
 4. **XP is the only progress currency:** UI labels use “XP”; no separate points field is introduced.
 5. **Legacy avatar aliasing:** `detective-default` maps to `avatar-detective-1` on read/write normalization without bulk-migrating `store.json`.
 6. **Color-blindness preference:** Selection indicators use border + checkmark + text (not color alone); XP bar uses a striped fill when `colorBlindness` is true.
+
+### Badge threshold assumptions (require evaluation)
+| Badge | Threshold |
+|-------|-----------|
+| `first_case` | ≥1 completed challenge |
+| `case_solver` | ≥10 completed challenges |
+| `clue_strategist` | ≥3 correct completed with `hintsUsed > 0` |
+| `comeback_detective` | Associated recovery across a shared `skillCategoryId` |
+| `pattern_explorer` | ≥4 distinct `skillCategoryIds` across completed challenges |
+| `detail_detective` | ≥5 completed associated with one pattern; ≥4 of last 5 relevant correct |
+
+`comeback_detective` wording must describe associated recovery and must not claim that one exact pattern caused the result.
 
 ## Technical decisions
 
@@ -73,9 +85,10 @@ Where a citation from course slides is not verified in the repository, a **Refer
 
 ## Out of scope (explicitly deferred)
 
-- Badge earning rules and persistence
+- Streak-based and leaderboard-based badges
 - Avatar uploads / AI generators / PNG library
 - Authentication and databases
 - Public leaderboards and social features
 - Reviving unused `home.js`
 - New parallel `/profile` or `/avatars` endpoints
+- Browser push notifications and mandatory badge sounds

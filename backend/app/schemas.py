@@ -27,3 +27,7 @@ class CreateUser(BaseModel):
     age: int = Field(..., ge=1)
     colorBlindness: bool = False
     avatarId: str
+
+
+class MarkNotificationRead(BaseModel):
+    notificationId: str = Field(..., min_length=1, max_length=64)

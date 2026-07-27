@@ -1,4 +1,5 @@
 import { api, escapeHtml } from '../api.js';
+import { renderBadgeCatalogue } from '../badges.js';
 import {
   getAvatarEmoji,
   getAvatarLabel,
@@ -37,6 +38,14 @@ export async function renderProfile(container) {
   const colorBlindness = Boolean(profile.colorBlindness);
   const backHref = withUserId('/challenge-staging', userId);
 
+  let badges = [];
+  try {
+    const badgeData = await api.getBadges(userId);
+    badges = badgeData.badges || [];
+  } catch {
+    badges = [];
+  }
+
   const state = {
     displayName: profile.displayName || '',
     avatarId: normalizeAvatarId(profile.avatarId),
@@ -44,6 +53,7 @@ export async function renderProfile(container) {
     message: '',
     error: '',
     nameError: '',
+    badges,
   };
 
   function paint() {
@@ -118,15 +128,20 @@ export async function renderProfile(container) {
           </section>
         </div>
 
-        <section class="panel-card profile-badges" aria-labelledby="badges-heading">
+        <section class="panel-card profile-badges" id="profile-badges" aria-labelledby="badges-heading" tabindex="-1">
           <h2 id="badges-heading" class="section-title">Badges</h2>
-          <div class="badge-empty" role="status">
-            <span class="badge-empty-icon" aria-hidden="true">📦</span>
-            <p class="profile-empty-state">No badges yet. Keep playing challenges to earn your first badge!</p>
-          </div>
+          ${renderBadgeCatalogue(state.badges)}
         </section>
       </div>
     `;
+
+    if (window.location.hash === '#profile-badges' || window.location.hash === '#badges-heading') {
+      const section = container.querySelector('#profile-badges');
+      if (section) {
+        section.focus({ preventScroll: false });
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
 
     const nameInput = container.querySelector('#profile-display-name');
     nameInput.addEventListener('input', (e) => {
