@@ -14,6 +14,8 @@ from app.constants import (
     require_unlocked_avatar,
 )
 from app.hq_shop import HQ_SHOP_BY_ID
+from app.badges.engine import evaluate_badge_states, find_newly_unlocked
+from app.badges.wording import build_unlock_payload, resolve_age_band
 from app.services.challenge_helpers import strip_correct_answer
 from app.services.hint_engine.analytics import build_pattern_summaries
 from app.services.hint_engine.deterministic import build_detective_tip
@@ -507,6 +509,12 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     explanation = content.get("explanation", {}).get("bullets", [])
     updated_xp = profile["totalXp"] if profile else None
 
+    newly_unlocked = apply_badge_unlocks(
+        store,
+        user_id=attempt["userId"],
+        profile=profile,
+    )
+
     return {
         "attemptId": attempt["id"],
         "isCorrect": is_correct,
@@ -518,7 +526,123 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
         "updatedXp": updated_xp,
         "leveledUp": leveled_up,
         "currentLevel": updated_level,
+        "newlyUnlockedBadges": newly_unlocked,
     }
+
+
+def apply_badge_unlocks(store: dict, *, user_id: str, profile: dict | None) -> list[dict]:
+    """Evaluate badges after a completed attempt; persist unlocks + notifications."""
+    store.setdefault("user_badges", [])
+    store.setdefault("notifications", [])
+
+    challenges = get_challenges()
+    newly = find_newly_unlocked(
+        user_id=user_id,
+        attempts=store.get("challenge_attempts", []),
+        challenges=challenges,
+        user_badges=store.get("user_badges", []),
+    )
+    if not newly:
+        return []
+
+    age_band = resolve_age_band(profile)
+    earned_at = now_iso()
+    payloads: list[dict] = []
+
+    for badge in newly:
+        already = find_one(store["user_badges"], userId=user_id, badgeId=badge["id"])
+        if already:
+            continue
+
+        store["user_badges"].append(
+            {
+                "id": new_id(),
+                "userId": user_id,
+                "badgeId": badge["id"],
+                "earnedAt": earned_at,
+            }
+        )
+
+        # Never notify twice for the same unlock.
+        existing_note = next(
+            (
+                n
+                for n in store["notifications"]
+                if n.get("userId") == user_id
+                and n.get("type") == "badge_unlocked"
+                and n.get("badgeId") == badge["id"]
+            ),
+            None,
+        )
+        payload = build_unlock_payload(badge, age_band=age_band)
+        payload["earnedAt"] = earned_at
+        payloads.append(payload)
+
+        if existing_note:
+            continue
+
+        store["notifications"].append(
+            {
+                "id": new_id(),
+                "userId": user_id,
+                "type": "badge_unlocked",
+                "badgeId": badge["id"],
+                "title": "New badge unlocked",
+                "message": payload["message"],
+                "createdAt": earned_at,
+                "readAt": None,
+            }
+        )
+
+    return payloads
+
+
+def get_user_badges_data(user_id: str) -> dict:
+    store = load_store()
+    store.setdefault("user_badges", [])
+    badges = evaluate_badge_states(
+        user_id=user_id,
+        attempts=store.get("challenge_attempts", []),
+        challenges=get_challenges(),
+        user_badges=store.get("user_badges", []),
+    )
+    return {"badges": badges}
+
+
+@with_store
+def list_notifications(store: dict, user_id: str) -> dict:
+    store.setdefault("notifications", [])
+    items = [n for n in store["notifications"] if n.get("userId") == user_id]
+    items.sort(key=lambda n: n.get("createdAt") or "", reverse=True)
+    unread = sum(1 for n in items if not n.get("readAt"))
+    return {
+        "notifications": items,
+        "unreadCount": unread,
+    }
+
+
+@with_store
+def mark_notification_read(store: dict, user_id: str, notification_id: str) -> dict:
+    store.setdefault("notifications", [])
+    note = find_one(store["notifications"], id=notification_id, userId=user_id)
+    if not note:
+        raise ValueError("Notification not found")
+    if not note.get("readAt"):
+        note["readAt"] = now_iso()
+    items = [n for n in store["notifications"] if n.get("userId") == user_id]
+    unread = sum(1 for n in items if not n.get("readAt"))
+    return {"notification": note, "unreadCount": unread}
+
+
+@with_store
+def mark_all_notifications_read(store: dict, user_id: str) -> dict:
+    store.setdefault("notifications", [])
+    now = now_iso()
+    for note in store["notifications"]:
+        if note.get("userId") == user_id and not note.get("readAt"):
+            note["readAt"] = now
+    items = [n for n in store["notifications"] if n.get("userId") == user_id]
+    return {"notifications": items, "unreadCount": 0}
 
 
 def get_skill_profile(user_id: str, store: dict | None = None) -> dict:

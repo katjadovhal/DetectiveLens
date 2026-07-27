@@ -1868,6 +1868,237 @@ button.profile-pick-card,
   font-size: 1.05rem;
 }
 
+.badge-grid {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+  .badge-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .badge-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .badge-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.badge-card {
+  border: 2px solid var(--color-gray-200, #e5e7eb);
+  border-radius: var(--radius-lg, 1rem);
+  padding: 1rem 1.1rem;
+  background: #fff;
+  text-align: left;
+}
+
+.badge-card:focus-visible {
+  outline: 3px solid var(--color-primary, #7c3aed);
+  outline-offset: 2px;
+}
+
+.badge-card--locked {
+  border-style: dashed;
+}
+
+.badge-card--unlocked {
+  border-color: var(--color-primary-200, #c4b5fd);
+}
+
+.badge-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.badge-card-icon {
+  font-size: 1.75rem;
+}
+
+.badge-card-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-gray-700, #374151);
+}
+
+.badge-card-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.badge-card-description,
+.badge-card-why,
+.badge-card-earned,
+.badge-progress-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-gray-700, #374151);
+  line-height: 1.45;
+}
+
+.badge-card-progress {
+  margin-top: 0.85rem;
+}
+
+.badge-progress-bar {
+  height: 0.65rem;
+  border-radius: 999px;
+  background: var(--color-gray-200, #e5e7eb);
+  overflow: hidden;
+}
+
+.badge-progress-fill {
+  display: block;
+  height: 100%;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-primary, #7c3aed),
+    var(--color-primary, #7c3aed) 6px,
+    var(--color-primary-hover, #6d28d9) 6px,
+    var(--color-primary-hover, #6d28d9) 12px
+  );
+}
+
+.badge-progress-text {
+  margin-top: 0.35rem;
+  font-weight: 600;
+}
+
+.badge-card-earned {
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.badge-card-why {
+  margin-top: 0.65rem;
+}
+
+.badge-card-why-label {
+  font-weight: 700;
+}
+
+.notification-count {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.15rem;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--color-primary, #7c3aed);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  line-height: 1.15rem;
+  text-align: center;
+}
+
+#notification-bell-btn {
+  position: relative;
+}
+
+.notification-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.notification-item:focus-visible {
+  outline: 3px solid var(--color-primary, #7c3aed);
+  outline-offset: 2px;
+}
+
+.notification-item--unread .notification-item-title {
+  font-weight: 800;
+}
+
+.notification-item-title {
+  font-weight: 700;
+}
+
+.notification-item-message,
+.notification-item-meta {
+  font-size: 0.9rem;
+  color: var(--color-gray-600, #4b5563);
+  font-weight: 500;
+}
+
+.notification-empty {
+  color: var(--color-gray-600, #4b5563);
+}
+
+.app-toast-host {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: min(92vw, 28rem);
+  pointer-events: none;
+}
+
+.app-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-lg, 1rem);
+  border: 2px solid var(--color-primary-200, #c4b5fd);
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+}
+
+.app-toast-text {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-gray-800, #1f2937);
+}
+
+.app-toast-dismiss {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary, #7c3aed);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.app-toast-dismiss:focus-visible {
+  outline: 3px solid var(--color-primary, #7c3aed);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-toast,
+  .badge-progress-fill {
+    transition: none !important;
+  }
+}
+
 .profile-colorblind .progress-fill {
   background-image: repeating-linear-gradient(
     -45deg,
