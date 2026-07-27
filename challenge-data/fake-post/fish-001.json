@@ -4,7 +4,7 @@
   "difficulty": "Medium",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["blurred_background", "proportions", "waxy_perfect"],
+  "skillCategoryIds": ["proportions", "waxy_perfect"],
   "xpReward": 100,
 
   "content": {
@@ -25,7 +25,6 @@
       "bullets": [
         "Image A was generated using AI.",
         "Image B is a real photograph.",
-        "The background in image A is blurred.",
         "The fish's eyes in image A are too big.",
         "The corals in image A have a waxy texture."
       ]
