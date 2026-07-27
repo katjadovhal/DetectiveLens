@@ -224,7 +224,7 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
 
 ALL_CHALLENGES_COMPLETED_STATUS = "all_challenges_completed"
 ALL_CHALLENGES_COMPLETED_MESSAGE = "You have completed all available challenges."
-ALL_CHALLENGES_COMPLETED_NEXT_ROUTE = "/detective-hq"
+ALL_CHALLENGES_COMPLETED_NEXT_ROUTE = "/challenge-staging"
 
 
 def all_challenges_completed_payload() -> dict:

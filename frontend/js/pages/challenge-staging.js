@@ -192,7 +192,7 @@ export async function renderChallengeStaging(container, userId) {
           const latestDaily = await api.getDailyChallenge(userId);
           if (latestDaily?.status === 'all_challenges_completed') {
             window.location.href = withUserId(
-              latestDaily.nextRoute || '/detective-hq',
+              latestDaily.nextRoute || '/challenge-staging',
               userId,
             );
             return;
@@ -224,7 +224,7 @@ export async function renderChallengeStaging(container, userId) {
           const practiceData = await api.getNextPracticeChallenge(userId);
           if (practiceData?.status === 'all_challenges_completed') {
             window.location.href = withUserId(
-              practiceData.nextRoute || '/detective-hq',
+              practiceData.nextRoute || '/challenge-staging',
               userId,
             );
             return;

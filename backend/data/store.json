@@ -55,6 +55,13 @@
       "email": null,
       "createdAt": "2026-07-27T20:20:14.265842",
       "lastActiveAt": "2026-07-27T20:20:14.265869"
+    },
+    {
+      "id": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "username": "AJ",
+      "email": null,
+      "createdAt": "2026-07-27T20:26:19.690430",
+      "lastActiveAt": "2026-07-27T20:26:19.690448"
     }
   ],
   "profiles": [
@@ -232,6 +239,28 @@
       },
       "hqOwnedItemIds": [],
       "ageBand": "8_10",
+      "youngReader": false
+    },
+    {
+      "id": "058d70b0-c7bb-425d-afdc-3cf8c618053b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "avatarId": "avatar-detective-1",
+      "displayName": "AJ",
+      "currentLevel": 4,
+      "totalXp": 1750,
+      "currentLevelXp": 300,
+      "dailyStreak": 0,
+      "onboardingCompleted": true,
+      "colorBlindness": false,
+      "lastChallengeId": "sandcastle-001",
+      "lastChallengeProgress": null,
+      "settings": {
+        "notifications": true,
+        "sound": true,
+        "privacy": false
+      },
+      "hqOwnedItemIds": [],
+      "ageBand": "14_16",
       "youngReader": false
     }
   ],
@@ -823,6 +852,86 @@
     {
       "id": "612a645d-8204-4168-9a2c-23b322eb38f2",
       "userId": "7d960df6-c5b3-4a9b-be5a-0a0da9295188",
+      "categoryId": "blurred_textures",
+      "score": 0.6666666666666666,
+      "attempts": 2,
+      "correct": 2
+    },
+    {
+      "id": "9e45d7d0-c90e-4583-b1ad-189ecc6bf525",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "blurred_background",
+      "score": 1,
+      "attempts": 10,
+      "correct": 10
+    },
+    {
+      "id": "1de00b39-564f-4f29-9ce5-50b78854bbe3",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "functional",
+      "score": 1,
+      "attempts": 3,
+      "correct": 3
+    },
+    {
+      "id": "07de99ae-fd55-414f-9a61-704b3289827f",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "color",
+      "score": 1,
+      "attempts": 11,
+      "correct": 11
+    },
+    {
+      "id": "20f793ba-bafe-4e55-ae5e-8371b7d6f05b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "sociocultural",
+      "score": 0.95,
+      "attempts": 3,
+      "correct": 3
+    },
+    {
+      "id": "6d4ac9f6-f833-44b1-b0cf-1e5d13e8893b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "waxy_perfect",
+      "score": 1,
+      "attempts": 9,
+      "correct": 9
+    },
+    {
+      "id": "655f98c3-a158-40fd-b3d2-268277734b93",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "shiny_texture",
+      "score": 1,
+      "attempts": 10,
+      "correct": 10
+    },
+    {
+      "id": "ed50d38e-1c41-485d-9bbc-ef2c7330435c",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "anatomy",
+      "score": 0.5,
+      "attempts": 2,
+      "correct": 2
+    },
+    {
+      "id": "b3a1bd54-1052-431e-a6e1-283885255363",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "emotions",
+      "score": 0.5333333333333333,
+      "attempts": 2,
+      "correct": 2
+    },
+    {
+      "id": "ed550e2a-27d0-4989-875e-c3752724e157",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "categoryId": "proportions",
+      "score": 0.5333333333333333,
+      "attempts": 2,
+      "correct": 2
+    },
+    {
+      "id": "09e10824-2700-45f7-94b3-ccc19390b5d4",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
       "categoryId": "blurred_textures",
       "score": 0.6666666666666666,
       "attempts": 2,
@@ -2420,6 +2529,244 @@
       "timeSpentMs": 1091,
       "xpEarned": 50,
       "scoreBreakdown": null
+    },
+    {
+      "id": "34a64074-8dd6-4e55-b58f-fa878052c973",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "busDriver-001",
+      "startedAt": "2026-07-27T20:26:23.641700",
+      "completedAt": "2026-07-27T20:26:25.721479",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 2079,
+      "xpEarned": 50,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "1f319389-a421-4c37-aee7-4f73ad3d2ffd",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "slides-001",
+      "startedAt": "2026-07-27T20:26:27.767118",
+      "completedAt": "2026-07-27T20:26:30.378277",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 2611,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "e4e01474-1901-450b-b7ca-fc5db9c92452",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "puppy-001",
+      "startedAt": "2026-07-27T20:26:31.199374",
+      "completedAt": "2026-07-27T20:26:32.442080",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1242,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "fd4bad44-6bd2-49bc-816d-10efc6cb8092",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "cats-001",
+      "startedAt": "2026-07-27T20:26:33.051735",
+      "completedAt": "2026-07-27T20:26:34.256473",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1204,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "4955dbd0-d593-4af5-8ff2-d3fc94d3141d",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "class-001",
+      "startedAt": "2026-07-27T20:26:35.300041",
+      "completedAt": "2026-07-27T20:26:36.816931",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1516,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "3c9f4190-0c15-4227-8959-4c87e730b07b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "supermarket-001",
+      "startedAt": "2026-07-27T20:26:39.697820",
+      "completedAt": "2026-07-27T20:26:41.434727",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1736,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "5016243b-e619-4cda-bea0-d7ac3097f936",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "marathon-001",
+      "startedAt": "2026-07-27T20:26:42.346036",
+      "completedAt": "2026-07-27T20:26:43.462888",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1116,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "58dcba0b-4d99-4ee0-be74-a7286e237172",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "orange-001",
+      "startedAt": "2026-07-27T20:26:44.631936",
+      "completedAt": "2026-07-27T20:26:45.710337",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1078,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "4df1239c-f294-4edd-936e-8cb500c7ca58",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "road-001",
+      "startedAt": "2026-07-27T20:26:47.767553",
+      "completedAt": "2026-07-27T20:26:48.779864",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1012,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "0ca51ca0-76fa-42ee-b8d8-7a32a62d4bd7",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "fish-001",
+      "startedAt": "2026-07-27T20:26:49.595628",
+      "completedAt": "2026-07-27T20:26:51.403073",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1807,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "f0a1896f-f4f6-4d52-8c80-0535ebdc6a53",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "pizza-001",
+      "startedAt": "2026-07-27T20:26:52.487359",
+      "completedAt": "2026-07-27T20:26:53.505889",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1018,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "f1a22895-3ae6-4cbf-a0c8-bdff71f19961",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "noodles-001",
+      "startedAt": "2026-07-27T20:26:54.261081",
+      "completedAt": "2026-07-27T20:26:56.028187",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1767,
+      "xpEarned": 150,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "75576821-922f-4d43-93be-f6f9cda52e61",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "library-001",
+      "startedAt": "2026-07-27T20:26:58.449688",
+      "completedAt": "2026-07-27T20:26:59.493207",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1043,
+      "xpEarned": 100,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "9b517a89-7a8e-4734-9070-050304edc944",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "birthday-001",
+      "startedAt": "2026-07-27T20:27:00.278808",
+      "completedAt": "2026-07-27T20:27:01.842783",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1563,
+      "xpEarned": 50,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "1d0d010f-52bb-4a67-ad83-49d4ba347f56",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "monkey-001",
+      "startedAt": "2026-07-27T20:27:02.647429",
+      "completedAt": "2026-07-27T20:27:03.395100",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 747,
+      "xpEarned": 50,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "9c276477-c167-4e08-893a-4d0e14027e3f",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "dolphin-001",
+      "startedAt": "2026-07-27T20:27:04.146940",
+      "completedAt": "2026-07-27T20:27:05.085545",
+      "selectedAnswer": "B",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 938,
+      "xpEarned": 50,
+      "scoreBreakdown": null
+    },
+    {
+      "id": "17469e7f-f3db-45f8-9948-ab22abdbe65c",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "challengeId": "sandcastle-001",
+      "startedAt": "2026-07-27T20:27:05.680139",
+      "completedAt": "2026-07-27T20:27:06.811759",
+      "selectedAnswer": "A",
+      "isCorrect": true,
+      "hintsUsed": 0,
+      "hintsViewed": [],
+      "timeSpentMs": 1131,
+      "xpEarned": 50,
+      "scoreBreakdown": null
     }
   ],
   "xp_transactions": [
@@ -3142,6 +3489,142 @@
       "source": "challenge",
       "referenceId": "adfed972-021e-4d8d-93df-de0d4c16f91d",
       "createdAt": "2026-07-27T20:21:29.063621"
+    },
+    {
+      "id": "503df045-47ef-4d57-aa91-6acb8f71483c",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 50,
+      "source": "challenge",
+      "referenceId": "34a64074-8dd6-4e55-b58f-fa878052c973",
+      "createdAt": "2026-07-27T20:26:25.721927"
+    },
+    {
+      "id": "f9224c79-be9c-41b5-af99-8d8abc2e431e",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "1f319389-a421-4c37-aee7-4f73ad3d2ffd",
+      "createdAt": "2026-07-27T20:26:30.378762"
+    },
+    {
+      "id": "bc1d8abf-4638-4878-8c54-0dfd3d2a5257",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "e4e01474-1901-450b-b7ca-fc5db9c92452",
+      "createdAt": "2026-07-27T20:26:32.442364"
+    },
+    {
+      "id": "6da78af7-8975-4f0b-8fd1-f58be58decf3",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "fd4bad44-6bd2-49bc-816d-10efc6cb8092",
+      "createdAt": "2026-07-27T20:26:34.256753"
+    },
+    {
+      "id": "3b5e5b31-7d18-460c-ac1a-1ab2935a7c3b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "4955dbd0-d593-4af5-8ff2-d3fc94d3141d",
+      "createdAt": "2026-07-27T20:26:36.817239"
+    },
+    {
+      "id": "49e17ff4-985e-4121-8af0-9f7c9f1e3e15",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "3c9f4190-0c15-4227-8959-4c87e730b07b",
+      "createdAt": "2026-07-27T20:26:41.434893"
+    },
+    {
+      "id": "a8b4abad-9934-4832-a160-48d9122a34aa",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "5016243b-e619-4cda-bea0-d7ac3097f936",
+      "createdAt": "2026-07-27T20:26:43.463388"
+    },
+    {
+      "id": "79cfccf8-4846-4a05-9396-5e2983b112ea",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "58dcba0b-4d99-4ee0-be74-a7286e237172",
+      "createdAt": "2026-07-27T20:26:45.710889"
+    },
+    {
+      "id": "571fd554-197d-4c51-9e11-d2541c252170",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "4df1239c-f294-4edd-936e-8cb500c7ca58",
+      "createdAt": "2026-07-27T20:26:48.780227"
+    },
+    {
+      "id": "c758a3ff-c8d7-4938-b951-3a7bf6528a3b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "0ca51ca0-76fa-42ee-b8d8-7a32a62d4bd7",
+      "createdAt": "2026-07-27T20:26:51.403250"
+    },
+    {
+      "id": "51cd8e96-2e1c-4cbd-8365-98c72653b39f",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "f0a1896f-f4f6-4d52-8c80-0535ebdc6a53",
+      "createdAt": "2026-07-27T20:26:53.506204"
+    },
+    {
+      "id": "42d9de3b-d0ba-4070-bb30-d9836e10a180",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 150,
+      "source": "challenge",
+      "referenceId": "f1a22895-3ae6-4cbf-a0c8-bdff71f19961",
+      "createdAt": "2026-07-27T20:26:56.028661"
+    },
+    {
+      "id": "f00734ee-0826-4927-bd15-c78dcef0e64e",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 100,
+      "source": "challenge",
+      "referenceId": "75576821-922f-4d43-93be-f6f9cda52e61",
+      "createdAt": "2026-07-27T20:26:59.493688"
+    },
+    {
+      "id": "f225393d-b891-48de-b6d7-21c1b3a1330b",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 50,
+      "source": "challenge",
+      "referenceId": "9b517a89-7a8e-4734-9070-050304edc944",
+      "createdAt": "2026-07-27T20:27:01.843309"
+    },
+    {
+      "id": "7232ec80-4062-4178-b5bb-716f825ca968",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 50,
+      "source": "challenge",
+      "referenceId": "1d0d010f-52bb-4a67-ad83-49d4ba347f56",
+      "createdAt": "2026-07-27T20:27:03.395630"
+    },
+    {
+      "id": "9a668bda-ca6a-431a-a933-bf14882f78e0",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 50,
+      "source": "challenge",
+      "referenceId": "9c276477-c167-4e08-893a-4d0e14027e3f",
+      "createdAt": "2026-07-27T20:27:05.085808"
+    },
+    {
+      "id": "a2cd0523-94e8-4cc7-9d18-da56b15d971a",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "amount": 50,
+      "source": "challenge",
+      "referenceId": "17469e7f-f3db-45f8-9948-ab22abdbe65c",
+      "createdAt": "2026-07-27T20:27:06.812125"
     }
   ],
   "detective_tips": [],
@@ -3198,6 +3681,30 @@
       "userId": "7d960df6-c5b3-4a9b-be5a-0a0da9295188",
       "badgeId": "case_solver",
       "earnedAt": "2026-07-27T20:21:12.367895"
+    },
+    {
+      "id": "cec4d92a-73df-4380-8fa5-d6fbc1467597",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "badgeId": "first_case",
+      "earnedAt": "2026-07-27T20:26:25.722062"
+    },
+    {
+      "id": "2766a12a-1563-4847-b8d1-2f8a399cd27a",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "badgeId": "pattern_explorer",
+      "earnedAt": "2026-07-27T20:26:25.722062"
+    },
+    {
+      "id": "1aa7f6d4-4fee-4de9-9523-cc4c0a723d52",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "badgeId": "detail_detective",
+      "earnedAt": "2026-07-27T20:26:43.463603"
+    },
+    {
+      "id": "9b546c93-c6e9-4361-9970-234743456e76",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "badgeId": "case_solver",
+      "earnedAt": "2026-07-27T20:26:51.403315"
     }
   ],
   "notifications": [
@@ -3279,6 +3786,46 @@
       "title": "New badge unlocked!",
       "message": "You earned the Case Solver badge.",
       "createdAt": "2026-07-27T20:21:12.367895",
+      "readAt": null
+    },
+    {
+      "id": "f7f1cc00-bdfd-4c49-ad07-d96bcaeceab3",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "type": "badge_unlocked",
+      "badgeId": "first_case",
+      "title": "New badge unlocked!",
+      "message": "You earned the First Case badge.",
+      "createdAt": "2026-07-27T20:26:25.722062",
+      "readAt": null
+    },
+    {
+      "id": "3180544c-a1d0-42f1-9fc7-fb2497d14a5a",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "type": "badge_unlocked",
+      "badgeId": "pattern_explorer",
+      "title": "New badge unlocked!",
+      "message": "You earned the Pattern Explorer badge.",
+      "createdAt": "2026-07-27T20:26:25.722062",
+      "readAt": null
+    },
+    {
+      "id": "baba131c-6230-4e3a-853b-1213ade146fe",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "type": "badge_unlocked",
+      "badgeId": "detail_detective",
+      "title": "New badge unlocked!",
+      "message": "You earned the Detail Detective badge.",
+      "createdAt": "2026-07-27T20:26:43.463603",
+      "readAt": null
+    },
+    {
+      "id": "621d174a-3f00-4397-83df-28257e32bd1e",
+      "userId": "81e3f1a7-e1de-4bb2-8a17-158cf092ff81",
+      "type": "badge_unlocked",
+      "badgeId": "case_solver",
+      "title": "New badge unlocked!",
+      "message": "You earned the Case Solver badge.",
+      "createdAt": "2026-07-27T20:26:51.403315",
       "readAt": null
     }
   ]
