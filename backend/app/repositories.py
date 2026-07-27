@@ -6,11 +6,10 @@ from pathlib import Path
 
 from app.constants import (
     DIFFICULTY_MAP,
+    HINT_PENALTY,
     LEVELS,
-    SKILL_CATEGORIES,
     WEIGHT_WEAKNESS,
     WEIGHT_DIFFICULTY_FIT,
-    XP_RULES,
     normalize_avatar_id,
     require_unlocked_avatar,
 )
@@ -29,6 +28,10 @@ from app.storage import (
 CHALLENGE_DATA_ROOT = Path(__file__).resolve().parent.parent.parent / "challenge-data"
 
 _challenges_cache: list[dict] | None = None
+
+
+def _category_name(category_id: str) -> str:
+    return category_id.replace("_", " ").title()
 
 
 def _load_challenges_from_files() -> list[dict]:
@@ -72,6 +75,44 @@ def _load_challenges_from_files() -> list[dict]:
 
     _challenges_cache = challenges
     return challenges
+
+
+def get_skill_categories() -> list[dict]:
+    """Return the skill categories used by challenge JSON files."""
+    categories = []
+    seen = set()
+    for challenge in _load_challenges_from_files():
+        for category_id in challenge.get("skillCategoryIds", []):
+            if category_id in seen:
+                continue
+            seen.add(category_id)
+            categories.append(
+                {
+                    "id": category_id,
+                    "name": _category_name(category_id),
+                }
+            )
+    return categories
+
+
+def ensure_skill_scores(store: dict, user_id: str) -> None:
+    existing = {
+        score["categoryId"]
+        for score in store.get("skill_scores", [])
+        if score.get("userId") == user_id
+    }
+    for skill in get_skill_categories():
+        if skill["id"] in existing:
+            continue
+        store["skill_scores"].append({
+            "id": new_id(),
+            "userId": user_id,
+            "categoryId": skill["id"],
+            "score": 0,
+            "attempts": 0,
+            "correct": 0,
+        })
+        existing.add(skill["id"])
 
 
 def get_challenges() -> list[dict]:
@@ -281,16 +322,8 @@ def create_user(store: dict, body: dict) -> dict:
     }
     store["profiles"].append(profile)
 
-    # Initialize skill scores for the user
-    for skill in SKILL_CATEGORIES:
-        store["skill_scores"].append({
-            "id": new_id(),
-            "userId": user_id,
-            "categoryId": skill["id"],
-            "score": 0,
-            "attempts": 0,
-            "correct": 0,
-        })
+    # Initialize skill scores from challenge JSON category ids.
+    ensure_skill_scores(store, user_id)
 
     return {
         "success": True,
@@ -336,7 +369,7 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
     content = challenge["content"]
     correct_post_id = content.get("correctPostId")
     is_correct = body["selectedPostId"] == correct_post_id
-    hint_penalty = body.get("hintsUsed", 0) * XP_RULES["HINT_PENALTY"]
+    hint_penalty = body.get("hintsUsed", 0) * HINT_PENALTY
     xp_earned = max(0, challenge["xpReward"] - hint_penalty) if is_correct else 0
 
     attempt["selectedAnswer"] = body["selectedPostId"]
@@ -396,17 +429,17 @@ def submit_challenge(store: dict, session_id: str, body: dict) -> dict:
 
 def get_skill_profile(user_id: str, store: dict | None = None) -> dict:
     s = store if store is not None else load_store()
-    scores = [sc for sc in s["skill_scores"] if sc.get("userId") == user_id]
+    ensure_skill_scores(s, user_id)
+    categories = {c["id"]: c for c in get_skill_categories()}
+    scores = [
+        sc
+        for sc in s["skill_scores"]
+        if sc.get("userId") == user_id and sc.get("categoryId") in categories
+    ]
 
     if not scores:
-        return {
-            "skillProfile": [
-                {"categoryId": "source_verification", "score": 0, "attempts": 0, "correct": 0},
-                {"categoryId": "content_authenticity", "score": 0, "attempts": 0, "correct": 0},
-            ]
-        }
+        return {"skillProfile": []}
 
-    categories = {c["id"]: c for c in SKILL_CATEGORIES}
     return {
         "skillProfile": [
             {
@@ -425,7 +458,13 @@ def get_weak_areas_data(user_id: str, store: dict | None = None) -> dict:
     from app.services.personalization import get_weak_areas
 
     s = store if store is not None else load_store()
-    scores = [sc for sc in s["skill_scores"] if sc.get("userId") == user_id]
+    ensure_skill_scores(s, user_id)
+    category_ids = {c["id"] for c in get_skill_categories()}
+    scores = [
+        sc
+        for sc in s["skill_scores"]
+        if sc.get("userId") == user_id and sc.get("categoryId") in category_ids
+    ]
     mapped = [
         {
             "categoryId": sc["categoryId"],
@@ -435,9 +474,7 @@ def get_weak_areas_data(user_id: str, store: dict | None = None) -> dict:
         }
         for sc in scores
     ]
-    weak = get_weak_areas(mapped) if mapped else [
-        {"categoryId": "source_verification", "score": 0, "attempts": 0, "correct": 0}
-    ]
+    weak = get_weak_areas(mapped) if mapped else []
     return {"weakAreas": weak}
 
 
@@ -477,11 +514,20 @@ def update_skill_profile(store: dict, user_id: str, challenge: dict, correct: bo
 
     for skill_id in skill_categories:
         score_entry = find_one(store["skill_scores"], userId=user_id, categoryId=skill_id)
-        if score_entry:
-            score_entry["score"] = clamp(score_entry["score"] + delta, -1, 1)
-            score_entry["attempts"] = score_entry.get("attempts", 0) + 1
-            if correct:
-                score_entry["correct"] = score_entry.get("correct", 0) + 1
+        if not score_entry:
+            score_entry = {
+                "id": new_id(),
+                "userId": user_id,
+                "categoryId": skill_id,
+                "score": 0,
+                "attempts": 0,
+                "correct": 0,
+            }
+            store["skill_scores"].append(score_entry)
+        score_entry["score"] = clamp(score_entry["score"] + delta, -1, 1)
+        score_entry["attempts"] = score_entry.get("attempts", 0) + 1
+        if correct:
+            score_entry["correct"] = score_entry.get("correct", 0) + 1
 
 
 def weakness_signal(user_id: str, challenge: dict, store: dict) -> float:

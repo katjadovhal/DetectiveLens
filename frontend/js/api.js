@@ -7,8 +7,8 @@ const MOCK_CHALLENGE = {
   difficulty: 'easy',
   title: 'Which image is AI-generated?',
   instruction: 'Click to choose',
-  skillCategoryIds: ['content_authenticity'],
-  xpReward: 100,
+  skillCategoryIds: ['color', 'emotions', 'waxy_perfect', 'sociocultural', 'proportions'],
+  xpReward: 50,
   isDailyEligible: true,
   content: {
     posts: [
@@ -36,7 +36,7 @@ const MOCK_CHALLENGE = {
       challengeId: 'monkey-001',
       order: 1,
       question: 'Look at the details',
-      skillCategoryId: 'content_authenticity',
+      skillCategoryId: 'color',
       content: {
         body: 'AI-generated images often have small visual clues, especially in eyes, fur, hands, shadows, or background details.',
         bulletQuestions: [
@@ -91,7 +91,7 @@ async function request(path, options = {}) {
 }
 
 function mockSubmitFakePost(body) {
-  const correctPostId = 'A';
+  const correctPostId = MOCK_CHALLENGE.content.correctPostId;
   const isCorrect = body.selectedPostId === correctPostId;
   return {
     attemptId: 'mock-session',
@@ -99,7 +99,7 @@ function mockSubmitFakePost(body) {
     selectedAnswer: body.selectedPostId,
     correctAnswer: correctPostId,
     explanation: MOCK_CHALLENGE.content.explanation.bullets,
-    xpEarned: isCorrect ? Math.max(0, 100 - body.hintsUsed * 10) : 0,
+    xpEarned: isCorrect ? Math.max(0, MOCK_CHALLENGE.xpReward - body.hintsUsed * 10) : 0,
     leveledUp: false,
     currentLevel: 1,
     detectiveTip: !isCorrect
