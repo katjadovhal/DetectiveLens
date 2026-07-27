@@ -3,6 +3,7 @@ import { getAvatarMarkup } from '../avatars.js';
 import { setLastUserId } from '../session.js';
 import { getProgressSummary, renderXpBarHtml } from '../xp.js';
 import { triggerLevelUpAnimation } from '../animations.js';
+import { openShareModal } from '../share-modal.js';
 
 export async function renderChallengeStaging(container, userId) {
   container.innerHTML = '<div class="loading">Loading...</div>';
@@ -112,7 +113,7 @@ export async function renderChallengeStaging(container, userId) {
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
         const shareUrl = `https://detectivelens.app/challenge/${dailyData.challenge?.id}?shared=true`;
-        alert(`Share this challenge with a friend:\n\n${shareUrl}`);
+        openShareModal(shareUrl);
       });
     }
 
