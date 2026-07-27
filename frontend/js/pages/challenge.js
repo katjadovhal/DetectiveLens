@@ -388,6 +388,7 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
       if (shareBtn) {
         shareBtn.addEventListener('click', () => {
           const shareUrl = `https://detectivelens.app/challenge/${id}?shared=true`;
+          alert(`Share this challenge with a friend:\n\n${shareUrl}`);
           openShareModal(shareUrl, {
             onCopyAndClose: () => {
               const params = new URLSearchParams({ userId });
