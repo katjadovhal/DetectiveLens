@@ -1,0 +1,34 @@
+{
+  "slug": "noodles-001",
+  "type": "fake_post",
+  "difficulty": "Hard",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "functional", "color"],
+  "xpReward": 150,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/noodles/16a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/noodles/16.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph.",
+        "The background in image B is blurred.",
+        "The food in image B is flying unnaturally.",
+        "The colors in image B are too saturated."
+      ]
+    }
+  }
+}

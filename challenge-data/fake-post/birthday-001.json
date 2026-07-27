@@ -1,0 +1,35 @@
+{
+  "slug": "birthday-001",
+  "type": "fake_post",
+  "difficulty": "Easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "shiny_texture", "waxy_perfect", "color"],
+  "xpReward": 50,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/birthday/15.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/birthday/15a.jpg"
+      }
+    ],
+
+    "correctPostId": "A",
+
+    "explanation": {
+      "bullets": [
+        "Image A was generated using AI.",
+        "Image B is a real photograph.",
+        "The background in image A is blurred.",
+        "The balloons in image A have a shiny texture.",
+        "The people in image A have waxy skin.",
+        "The colors in image A are too perfect and saturated."
+      ]
+    }
+  }
+}
