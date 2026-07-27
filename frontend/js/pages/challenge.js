@@ -426,6 +426,13 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
               nextBtn.disabled = true;
               const practiceData = await api.getNextPracticeChallenge(nextUserId);
 
+              if (practiceData?.status === 'all_challenges_completed') {
+                const params = new URLSearchParams({ userId: nextUserId });
+                const route = practiceData.nextRoute || '/detective-hq';
+                window.location.href = `${route}?${params.toString()}`;
+                return;
+              }
+
               if (practiceData.challenge?.id) {
                 const params = new URLSearchParams({
                   userId: nextUserId,

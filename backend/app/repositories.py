@@ -193,7 +193,10 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
         level_xp_required = max(current_level_xp, 1)
         xp_to_next = 0
 
-    daily_challenge = get_daily_challenge(s)
+    completion = compute_challenge_completion(user_id, s)
+    daily_challenge = None
+    if not completion["allChallengesCompleted"]:
+        daily_challenge = get_daily_challenge(s)
 
     return {
         "greeting": {
@@ -215,6 +218,56 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
             "xpBonus": 100,
             "completed": False,
         },
+        "challengeCompletion": completion,
+    }
+
+
+ALL_CHALLENGES_COMPLETED_STATUS = "all_challenges_completed"
+ALL_CHALLENGES_COMPLETED_MESSAGE = "You have completed all available challenges."
+ALL_CHALLENGES_COMPLETED_NEXT_ROUTE = "/detective-hq"
+
+
+def all_challenges_completed_payload() -> dict:
+    """Safe expected-state payload for practice/daily when catalogue is finished."""
+    return {
+        "status": ALL_CHALLENGES_COMPLETED_STATUS,
+        "message": ALL_CHALLENGES_COMPLETED_MESSAGE,
+        "nextRoute": ALL_CHALLENGES_COMPLETED_NEXT_ROUTE,
+    }
+
+
+def compute_challenge_completion(user_id: str, store: dict | None = None) -> dict:
+    """Derive catalogue completion from available challenges + completed attempts.
+
+    A challenge counts as completed for this user when there is at least one attempt
+    with completedAt set whose challengeId is in the current catalogue.
+    """
+    s = store if store is not None else load_store()
+    available_ids = {c["id"] for c in get_challenges() if c.get("id")}
+    if not available_ids:
+        return {
+            "allChallengesCompleted": False,
+            "completedChallenges": 0,
+            "totalChallenges": 0,
+            "remainingChallenges": 0,
+        }
+
+    completed_ids = {
+        attempt.get("challengeId")
+        for attempt in s.get("challenge_attempts", [])
+        if attempt.get("userId") == user_id
+        and attempt.get("completedAt")
+        and attempt.get("challengeId") in available_ids
+    }
+
+    completed_count = len(completed_ids)
+    total_count = len(available_ids)
+    remaining = total_count - completed_count
+    return {
+        "allChallengesCompleted": completed_ids == available_ids,
+        "completedChallenges": completed_count,
+        "totalChallenges": total_count,
+        "remainingChallenges": remaining,
     }
 
 
@@ -845,6 +898,9 @@ def calculate_challenge_score(user_id: str, challenge: dict, store: dict) -> flo
 def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict | None:
     """Get next challenge for practice mode using skill-based recommendation"""
     s = store if store is not None else load_store()
+    if compute_challenge_completion(user_id, s)["allChallengesCompleted"]:
+        return None
+
     all_challenges = get_challenges()
     # Consider any challenge that has been shown to the user as "seen" (whether answered correctly or not)
     seen_attempts = [a for a in s.get("challenge_attempts", []) if a.get("userId") == user_id]
@@ -854,9 +910,8 @@ def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict
     available = [c for c in all_challenges if c["id"] not in seen_ids]
 
     if not available:
-        # If the user has seen all challenges, allow repetition by returning a random
-        # challenge instead of signaling "all completed". This lets users keep
-        # practicing even after they've exhausted the pool once.
+        # If the user has seen all challenges but has not completed the full catalogue
+        # (e.g. started without submitting), allow repetition so practice stays available.
         return random.choice(all_challenges) if all_challenges else None
 
     # If user hasn't seen any challenges yet, pick random

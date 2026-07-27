@@ -44,11 +44,16 @@ def get_challenge(challenge_id: str):
 def get_next_practice_challenge(user_id: str):
     """Get the next practice challenge for the user"""
     try:
+        if repo.compute_challenge_completion(user_id)["allChallengesCompleted"]:
+            return {
+                **repo.all_challenges_completed_payload(),
+                "challenge": None,
+            }
         challenge = repo.get_next_practice_challenge(user_id)
         if not challenge:
             return {
+                **repo.all_challenges_completed_payload(),
                 "challenge": None,
-                "message": "All challenges completed! Great job!",
             }
         return {"challenge": repo.serialize_challenge(challenge)}
     except Exception as e:
@@ -62,6 +67,14 @@ def get_next_practice_challenge(user_id: str):
 def get_daily_challenge(user_id: str):
     """Get today's daily challenge"""
     try:
+        if repo.compute_challenge_completion(user_id)["allChallengesCompleted"]:
+            return {
+                **repo.all_challenges_completed_payload(),
+                "challenge": None,
+                "completed": True,
+                "shareUrl": None,
+            }
+
         challenge = repo.get_daily_challenge()
         if not challenge:
             raise HTTPException(
@@ -75,6 +88,8 @@ def get_daily_challenge(user_id: str):
             "completed": completed,
             "shareUrl": f"https://detectivelens.app/challenge/{challenge['id']}?shared=true",
         }
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
