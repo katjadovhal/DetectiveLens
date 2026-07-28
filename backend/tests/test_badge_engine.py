@@ -87,34 +87,6 @@ def test_clue_strategist_counts_hint_assisted_correct_only():
     assert clue["status"] == "unlocked"
 
 
-def test_comeback_associated_recovery():
-    attempts = [
-        _attempt("u1", "c1", correct=False, at="2026-01-01T00:00:00"),  # color miss
-        _attempt("u1", "c5", correct=True, at="2026-01-02T00:00:00"),  # color+emotions hit
-    ]
-    newly = find_newly_unlocked(
-        user_id="u1",
-        attempts=attempts,
-        challenges=CHALLENGES,
-        user_badges=[],
-    )
-    assert any(b["id"] == "comeback_detective" for b in newly)
-
-
-def test_comeback_requires_later_correct_after_incorrect():
-    attempts = [
-        _attempt("u1", "c5", correct=True, at="2026-01-01T00:00:00"),
-        _attempt("u1", "c1", correct=False, at="2026-01-02T00:00:00"),
-    ]
-    newly = find_newly_unlocked(
-        user_id="u1",
-        attempts=attempts,
-        challenges=CHALLENGES,
-        user_badges=[],
-    )
-    assert not any(b["id"] == "comeback_detective" for b in newly)
-
-
 def test_pattern_explorer_needs_four_distinct_skills():
     attempts = [
         _attempt("u1", "c1", correct=True, at="2026-01-01T00:00:00"),
@@ -184,4 +156,4 @@ def test_age_adapted_message_fallback_without_ollama(monkeypatch):
         approved_reason=approved_unlock_message("clue_strategist"),
         context="badge_unlock_notification",
     )
-    assert text == "You earned Clue Strategist."
+    assert text == "You earned the Clue Strategist badge."

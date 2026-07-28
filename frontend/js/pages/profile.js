@@ -18,6 +18,10 @@ import {
 } from '../session.js';
 import { getProgressSummary, renderXpBarHtml } from '../xp.js';
 
+function prefersReducedMotion() {
+  return Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches);
+}
+
 function renderLearningInsight(insight) {
   const message = insight?.message;
   if (!message?.text) return '';
@@ -171,8 +175,16 @@ export async function renderProfile(container) {
     if (window.location.hash === '#profile-badges' || window.location.hash === '#badges-heading') {
       const section = container.querySelector('#profile-badges');
       if (section) {
-        section.focus({ preventScroll: false });
-        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        section.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      }
+    } else if (window.location.hash.startsWith('#badge-')) {
+      const target = container.querySelector(window.location.hash);
+      if (target) {
+        target.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'center' });
+        target.classList.add('badge-card--highlight');
+        window.setTimeout(() => {
+          target.classList.remove('badge-card--highlight');
+        }, 1800);
       }
     }
 

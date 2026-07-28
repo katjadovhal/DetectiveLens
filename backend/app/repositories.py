@@ -193,7 +193,10 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
         level_xp_required = max(current_level_xp, 1)
         xp_to_next = 0
 
-    daily_challenge = get_daily_challenge(s)
+    completion = compute_challenge_completion(user_id, s)
+    daily_challenge = None
+    if not completion["allChallengesCompleted"]:
+        daily_challenge = get_daily_challenge(s)
 
     return {
         "greeting": {
@@ -215,6 +218,56 @@ def get_home_data(user_id: str, store: dict | None = None) -> dict:
             "xpBonus": 100,
             "completed": False,
         },
+        "challengeCompletion": completion,
+    }
+
+
+ALL_CHALLENGES_COMPLETED_STATUS = "all_challenges_completed"
+ALL_CHALLENGES_COMPLETED_MESSAGE = "You have completed all available challenges."
+ALL_CHALLENGES_COMPLETED_NEXT_ROUTE = "/challenge-staging"
+
+
+def all_challenges_completed_payload() -> dict:
+    """Safe expected-state payload for practice/daily when catalogue is finished."""
+    return {
+        "status": ALL_CHALLENGES_COMPLETED_STATUS,
+        "message": ALL_CHALLENGES_COMPLETED_MESSAGE,
+        "nextRoute": ALL_CHALLENGES_COMPLETED_NEXT_ROUTE,
+    }
+
+
+def compute_challenge_completion(user_id: str, store: dict | None = None) -> dict:
+    """Derive catalogue completion from available challenges + completed attempts.
+
+    A challenge counts as completed for this user when there is at least one attempt
+    with completedAt set whose challengeId is in the current catalogue.
+    """
+    s = store if store is not None else load_store()
+    available_ids = {c["id"] for c in get_challenges() if c.get("id")}
+    if not available_ids:
+        return {
+            "allChallengesCompleted": False,
+            "completedChallenges": 0,
+            "totalChallenges": 0,
+            "remainingChallenges": 0,
+        }
+
+    completed_ids = {
+        attempt.get("challengeId")
+        for attempt in s.get("challenge_attempts", [])
+        if attempt.get("userId") == user_id
+        and attempt.get("completedAt")
+        and attempt.get("challengeId") in available_ids
+    }
+
+    completed_count = len(completed_ids)
+    total_count = len(available_ids)
+    remaining = total_count - completed_count
+    return {
+        "allChallengesCompleted": completed_ids == available_ids,
+        "completedChallenges": completed_count,
+        "totalChallenges": total_count,
+        "remainingChallenges": remaining,
     }
 
 
@@ -550,51 +603,93 @@ def apply_badge_unlocks(store: dict, *, user_id: str, profile: dict | None) -> l
     payloads: list[dict] = []
 
     for badge in newly:
-        already = find_one(store["user_badges"], userId=user_id, badgeId=badge["id"])
-        if already:
+        badge_id = badge["id"]
+        if _has_user_badge(store, user_id, badge_id):
             continue
 
         store["user_badges"].append(
             {
                 "id": new_id(),
                 "userId": user_id,
-                "badgeId": badge["id"],
+                "badgeId": badge_id,
                 "earnedAt": earned_at,
             }
         )
 
-        # Never notify twice for the same unlock.
-        existing_note = next(
-            (
-                n
-                for n in store["notifications"]
-                if n.get("userId") == user_id
-                and n.get("type") == "badge_unlocked"
-                and n.get("badgeId") == badge["id"]
-            ),
-            None,
-        )
         payload = build_unlock_payload(badge, age_band=age_band)
         payload["earnedAt"] = earned_at
+        payload["notificationId"] = None
         payloads.append(payload)
 
-        if existing_note:
+        if _has_badge_unlock_notification(store, user_id, badge_id):
             continue
 
+        note_id = new_id()
         store["notifications"].append(
             {
-                "id": new_id(),
+                "id": note_id,
                 "userId": user_id,
                 "type": "badge_unlocked",
-                "badgeId": badge["id"],
-                "title": "New badge unlocked",
+                "badgeId": badge_id,
+                "title": "New badge unlocked!",
                 "message": payload["message"],
                 "createdAt": earned_at,
                 "readAt": None,
             }
         )
+        payload["notificationId"] = note_id
 
     return payloads
+
+
+def _has_user_badge(store: dict, user_id: str, badge_id: str) -> bool:
+    return find_one(store.get("user_badges", []), userId=user_id, badgeId=badge_id) is not None
+
+
+def _has_badge_unlock_notification(store: dict, user_id: str, badge_id: str) -> bool:
+    return any(
+        n.get("userId") == user_id
+        and n.get("type") == "badge_unlocked"
+        and n.get("badgeId") == badge_id
+        for n in store.get("notifications", [])
+    )
+
+
+def backfill_missing_badge_notifications(store: dict, user_id: str, profile: dict | None = None) -> int:
+    """Idempotent optional helper: one notification per earned badge that lacks one.
+
+    Not called from profile load or submit. Returns number of notifications created.
+    """
+    store.setdefault("user_badges", [])
+    store.setdefault("notifications", [])
+    age_band = resolve_age_band(profile)
+    created = 0
+    for row in list(store["user_badges"]):
+        if row.get("userId") != user_id:
+            continue
+        badge_id = row.get("badgeId")
+        if not badge_id or _has_badge_unlock_notification(store, user_id, badge_id):
+            continue
+        from app.badges.catalogue import get_badge_def
+
+        badge = get_badge_def(badge_id)
+        if not badge:
+            continue
+        payload = build_unlock_payload(badge, age_band=age_band)
+        store["notifications"].append(
+            {
+                "id": new_id(),
+                "userId": user_id,
+                "type": "badge_unlocked",
+                "badgeId": badge_id,
+                "title": "New badge unlocked!",
+                "message": payload["message"],
+                "createdAt": row.get("earnedAt") or now_iso(),
+                "readAt": None,
+            }
+        )
+        created += 1
+    return created
 
 
 def get_user_badges_data(user_id: str) -> dict:
@@ -803,6 +898,9 @@ def calculate_challenge_score(user_id: str, challenge: dict, store: dict) -> flo
 def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict | None:
     """Get next challenge for practice mode using skill-based recommendation"""
     s = store if store is not None else load_store()
+    if compute_challenge_completion(user_id, s)["allChallengesCompleted"]:
+        return None
+
     all_challenges = get_challenges()
     # Consider any challenge that has been shown to the user as "seen" (whether answered correctly or not)
     seen_attempts = [a for a in s.get("challenge_attempts", []) if a.get("userId") == user_id]
@@ -812,9 +910,8 @@ def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict
     available = [c for c in all_challenges if c["id"] not in seen_ids]
 
     if not available:
-        # If the user has seen all challenges, allow repetition by returning a random
-        # challenge instead of signaling "all completed". This lets users keep
-        # practicing even after they've exhausted the pool once.
+        # If the user has seen all challenges but has not completed the full catalogue
+        # (e.g. started without submitting), allow repetition so practice stays available.
         return random.choice(all_challenges) if all_challenges else None
 
     # If user hasn't seen any challenges yet, pick random

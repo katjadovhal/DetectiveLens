@@ -43,11 +43,8 @@ Where a citation from course slides is not verified in the repository, a **Refer
 | `first_case` | ≥1 completed challenge |
 | `case_solver` | ≥10 completed challenges |
 | `clue_strategist` | ≥3 correct completed with `hintsUsed > 0` |
-| `comeback_detective` | Associated recovery across a shared `skillCategoryId` |
 | `pattern_explorer` | ≥4 distinct `skillCategoryIds` across completed challenges |
 | `detail_detective` | ≥5 completed associated with one pattern; ≥4 of last 5 relevant correct |
-
-`comeback_detective` wording must describe associated recovery and must not claim that one exact pattern caused the result.
 
 ## Technical decisions
 

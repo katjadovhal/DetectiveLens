@@ -80,33 +80,6 @@ def _progress_clue_strategist(completed: list[dict]) -> tuple[int, int, bool]:
     )
 
 
-def _progress_comeback(
-    completed: list[dict],
-    challenges_by_id: dict[str, dict],
-) -> tuple[int, int, bool]:
-    """Associated recovery: earlier incorrect and later correct sharing a pattern."""
-    first_incorrect_at: dict[str, str] = {}
-    for attempt in completed:
-        challenge = challenges_by_id.get(attempt.get("challengeId"))
-        patterns = _challenge_patterns(challenge)
-        completed_at = attempt.get("completedAt") or ""
-        if attempt.get("isCorrect") is False:
-            for pattern in patterns:
-                if pattern not in first_incorrect_at:
-                    first_incorrect_at[pattern] = completed_at
-
-    for attempt in completed:
-        if attempt.get("isCorrect") is not True:
-            continue
-        completed_at = attempt.get("completedAt") or ""
-        challenge = challenges_by_id.get(attempt.get("challengeId"))
-        for pattern in _challenge_patterns(challenge):
-            earlier = first_incorrect_at.get(pattern)
-            if earlier and earlier < completed_at:
-                return 1, 1, True
-    return 0, 1, False
-
-
 def _progress_pattern_explorer(
     completed: list[dict],
     challenges_by_id: dict[str, dict],
@@ -155,7 +128,6 @@ _PROGRESS_FNS = {
     "first_case": lambda c, _: _progress_first_case(c),
     "case_solver": lambda c, _: _progress_case_solver(c),
     "clue_strategist": lambda c, _: _progress_clue_strategist(c),
-    "comeback_detective": _progress_comeback,
     "pattern_explorer": _progress_pattern_explorer,
     "detail_detective": _progress_detail_detective,
 }

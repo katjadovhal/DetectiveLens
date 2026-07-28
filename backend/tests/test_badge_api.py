@@ -70,7 +70,7 @@ def test_badges_endpoint_all_locked_initially(client):
     response = client.get("/api/v1/profiles/user-1/badges")
     assert response.status_code == 200
     badges = response.json()["badges"]
-    assert len(badges) >= 6
+    assert len(badges) >= 5
     assert all(b["status"] == "locked" for b in badges)
     assert all("progress" in b and "target" in b for b in badges)
 
@@ -122,6 +122,29 @@ def test_submit_unlocks_first_case_and_notifies_once(client):
     first = next(b for b in badges if b["id"] == "first_case")
     assert first["status"] == "unlocked"
     assert first["earnedAt"]
+
+
+def test_notification_title_and_payload_fields(client):
+    challenges = client.get("/api/v1/challenges").json()["challenges"]
+    challenge_id = challenges[0]["id"]
+    start = client.post(f"/api/v1/challenges/{challenge_id}/start/user-1")
+    session_id = start.json()["sessionId"]
+    body = client.post(
+        f"/api/v1/challenges/sessions/{session_id}/submit",
+        json={"selectedPostId": "A", "hintsUsed": 0},
+    ).json()
+
+    unlock = next(b for b in body["newlyUnlockedBadges"] if b["id"] == "first_case")
+    assert unlock.get("notificationId")
+    assert unlock.get("title") == "First Case"
+    assert unlock.get("reason")
+    assert unlock.get("message")
+
+    notes = client.get("/api/v1/profiles/user-1/notifications").json()["notifications"]
+    note = next(n for n in notes if n["badgeId"] == "first_case")
+    assert note["title"] == "New badge unlocked!"
+    assert note["type"] == "badge_unlocked"
+    assert note["id"] == unlock["notificationId"]
 
 
 def test_mark_notification_read(client):

@@ -3,6 +3,7 @@ import { adaptiveMessageClass } from '../adaptive-presentation.js';
 import { setLastUserId, withUserId } from '../session.js';
 import { openShareModal } from '../share-modal.js';
 import { showToast, toastMessageForBadges } from '../toast.js';
+import { ingestBadgeUnlockNotifications } from '../header.js';
 
 function renderSocialPost(post, selected, disabled) {
   return `
@@ -425,6 +426,13 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
               nextBtn.disabled = true;
               const practiceData = await api.getNextPracticeChallenge(nextUserId);
 
+              if (practiceData?.status === 'all_challenges_completed') {
+                const params = new URLSearchParams({ userId: nextUserId });
+                const route = practiceData.nextRoute || '/challenge-staging';
+                window.location.href = `${route}?${params.toString()}`;
+                return;
+              }
+
               if (practiceData.challenge?.id) {
                 const params = new URLSearchParams({
                   userId: nextUserId,
@@ -468,6 +476,7 @@ export async function renderChallenge(container, challengeId, userId, mode = 'pr
         const unlocked = state.result.newlyUnlockedBadges || [];
         if (unlocked.length) {
           showToast(toastMessageForBadges(unlocked));
+          ingestBadgeUnlockNotifications(unlocked);
         }
         await loadDetectiveTip();
       } catch (err) {
