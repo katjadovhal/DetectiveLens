@@ -2210,16 +2210,6 @@ button.profile-pick-card,
   }
 }
 
-.profile-colorblind .progress-fill {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    var(--color-primary),
-    var(--color-primary) 8px,
-    var(--color-primary-hover) 8px,
-    var(--color-primary-hover) 16px
-  );
-}
-
 @media (max-width: 640px) {
   .stat-chip-row {
     grid-template-columns: 1fr;

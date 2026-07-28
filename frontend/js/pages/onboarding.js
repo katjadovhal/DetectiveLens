@@ -25,7 +25,6 @@ export async function renderOnboarding(container) {
   const state = {
     username: '',
     age: '',
-    colorBlindness: false,
     readingConfirmed: false,
     avatarId: AVATARS[0].id,
     submitting: false,
@@ -120,15 +119,6 @@ export async function renderOnboarding(container) {
                 }
               </div>
 
-              <label class="switch-check">
-                <input type="checkbox" id="colorBlindness" ${state.colorBlindness ? 'checked' : ''} />
-                <span class="switch-ui" aria-hidden="true"></span>
-                <span class="switch-copy">
-                  <span class="switch-title">I have color blindness</span>
-                  <span class="switch-hint">We'll adjust some colors to make things easier to see.</span>
-                </span>
-              </label>
-
               ${
                 showReading
                   ? `
@@ -171,7 +161,6 @@ export async function renderOnboarding(container) {
 
     const usernameInput = container.querySelector('#username');
     const ageInput = container.querySelector('#age');
-    const colorBlindnessCheck = container.querySelector('#colorBlindness');
     const readingConfirmCheck = container.querySelector('#reading-confirm-check');
     const completeBtn = container.querySelector('#complete-btn');
 
@@ -191,10 +180,6 @@ export async function renderOnboarding(container) {
       } else {
         updateReadyState();
       }
-    });
-
-    colorBlindnessCheck.addEventListener('change', (e) => {
-      state.colorBlindness = e.target.checked;
     });
 
     if (readingConfirmCheck) {
@@ -235,7 +220,6 @@ export async function renderOnboarding(container) {
       const response = await api.createUser({
         username: state.username.trim(),
         age: parseInt(state.age, 10),
-        colorBlindness: state.colorBlindness,
         avatarId: normalizeAvatarId(state.avatarId),
       });
       if (response.success && response.userId) {

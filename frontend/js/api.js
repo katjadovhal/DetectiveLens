@@ -170,7 +170,6 @@ export const api = {
           currentLevelXp: 0,
           completedChallengeCount: 0,
           onboardingCompleted: false,
-          colorBlindness: false,
           hqOwnedItemIds: [],
         },
       };

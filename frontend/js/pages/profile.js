@@ -56,7 +56,6 @@ export async function renderProfile(container) {
   setLastUserId(userId);
   const { profile, home } = loaded;
   const progress = getProgressSummary({ profile, home });
-  const colorBlindness = Boolean(profile.colorBlindness);
   const backHref = withUserId('/challenge-staging', userId);
   const totalXp = progress.totalXp;
 
@@ -92,7 +91,7 @@ export async function renderProfile(container) {
 
   function paint() {
     container.innerHTML = `
-      <div class="page-shell profile-page${colorBlindness ? ' profile-colorblind' : ''}">
+      <div class="page-shell profile-page">
         <div class="profile-top-actions">
           <a href="${backHref}" class="btn btn-secondary" data-link>← Back to home</a>
         </div>

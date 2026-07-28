@@ -35,7 +35,7 @@ Where a citation from course slides is not verified in the repository, a **Refer
 3. **Badges (MVP, evidence-based):** Profile shows a full catalogue of locked and unlocked badges. Unlocking is deterministic from completed `challenge_attempts` only. Persisted unlock rows store `{userId, badgeId, earnedAt}` only.
 4. **XP is the only progress currency:** UI labels use “XP”; no separate points field is introduced.
 5. **Legacy avatar aliasing:** `detective-default` maps to `avatar-detective-1` on read/write normalization without bulk-migrating `store.json`.
-6. **Color-blindness preference:** Selection indicators use border + checkmark + text (not color alone); XP bar uses a striped fill when `colorBlindness` is true.
+6. **Accessible selection states:** Selection indicators use border + checkmark + text, not color alone.
 
 ### Badge threshold assumptions (require evaluation)
 | Badge | Threshold |
