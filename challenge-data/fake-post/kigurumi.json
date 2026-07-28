@@ -1,0 +1,36 @@
+{
+  "slug": "kigurumi-001",
+  "type": "fake_post",
+  "difficulty": "Easy",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_background", "emotions", "color", "sociocultural"],
+  "xpReward": 50,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/kigurumi/23a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/kigurumi/23.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph.",
+        "Image B has a meme quality",
+        "The outfit in image B looks unnatural",
+        "The facial expression of the man in Image B is emotionally exaggerated",
+        "The background in image B is blurred.",
+        "The colors in image B are oversaturated."
+      ]
+    }
+  }
+}

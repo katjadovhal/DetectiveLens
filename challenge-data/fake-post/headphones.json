@@ -1,0 +1,33 @@
+{
+  "slug": "headphones-001",
+  "type": "fake_post",
+  "difficulty": "Hard",
+  "title": "Which image is AI-generated?",
+  "instruction": "Click to choose",
+  "skillCategoryIds": ["blurred_textures", "color"],
+  "xpReward": 150,
+
+  "content": {
+    "posts": [
+      {
+        "id": "A",
+        "imageUrl": "/public/assets/challenges/headphones/22a.jpg"
+      },
+      {
+        "id": "B",
+        "imageUrl": "/public/assets/challenges/noodles/22.jpg"
+      }
+    ],
+
+    "correctPostId": "B",
+
+    "explanation": {
+      "bullets": [
+        "Image B was generated using AI.",
+        "Image A is a real photograph.",
+        "The texture of the headphones in image B is somewhat blurred",
+        "The colors and lightning in image B are too bright and saturated."
+      ]
+    }
+  }
+}

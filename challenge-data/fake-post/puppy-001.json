@@ -4,7 +4,7 @@
   "difficulty": "Medium",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["blurred_background", "emotions", "color"],
+  "skillCategoryIds": ["blurred_background", "emotions", "color", "waxy_perfect"],
   "xpReward": 100,
 
   "content": {
@@ -25,9 +25,10 @@
       "bullets": [
         "Image B was generated using AI.",
         "Image A is a real photograph.",
-        "The background in image B is blurred.",
-        "The puppy in image B appears unusually cute.",
-        "The colors in image B are too saturated."
+        "The puppy in image B appears unusually happy and cute.",
+        "The puppy in image B has a perfect fur texture",
+        "The colors in image B are too saturated.",
+        "The background in image B is blurred."
       ]
     }
   }

@@ -4,7 +4,7 @@
   "difficulty": "Easy",
   "title": "Which image is AI-generated?",
   "instruction": "Click to choose",
-  "skillCategoryIds": ["blurred_background", "shiny_texture", "waxy_perfect", "color"],
+  "skillCategoryIds": ["blurred_background", "shiny_texture", "waxy_perfect", "color", "sociocultural"],
   "xpReward": 50,
 
   "content": {
@@ -25,10 +25,11 @@
       "bullets": [
         "Image A was generated using AI.",
         "Image B is a real photograph.",
-        "The background in image A is blurred.",
-        "The balloons in image A have a shiny texture.",
+        "The balloons in image A have an unnaturally shiny texture.",
+        "The people in image A sit unnaturally neatly, their hair and clothes are symmetrical to the counterpart",
         "The people in image A have waxy skin.",
-        "The colors in image A are too perfect and saturated."
+        "The colors in image A are too perfect and saturated.",
+        "The background in image A is blurred."
       ]
     }
   }

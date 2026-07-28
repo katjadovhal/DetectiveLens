@@ -25,9 +25,9 @@
       "bullets": [
         "Image B was generated using AI.",
         "Image A is a real photograph.",
-        "The background in image B is blurred.",
         "The food in image B is flying unnaturally.",
-        "The colors in image B are too saturated."
+        "The colors in image B are too saturated.",
+        "The background in image B is blurred."
       ]
     }
   }
