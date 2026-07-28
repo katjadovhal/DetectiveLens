@@ -902,17 +902,19 @@ def get_next_practice_challenge(user_id: str, store: dict | None = None) -> dict
         return None
 
     all_challenges = get_challenges()
-    # Consider any challenge that has been shown to the user as "seen" (whether answered correctly or not)
-    seen_attempts = [a for a in s.get("challenge_attempts", []) if a.get("userId") == user_id]
-    seen_ids = set(a.get("challengeId") for a in seen_attempts if a.get("challengeId"))
+    user_attempts = [a for a in s.get("challenge_attempts", []) if a.get("userId") == user_id]
+    seen_ids = set(a.get("challengeId") for a in user_attempts if a.get("challengeId"))
+    completed_ids = {
+        a.get("challengeId")
+        for a in user_attempts
+        if a.get("challengeId") and a.get("completedAt")
+    }
 
-    # Get available challenges (exclude seen challenges so they are never shown twice in practice)
-    available = [c for c in all_challenges if c["id"] not in seen_ids]
+    # Started-but-unfinished challenges remain available and can be scored again.
+    available = [c for c in all_challenges if c["id"] not in completed_ids]
 
     if not available:
-        # If the user has seen all challenges but has not completed the full catalogue
-        # (e.g. started without submitting), allow repetition so practice stays available.
-        return random.choice(all_challenges) if all_challenges else None
+        return None
 
     # If user hasn't seen any challenges yet, pick random
     if not seen_ids:

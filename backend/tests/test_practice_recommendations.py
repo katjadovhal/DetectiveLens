@@ -46,9 +46,26 @@ def _completed_attempt(challenge_id: str) -> dict:
     }
 
 
-def _store(*, scores: dict[str, float], completed: list[str] | None = None) -> dict:
+def _unfinished_attempt(challenge_id: str) -> dict:
+    return {
+        "id": f"{USER_ID}-{challenge_id}-unfinished",
+        "userId": USER_ID,
+        "challengeId": challenge_id,
+        "completedAt": None,
+        "isCorrect": None,
+        "hintsUsed": 0,
+    }
+
+
+def _store(
+    *,
+    scores: dict[str, float],
+    completed: list[str] | None = None,
+    unfinished: list[str] | None = None,
+) -> dict:
     attempts = [_completed_attempt("warmup-challenge")]
     attempts.extend(_completed_attempt(challenge_id) for challenge_id in completed or [])
+    attempts.extend(_unfinished_attempt(challenge_id) for challenge_id in unfinished or [])
     return {
         "skill_scores": [_skill_score(skill_id, score) for skill_id, score in scores.items()],
         "challenge_attempts": attempts,
@@ -84,6 +101,28 @@ def test_skips_completed_weakest_challenge_and_recommends_next_best(toy_catalogu
     recommendation = get_next_practice_challenge(USER_ID, store)
 
     assert recommendation["id"] == "challenge-c"
+
+
+def test_completed_challenge_is_not_recommended_even_with_highest_score(toy_catalogue):
+    store = _store(
+        scores={"a": 0.2, "b": -1.0, "c": 0.1, "d": 0.1},
+        completed=["challenge-b"],
+    )
+
+    recommendation = get_next_practice_challenge(USER_ID, store)
+
+    assert recommendation["id"] != "challenge-b"
+
+
+def test_unfinished_challenge_can_be_recommended_again(toy_catalogue):
+    store = _store(
+        scores={"a": 0.2, "b": -0.9, "c": -0.6, "d": 0.1},
+        unfinished=["challenge-b"],
+    )
+
+    recommendation = get_next_practice_challenge(USER_ID, store)
+
+    assert recommendation["id"] == "challenge-b"
 
 
 def test_prefers_better_matching_difficulty_when_skills_are_equally_weak(monkeypatch):
