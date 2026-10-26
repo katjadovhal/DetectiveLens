@@ -1,115 +1,112 @@
 # DetectiveLens
 
-Gamified misinformation literacy web app for children — LMU PSIS SS2026 course project.
-
-## Monorepo structure
-
-| Package | Owner | Purpose |
-|---------|-------|---------|
-| `frontend/` | Person A | Static UI (HTML, CSS, JavaScript) |
-| `backend/` | Person D | **Python FastAPI** API + JSON file storage |
-| `challenge-data/` | Person B | JSON challenge content |
-
-## Tech stack
-
-- **Backend:** Python (FastAPI), JSON files for user progress and app state
-- **Frontend:** HTML, CSS, JavaScript only — no React, Vite, or Tailwind
-- **Challenge content:** JSON files in `challenge-data/`
+Gamified misinformation-literacy web app for children (LMU PSIS project).  
+The FastAPI backend serves both the API and the frontend on the same port.
 
 ## Prerequisites
 
 - **Python 3.11+**
+- **pip** (Python package installer)
+- **Node.js 20+** and **npm** (needed for repo scripts in `package.json`)
 
-## Quick start
+## Quick Start
 
+1. Prepare Python environment for backend dependencies.
+
+**Option A — IDE already has an active project virtual environment**
+
+**Windows / macOS / Linux:**
 ```bash
-# 1. Python backend dependencies
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cd ..
-
-# 2. Configure backend env
-cp .env.example backend/.env
-
-# 3. Seed demo user data (JSON store)
-npm run data:seed
-
-# 4. Start app (serves frontend + API on :3001)
-npm run dev
 ```
 
-Open http://localhost:3001 — onboarding → home → Monkey AI-image challenge.
+**Option B — no virtual environment yet (create one in `backend`)**
 
-The Python backend serves the static frontend files and the API from the same port.
+**Windows (PowerShell):**
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+cd ..
+```
 
-## Backend (Python)
+**macOS / Linux:**
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cd ..
+```
 
-Stack: **FastAPI + JSON file storage**
+2. Create backend env file:
+
+   - If `backend/.env` already exists and is correctly configured, you can skip this step.
+
+**Windows (PowerShell):**
+```powershell
+Copy-Item .env.example backend\.env
+```
+
+**macOS / Linux:**
+```bash
+cp .env.example backend/.env
+```
+
+3. Seed demo data:
 
 ```bash
 cd backend
-source .venv/bin/activate
-uvicorn app.main:app --reload --port 3001
+python -m app.seed
+cd ..
 ```
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start FastAPI (frontend + API on port 3001) |
-| `npm run data:seed` | Initialize JSON store with demo user |
+4. Start the app:
 
-User progress and sessions are stored in `backend/data/store.json`. Challenge content is loaded from `challenge-data/*.json`.
+```bash
+cd backend
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 3001
+```
 
-API docs (auto-generated): http://localhost:3001/docs
+Then open:
+- App: http://localhost:3001
+- API docs: http://localhost:3001/docs
+- Health check: http://localhost:3001/api/v1/health
 
-## Frontend structure
+## Backend structure (short overview)
+
+```
+backend/
+  app/
+    main.py              # FastAPI app, API router wiring, static frontend serving
+    config.py            # Environment settings (.env)
+    routers/             # API endpoints (health, users, challenges, onboarding, etc.)
+    services/            # Domain logic (challenge flows, personalization, hint engine)
+    badges/              # Badge catalog + award engine
+    storage.py           # JSON store read/write helpers
+    repositories.py      # Data access helpers for app features
+    seed.py              # Demo data seeding entrypoint
+  data/                  # Runtime JSON storage (e.g. store.json)
+  tests/                 # Pytest test suite
+```
+
+## Frontend structure (short overview)
 
 ```
 frontend/
-  index.html       # App shell
+  index.html             # SPA shell
   css/
-    tokens.css     # Design tokens (colors, spacing)
-    main.css       # All styles
+    tokens.css           # Design tokens
+    main.css             # Global styles
   js/
-    api.js         # API client + mock fallback
-    router.js      # Client-side routing
-    header.js      # Header component
-    main.js        # Entry point
-    pages/         # Page renderers
+    main.js              # Frontend entrypoint
+    router.js            # Client-side routing
+    api.js               # API client
+    pages/               # Route/page renderers
+    *.js                 # UI modules (header, badges, animations, HQ/shop, etc.)
+  public/assets/         # Challenge and avatar images
+  assets/                # Additional worldbuilding graphics
 ```
-
-## Scripts
-
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start app (frontend + backend on :3001) |
-| `npm run data:seed` | Initialize JSON data store |
-
-## API health check
-
-```bash
-curl http://localhost:3001/api/v1/health
-```
-
-## Team branches
-
-```
-main
-├── feat/frontend-shell     # Person A
-├── feat/challenge-engine   # Person B
-├── feat/personalization    # Person C
-└── feat/backend-api        # Person D (Python/FastAPI)
-```
-
-## Design reference
-
-- [Figma prototype](https://www.figma.com/design/TdI5Wp1Nfgbj65XdwCgB6S/PSIS-Prototype)
-
-## Course deliverables
-
-| Date | Milestone |
-|------|-----------|
-| 15 Jun 2026 | Intermediate presentation + implementation plan |
-| 29 Jul 2026 | Final demo |
-| 14 Aug 2026 | Written report |
